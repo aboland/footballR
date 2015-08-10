@@ -37,7 +37,7 @@ shinyUI(fluidPage(
                  fluidRow(
                    column(5,
                           h3("Current Standings"),
-                          tableOutput("player_current_stand")),
+                          tableOutput("manager_current_stand")),
                           #tableOutput("personal_table")),
                    column(7,
                           h3("Fantasy Table (Official)"),
@@ -49,8 +49,8 @@ shinyUI(fluidPage(
                           tableOutput("MonthGW")),
                    column(7,
                           h3("Teams"),
-                          uiOutput("player_choice2"),
-                          tableOutput("player_team")))
+                          uiOutput("manager_choice2"),
+                          tableOutput("manager_team")))
                           #tableOutput("player_history")))
                  
         ),
