@@ -29,8 +29,8 @@ for(i in 1:534){
 }
 close(pb)
 
-save(full_scrape,file=paste0("/Users/aidanboland/Google Drive/Fantasy Football/Data/",file_name,".RData"))
-save(full_scrape,file="/Users/aidanboland/Google Drive/Fantasy Football/FF15-16/current_web_data.RData")
+save(full_scrape, file=paste0("/Users/aidanboland/Google Drive/Fantasy Football/Data/",file_name,".RData"))
+save(full_scrape, file="/Users/aidanboland/Google Drive/Fantasy Football/FF15-16/current_web_data.RData")
 
 fields <- c("id", "web_name", "event_total", "type_name", "team_name", "selected_by", "total_points", "current_fixture", 
             "next_fixture", "team_code", "news", "team_id", "status", "code", "first_name", "second_name", "now_cost", 
