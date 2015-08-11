@@ -196,8 +196,8 @@ shinyServer(function(input, output) {
     Craig_data <- readHTMLTable("http://fantasy.premierleague.com/entry/2176015/history/", stringsAsFactors=F)
     Craig_team <- readHTMLList("http://fantasy.premierleague.com/entry/2176015/event-history/1/", stringsAsFactors=F)
     incProgress(1/10, detail = paste("Combining"))
-    player_team_history <- list(Aidan_team, Wes_team, Flynn_team, Gazza_team, Tristan_team, Craig_team)
-    player_data_history <- list(Aidan_data, Wes_data, Flynn_data, Gazza_data, Tristan_data, Craig_data)
+    manager_team_history <- list(Aidan_team, Wes_team, Flynn_team, Gazza_team, Tristan_team, Craig_team)
+    manager_data_history <- list(Aidan_data, Wes_data, Flynn_data, Gazza_data, Tristan_data, Craig_data)
   })
   
   #managers <- as.character(page_tables[[1]]$Manager)
@@ -244,7 +244,7 @@ shinyServer(function(input, output) {
   output$manager_choice2<-renderUI({
     # Reactive input displaying possible managers
     selectInput("manager_ch2", 
-                label = h5("manager"),
+                label = h5("Manager"),
                 choices = as.list(managers),
                 selected = "Aidan")
   })
