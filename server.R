@@ -63,7 +63,7 @@ shinyServer(function(input, output) {
   })
   
   # Side panel shite talk ------------------------
-  output$n_players<- renderPrint(cat(paste0("We currently have ",nrow(page_tables[[1]]))," players."))
+  output$n_managers<- renderPrint(cat(paste0("We currently have ",nrow(page_tables[[1]]))," managers."))
   output$pricing<- renderPrint(cat(paste0("Putting in €15 each gives a pot of €",15*nrow(page_tables[[2]])),"."))
   #output$n_players<- renderPrint(cat(nrow(page_tables[[2]])))
   
@@ -189,82 +189,85 @@ shinyServer(function(input, output) {
     incProgress(2/10, detail = paste("Garry"))
     Gazza_data <- readHTMLTable("http://fantasy.premierleague.com/entry/1904476/history/", stringsAsFactors=F)
     Gazza_team <- readHTMLList("http://fantasy.premierleague.com/entry/1904476/event-history/1/", stringsAsFactors=F)
-    incProgress(2/10, detail = paste("Tristan"))
+    incProgress(1/10, detail = paste("Tristan"))
     Tristan_data <- readHTMLTable("http://fantasy.premierleague.com/entry/304705/history/", stringsAsFactors=F)
     Tristan_team <- readHTMLList("http://fantasy.premierleague.com/entry/304705/event-history/1/", stringsAsFactors=F)
+    incProgress(1/10, detail = paste("Craig"))
+    Craig_data <- readHTMLTable("http://fantasy.premierleague.com/entry/2176015/history/", stringsAsFactors=F)
+    Craig_team <- readHTMLList("http://fantasy.premierleague.com/entry/2176015/event-history/1/", stringsAsFactors=F)
     incProgress(1/10, detail = paste("Combining"))
-    player_team_history <- list(Aidan_team, Wes_team, Flynn_team, Gazza_team, Tristan_team)
-    player_data_history <- list(Aidan_data, Wes_data, Flynn_data, Gazza_data, Tristan_data)
+    player_team_history <- list(Aidan_team, Wes_team, Flynn_team, Gazza_team, Tristan_team, Craig_team)
+    player_data_history <- list(Aidan_data, Wes_data, Flynn_data, Gazza_data, Tristan_data, Craig_data)
   })
   
-  #players <- as.character(page_tables[[1]]$Manager)
-  players <- c("Aidan", "Wes", "Sean", "Garry", "Tristan")
+  #managers <- as.character(page_tables[[1]]$Manager)
+  managers <- c("Aidan", "Wes", "Sean", "Garry", "Tristan", "Craig")
   
   # Create data frame of points
-  own_league_table <- data.frame(Manager = players, Pts = rep(0,5), GW = rep(0,5), Bench = rep(0,5))
+  own_league_table <- data.frame(Manager = managers, Pts = rep(0, length(managers)), GW = rep(0, length(managers)), Bench = rep(0,length(managers)))
   for(i in 1:5){
-    own_league_table[i,2:4] <- player_data_history[[i]][[1]][,c("OP","GP","PB")]
+    own_league_table[i,2:4] <- manager_data_history[[i]][[1]][,c("OP","GP","PB")]
   }
   
-  output$player_current_stand <- renderTable({
+  output$manager_current_stand <- renderTable({
     own_league_table[order(as.numeric(own_league_table[,2]), decreasing = T),]
   }, include.rownames=F)
   
-  #full_players_points <- array(0,c(5,1,2))
-  #full_players_points[i,1,] <- as.numeric(combine_data[[i]][,c(2,3)])
+  #full_managers_points <- array(0,c(5,1,2))
+  #full_managers_points[i,1,] <- as.numeric(combine_data[[i]][,c(2,3)])
   
-  output$player_choice<-renderUI({
-    # Reactive input displaying possible players
-    selectInput("player_ch", 
+  output$manager_choice<-renderUI({
+    # Reactive input displaying possible managers
+    selectInput("manager_ch", 
                 label = h5("Manager"),
-                choices = as.list(levels(players)),
+                choices = as.list(levels(managers)),
                 selected = "Aidan Boland")
   })
   
-  output$player_history <- renderTable({
-    if(is.null(input$player_ch))
-      return(player_data_history[[1]][[1]])
-    if(sum(players==input$player_ch)==0)
+  output$manager_history <- renderTable({
+    if(is.null(input$manager_ch))
+      return(manager_data_history[[1]][[1]])
+    if(sum(managers==input$manager_ch)==0)
       return(data.frame("No history available"=c(" ")))
     
-    p_ch <- which(players==input$player_ch)
-    if(input$player_ch=="All")
+    p_ch <- which(managers==input$manager_ch)
+    if(input$manager_ch=="All")
       p_ch <- 1
-    if(input$player_ch=="All")
+    if(input$manager_ch=="All")
       p_ch <- 1
-    player_data_history[[p_ch]][[1]]
+    manager_data_history[[p_ch]][[1]]
   },include.rownames=F)
   
     
   
   
-  output$player_choice2<-renderUI({
-    # Reactive input displaying possible players
-    selectInput("player_ch2", 
-                label = h5("Player"),
-                choices = as.list(players),
+  output$manager_choice2<-renderUI({
+    # Reactive input displaying possible managers
+    selectInput("manager_ch2", 
+                label = h5("manager"),
+                choices = as.list(managers),
                 selected = "Aidan")
   })
   
-  output$player_team <- renderTable({
-    players_selected <- data.frame(Names=rep(" ",15),Points=rep(" ",15),stringsAsFactors = F)
+  output$manager_team <- renderTable({
+    managers_selected <- data.frame(Names=rep(" ",15),Points=rep(" ",15),stringsAsFactors = F)
     
-    if(is.null(input$player_ch2))
-      return(players_selected)
-    if(sum(players==input$player_ch2)==0)
+    if(is.null(input$manager_ch2))
+      return(managers_selected)
+    if(sum(managers==input$manager_ch2)==0)
       return(data.frame("No history available"=c(" ")))
     
-    p_ch <- which(players==input$player_ch2)
-    if(input$player_ch2=="All")
+    p_ch <- which(managers==input$manager_ch2)
+    if(input$manager_ch2=="All")
       p_ch <- 1
-    if(input$player_ch2=="All")
+    if(input$manager_ch2=="All")
       p_ch <- 1
     
     for(i in 65:79){
-      players_selected[i-64,1] <- names(player_team_history[[p_ch]][[i]])
-      players_selected[i-64,2] <- gsub(" \n\n ", "",as.character(player_team_history[[p_ch]][[i]]))
+      managers_selected[i-64,1] <- names(manager_team_history[[p_ch]][[i]])
+      managers_selected[i-64,2] <- gsub(" \n\n ", "",as.character(manager_team_history[[p_ch]][[i]]))
     }
-    players_selected
+    managers_selected
   },include.rownames=F)
     
 })

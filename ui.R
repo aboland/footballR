@@ -19,7 +19,7 @@ shinyUI(fluidPage(
                    winner will get the left over money. 6 players will give enough money for the monthly prizes. Some gameweeks
                    occuring at the beginning/end of a month will span two months. The month a gameweek starts in will be the
                    month that the gameweek counts in. A list of the months and repective gameweeks is displayed on the right."),
-          p(textOutput("n_players"))),
+          p(textOutput("n_managers"))),
         tabPanel("Player Data Controls",
                  h3("Choose fields to display"),
                  uiOutput("field1"),
@@ -37,7 +37,7 @@ shinyUI(fluidPage(
                  fluidRow(
                    column(5,
                           h3("Current Standings"),
-                          tableOutput("player_current_stand")),
+                          tableOutput("manager_current_stand")),
                           #tableOutput("personal_table")),
                    column(7,
                           h3("Fantasy Table (Official)"),
@@ -49,8 +49,8 @@ shinyUI(fluidPage(
                           tableOutput("MonthGW")),
                    column(7,
                           h3("Teams"),
-                          uiOutput("player_choice2"),
-                          tableOutput("player_team")))
+                          uiOutput("manager_choice2"),
+                          tableOutput("manager_team")))
                           #tableOutput("player_history")))
                  
         ),
