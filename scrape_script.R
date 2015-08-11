@@ -11,6 +11,7 @@
 library(RCurl)
 library(jsonlite)
 library(plyr)
+library(XML)
 
 #args <- commandArgs(trailingOnly = TRUE)
 #file_name <- args[1]
@@ -73,6 +74,7 @@ player_data$Status[which(player_data$Status=="s")]<-"Suspended"
 
 save(player_data,fields,field_names,available_fields, file="/Users/aidanboland/Google Drive/Fantasy Football/FF15-16/current_web_data_tidy.RData")
 
+fix_res <- list()
 for(i in 1:38)
   fix_res[[i]]<-readHTMLTable(paste0("http://fantasy.premierleague.com/fixtures/",i,"/"))[[1]]
 save(fix_res,file=paste0("/Users/aidanboland/Google Drive/Fantasy Football/Data/FixRes",file_name,".RData"))

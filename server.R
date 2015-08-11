@@ -63,7 +63,7 @@ shinyServer(function(input, output) {
   })
   
   # Side panel shite talk ------------------------
-  output$n_players<- renderPrint(cat(paste0("We currently have ",nrow(page_tables[[1]]))," players."))
+  output$n_managers<- renderPrint(cat(paste0("We currently have ",nrow(page_tables[[1]]))," managers."))
   output$pricing<- renderPrint(cat(paste0("Putting in €15 each gives a pot of €",15*nrow(page_tables[[2]])),"."))
   #output$n_players<- renderPrint(cat(nrow(page_tables[[2]])))
   
@@ -189,19 +189,22 @@ shinyServer(function(input, output) {
     incProgress(2/10, detail = paste("Garry"))
     Gazza_data <- readHTMLTable("http://fantasy.premierleague.com/entry/1904476/history/", stringsAsFactors=F)
     Gazza_team <- readHTMLList("http://fantasy.premierleague.com/entry/1904476/event-history/1/", stringsAsFactors=F)
-    incProgress(2/10, detail = paste("Tristan"))
+    incProgress(1/10, detail = paste("Tristan"))
     Tristan_data <- readHTMLTable("http://fantasy.premierleague.com/entry/304705/history/", stringsAsFactors=F)
     Tristan_team <- readHTMLList("http://fantasy.premierleague.com/entry/304705/event-history/1/", stringsAsFactors=F)
+    incProgress(1/10, detail = paste("Craig"))
+    Craig_data <- readHTMLTable("http://fantasy.premierleague.com/entry/2176015/history/", stringsAsFactors=F)
+    Craig_team <- readHTMLList("http://fantasy.premierleague.com/entry/2176015/event-history/1/", stringsAsFactors=F)
     incProgress(1/10, detail = paste("Combining"))
-    manager_team_history <- list(Aidan_team, Wes_team, Flynn_team, Gazza_team, Tristan_team)
-    manager_data_history <- list(Aidan_data, Wes_data, Flynn_data, Gazza_data, Tristan_data)
+    player_team_history <- list(Aidan_team, Wes_team, Flynn_team, Gazza_team, Tristan_team, Craig_team)
+    player_data_history <- list(Aidan_data, Wes_data, Flynn_data, Gazza_data, Tristan_data, Craig_data)
   })
   
   #managers <- as.character(page_tables[[1]]$Manager)
-  managers <- c("Aidan", "Wes", "Sean", "Garry", "Tristan")
+  managers <- c("Aidan", "Wes", "Sean", "Garry", "Tristan", "Craig")
   
   # Create data frame of points
-  own_league_table <- data.frame(Manager = managers, Pts = rep(0,5), GW = rep(0,5), Bench = rep(0,5))
+  own_league_table <- data.frame(Manager = managers, Pts = rep(0, length(managers)), GW = rep(0, length(managers)), Bench = rep(0,length(managers)))
   for(i in 1:5){
     own_league_table[i,2:4] <- manager_data_history[[i]][[1]][,c("OP","GP","PB")]
   }
