@@ -81,4 +81,4 @@ save(fix_res,file=paste0("/Users/aidanboland/Google Drive/Fantasy Football/Data/
 
 
 #library(shinyapps)
-shinyapps::deployApp('/Users/aidanboland/Google Drive/Fantasy Football/FF15-16')
+shinyapps::deployApp('/Users/aidanboland/Google Drive/Fantasy Football/FF15-16', launch.browser = F)
