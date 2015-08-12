@@ -1,7 +1,7 @@
 # Fantasy Football server script
 
 library(shiny)
-#library(plyr)
+library(plyr)
 library(XML)
 
 #library(shinyapps)
