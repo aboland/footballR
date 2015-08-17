@@ -224,22 +224,44 @@ shinyServer(function(input, output) {
     own_league_table[order(as.numeric(own_league_table[,2]), decreasing = T),]
   }, include.rownames=F)
   
+  
   # Create plot of results
   
+  output$plot_data_type<-renderUI({
+    selectInput("data_dis", 
+                label = h5("Data"),
+                choices = as.list(c("Overall","Gameweek","Bench")),
+                selected = "Overall")
+  })
+  
+  data_plot_choice <- reactive({
+    if(is.null(input$data_dis))
+      return("OP")
+    if(input$data_dis == "Overall")
+      return("OP")
+    if(input$data_dis == "Gameweek")
+      return("GP")
+    if(input$data_dis == "Bench")
+      return("PB")
+  })
+  
   output$points_plot <- renderPlot({
-    my_ylim <- range(as.numeric(manager_data_history[[1]][[1]][,"OP"]))
+    
+    my_ylim <- range(as.numeric(manager_data_history[[1]][[1]][,data_plot_choice()]))
     for(i in 2:6){
-      my_ylim[1] <- ifelse(min(as.numeric(manager_data_history[[i]][[1]][,"OP"])) < my_ylim[1],
-                        min(as.numeric(manager_data_history[[i]][[1]][,"OP"])),
+      my_ylim[1] <- ifelse(min(as.numeric(manager_data_history[[i]][[1]][,data_plot_choice()])) < my_ylim[1],
+                        min(as.numeric(manager_data_history[[i]][[1]][,data_plot_choice()])),
                         my_ylim[1])
-      my_ylim[2] <- ifelse(max(as.numeric(manager_data_history[[i]][[1]][,"OP"])) > my_ylim[2],
-                        max(as.numeric(manager_data_history[[i]][[1]][,"OP"])),
+      my_ylim[2] <- ifelse(max(as.numeric(manager_data_history[[i]][[1]][,data_plot_choice()])) > my_ylim[2],
+                        max(as.numeric(manager_data_history[[i]][[1]][,data_plot_choice()])),
                         my_ylim[2])
     }
-    plot(manager_data_history[[1]][[1]][,"OP"], type="n", ylim= my_ylim, ylab = "Points", xlab="Gameweek", xaxt="n")
+    plot(manager_data_history[[1]][[1]][,data_plot_choice()], type="n", 
+         ylim= my_ylim, ylab = "Points", xlab="Gameweek", xaxt="n",
+         main=input$data_dis)
     axis(1,at=1:nrow(manager_data_history[[1]][[1]]))
     for(i in 1:6)
-      lines(manager_data_history[[i]][[1]][,"OP"], type="b", col = i)
+      lines(manager_data_history[[i]][[1]][,data_plot_choice()], type="b", col = i)
     legend("topleft", managers, col=1:length(managers), lty=1)
   })
     

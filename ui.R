@@ -55,7 +55,12 @@ shinyUI(fluidPage(
                             p("The following gameweeks will be used to decide the monthly prizes"),
                           tableOutput("MonthGW")))),
                  tabPanel("Graphs",
-                          p("Display plot here"),
+                          fluidRow(
+                            column(4,
+                                   uiOutput("plot_data_type")),
+                            column(4,
+                                   p("..."))
+                            ),
                           plotOutput("points_plot")
                  ),
                  tabPanel("Compare Teams",
