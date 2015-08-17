@@ -12,6 +12,8 @@ load("current_web_data_tidy.RData")
 
 shinyServer(function(input, output) {
   
+  gameweek <- nrow(readHTMLTable("http://fantasy.premierleague.com/entry/1693603/history/", stringsAsFactors=F)[[1]])
+  
   #files_avail <- list.files("/Users/aidanboland/Google Drive/Fantasy Football/Data/")  # availiable data
   #load("/Users/aidanboland/Google Drive/Fantasy Football/Data/15_7_4_full.RData")
   
@@ -149,7 +151,7 @@ shinyServer(function(input, output) {
     selectInput("gw_choice", 
                 label = h3("Gameweek"),
                 choices = as.list(1:38),
-                selected = 1)
+                selected = gameweek)
     })
   
   output$fix_res <- renderTable({
@@ -173,83 +175,117 @@ shinyServer(function(input, output) {
   },include.rownames=F)
   
   
-  # Scrape individual player points/history
+  # --- Scrape individual player points/history
   
   # Get current team choice
   withProgress(message = 'Retrieving latest data', value = 0, {
     incProgress(1/10, detail = paste("Aidan"))
     Aidan_data <- readHTMLTable("http://fantasy.premierleague.com/entry/1693603/history/", stringsAsFactors=F)
-    Aidan_team <- readHTMLList("http://fantasy.premierleague.com/entry/1693603/event-history/1/", stringsAsFactors=F)
+    Aidan_team <- readHTMLList(paste0("http://fantasy.premierleague.com/entry/1693603/event-history/",gameweek,"/"), stringsAsFactors=F)
     incProgress(2/10, detail = paste("Wes"))
     Wes_data <- readHTMLTable("http://fantasy.premierleague.com/entry/1710052/history/", stringsAsFactors=F)
-    Wes_team <- readHTMLList("http://fantasy.premierleague.com/entry/1710052/event-history/1/", stringsAsFactors=F)
+    Wes_team <- readHTMLList(paste0("http://fantasy.premierleague.com/entry/1710052/event-history/",gameweek,"/"), stringsAsFactors=F)
     incProgress(2/10, detail = paste("Sean"))
     Flynn_data <- readHTMLTable("http://fantasy.premierleague.com/entry/1748757/history/", stringsAsFactors=F)
-    Flynn_team <- readHTMLList("http://fantasy.premierleague.com/entry/1748757/event-history/1/", stringsAsFactors=F)
+    Flynn_team <- readHTMLList(paste0("http://fantasy.premierleague.com/entry/1748757/event-history/",gameweek,"/"), stringsAsFactors=F)
     incProgress(2/10, detail = paste("Garry"))
     Gazza_data <- readHTMLTable("http://fantasy.premierleague.com/entry/1904476/history/", stringsAsFactors=F)
-    Gazza_team <- readHTMLList("http://fantasy.premierleague.com/entry/1904476/event-history/1/", stringsAsFactors=F)
+    Gazza_team <- readHTMLList(paste0("http://fantasy.premierleague.com/entry/1904476/event-history/",gameweek,"/"), stringsAsFactors=F)
     incProgress(1/10, detail = paste("Tristan"))
     Tristan_data <- readHTMLTable("http://fantasy.premierleague.com/entry/304705/history/", stringsAsFactors=F)
-    Tristan_team <- readHTMLList("http://fantasy.premierleague.com/entry/304705/event-history/1/", stringsAsFactors=F)
+    Tristan_team <- readHTMLList(paste0("http://fantasy.premierleague.com/entry/304705/event-history/",gameweek,"/"), stringsAsFactors=F)
     incProgress(1/10, detail = paste("Craig"))
     Craig_data <- readHTMLTable("http://fantasy.premierleague.com/entry/2176015/history/", stringsAsFactors=F)
-    Craig_team <- readHTMLList("http://fantasy.premierleague.com/entry/2176015/event-history/1/", stringsAsFactors=F)
+    Craig_team <- readHTMLList(paste0("http://fantasy.premierleague.com/entry/2176015/event-history/",gameweek,"/"), stringsAsFactors=F)
     incProgress(1/10, detail = paste("Combining"))
     manager_team_history <- list(Aidan_team, Wes_team, Flynn_team, Gazza_team, Tristan_team, Craig_team)
     manager_data_history <- list(Aidan_data, Wes_data, Flynn_data, Gazza_data, Tristan_data, Craig_data)
   })
   
-  #managers <- as.character(page_tables[[1]]$Manager)
   managers <- c("Aidan", "Wes", "Sean", "Garry", "Tristan", "Craig")
   
+  
+  # Choice for managers table gameweek
+  output$table_gameweek_choice<-renderUI({
+    selectInput("table_gw", 
+                label = h5("Gameweek"),
+                choices = as.list(1:gameweek),
+                selected = gameweek)
+  })
+  
   # Create data frame of points
-  own_league_table <- data.frame(Manager = managers, Pts = rep(0, length(managers)), GW = rep(0, length(managers)), Bench = rep(0,length(managers)))
-  for(i in 1:5){
-    own_league_table[i,2:4] <- manager_data_history[[i]][[1]][,c("OP","GP","PB")]
-  }
+  own_league_table <- data.frame(Manager = managers, Pts = rep(0, length(managers)), GW = rep(0, length(managers)), Bench = rep(0,length(managers)), Transfers = rep(0,length(managers)))
   
   output$manager_current_stand <- renderTable({
+    if(is.null(input$table_gw))
+      return(own_league_table)
+    for(i in 1:6)
+      own_league_table[i,2:5] <- manager_data_history[[i]][[1]][input$table_gw, c("OP","GP","PB","TM")]
     own_league_table[order(as.numeric(own_league_table[,2]), decreasing = T),]
   }, include.rownames=F)
   
-  #full_managers_points <- array(0,c(5,1,2))
-  #full_managers_points[i,1,] <- as.numeric(combine_data[[i]][,c(2,3)])
+  # Create plot of results
   
-  output$manager_choice<-renderUI({
-    # Reactive input displaying possible managers
-    selectInput("manager_ch", 
-                label = h5("Manager"),
-                choices = as.list(levels(managers)),
-                selected = "Aidan Boland")
+  output$points_plot <- renderPlot({
+    my_ylim <- range(as.numeric(manager_data_history[[1]][[1]][,"OP"]))
+    for(i in 2:6){
+      my_ylim[1] <- ifelse(min(as.numeric(manager_data_history[[i]][[1]][,"OP"])) < my_ylim[1],
+                        min(as.numeric(manager_data_history[[i]][[1]][,"OP"])),
+                        my_ylim[1])
+      my_ylim[2] <- ifelse(max(as.numeric(manager_data_history[[i]][[1]][,"OP"])) > my_ylim[2],
+                        max(as.numeric(manager_data_history[[i]][[1]][,"OP"])),
+                        my_ylim[2])
+    }
+    plot(manager_data_history[[1]][[1]][,"OP"], type="n", ylim= my_ylim, ylab = "Points", xlab="Gameweek", xaxt="n")
+    axis(1,at=1:nrow(manager_data_history[[1]][[1]]))
+    for(i in 1:6)
+      lines(manager_data_history[[i]][[1]][,"OP"], type="b", col = i)
+    legend("topleft", managers, col=1:length(managers), lty=1)
   })
-  
-  output$manager_history <- renderTable({
-    if(is.null(input$manager_ch))
-      return(manager_data_history[[1]][[1]])
-    if(sum(managers==input$manager_ch)==0)
-      return(data.frame("No history available"=c(" ")))
-    
-    p_ch <- which(managers==input$manager_ch)
-    if(input$manager_ch=="All")
-      p_ch <- 1
-    if(input$manager_ch=="All")
-      p_ch <- 1
-    manager_data_history[[p_ch]][[1]]
-  },include.rownames=F)
-  
     
   
+  
+  
+  # ---- Display current team
+  
+  output$manager_choice1<-renderUI({
+    # Reactive input displaying possible managers
+    selectInput("manager_ch1", 
+                label = h5("Manager"),
+                choices = as.list(managers),
+                selected = sample(managers,1))
+  })
   
   output$manager_choice2<-renderUI({
     # Reactive input displaying possible managers
     selectInput("manager_ch2", 
                 label = h5("Manager"),
                 choices = as.list(managers),
-                selected = "Aidan")
+                selected = sample(managers,1))
   })
   
-  output$manager_team <- renderTable({
+  output$manager_team1 <- renderTable({
+    managers_selected <- data.frame(Names=rep(" ",15),Points=rep(" ",15),stringsAsFactors = F)
+    
+    if(is.null(input$manager_ch1))
+      return(managers_selected)
+    if(sum(managers==input$manager_ch1)==0)
+      return(data.frame("No history available"=c(" ")))
+    
+    p_ch <- which(managers==input$manager_ch1)
+    if(input$manager_ch1=="All")
+      p_ch <- 1
+    if(input$manager_ch1=="All")
+      p_ch <- 1
+    
+    for(i in 65:79){
+      managers_selected[i-64,1] <- names(manager_team_history[[p_ch]][[i]])
+      managers_selected[i-64,2] <- gsub(" \n\n ", "",as.character(manager_team_history[[p_ch]][[i]]))
+    }
+    managers_selected
+  },include.rownames=F)
+  
+  output$manager_team2 <- renderTable({
     managers_selected <- data.frame(Names=rep(" ",15),Points=rep(" ",15),stringsAsFactors = F)
     
     if(is.null(input$manager_ch2))
@@ -270,4 +306,5 @@ shinyServer(function(input, output) {
     managers_selected
   },include.rownames=F)
     
-})
+  })
+

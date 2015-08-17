@@ -33,26 +33,47 @@ shinyUI(fluidPage(
     mainPanel(
       tabsetPanel(
         tabPanel("League",
-                 #p("This takes the data straight from the web, once I get it set up properly it should run the monthly leagues automatically."),
-                 fluidRow(
-                   column(5,
-                          h3("Current Standings"),
-                          tableOutput("manager_current_stand")),
+                 tabsetPanel(
+                 tabPanel("Overall",
+                          #p("This takes the data straight from the web, once I get it set up properly it should run the monthly leagues automatically."),
+                          fluidRow(
+                            column(6,
+                              h3("Fantasy Table (Official)"),
+                              tableOutput("personal_table2")
+                          ),
                           #tableOutput("personal_table")),
-                   column(7,
-                          h3("Fantasy Table (Official)"),
-                          tableOutput("personal_table2"))),
-                 fluidRow(
-                   column(5,
-                          h3("Monthly Gameweeks"),
-                          p("The following gameweeks will be used to decide the monthly prizes"),
-                          tableOutput("MonthGW")),
-                   column(7,
-                          h3("Teams"),
-                          uiOutput("manager_choice2"),
-                          tableOutput("manager_team")))
+                            column(6,
+                              h3("Current Standings"),
+                              uiOutput("table_gameweek_choice"),
+                              tableOutput("manager_current_stand"))
+                          )
+                 ),
+                 tabPanel("Monthly",
+                          fluidRow(
+                            column(5,
+                            h3("Monthly Gameweeks"),
+                            p("The following gameweeks will be used to decide the monthly prizes"),
+                          tableOutput("MonthGW")))),
+                 tabPanel("Graphs",
+                          p("Display plot here"),
+                          plotOutput("points_plot")
+                 ),
+                 tabPanel("Compare Teams",
+                          fluidRow(
+                            column(6,
+                                   h3("Team 1"),
+                                    uiOutput("manager_choice1"),
+                                    tableOutput("manager_team1")
+                            ),
+                            column(6,
+                                  h3("Team 2"),
+                                  uiOutput("manager_choice2"),
+                                  tableOutput("manager_team2")
+                                  )
+                          )
+                 )
                           #tableOutput("player_history")))
-                 
+                 )
         ),
         tabPanel("Fixtures/Results",
                  uiOutput("gameweek_choice"),
