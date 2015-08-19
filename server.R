@@ -10,6 +10,13 @@ library(XML)
 #load("current_web_data.RData")
 load("current_web_data_tidy.RData")
 
+managers <- c("Aidan", "Wes", "Sean", "Garry", "Tristan", "Craig")
+ids = c(1693603, 1710052, 1748757, 1904476, 304705, 2176015)
+league_id <- 401525
+monthly_weeks <- data.frame(Month = c("August","September", "October", "November", "December", "January", "February", "March", "April"),
+           Gameweeks = c("1, 2, 3, 4", "5, 6, 7", "8, 9, 10, 11", "12, 13, 14", "15, 16, 17, 18, 19", "21, 22, 23",
+                         "24, 25, 26 27", "28, 29, 30, 31", "32, 33, 34, 35, 36"))
+
 shinyServer(function(input, output) {
   
   gameweek <- nrow(readHTMLTable("http://fantasy.premierleague.com/entry/1693603/history/", stringsAsFactors=F)[[1]])
@@ -126,7 +133,7 @@ shinyServer(function(input, output) {
   
   # ------------------ Our table
   
-  page_tables<-readHTMLTable("http://fantasy.premierleague.com/my-leagues/401525/standings/")
+  page_tables<-readHTMLTable(paste0("http://fantasy.premierleague.com/my-leagues/",league_id,"/standings/"))
   output$personal_table <- renderTable({
     #page_tables[[1]]  # Table 1 will give standing!
     page_tables[[2]]  # Table 2 gives people in the league
@@ -176,33 +183,42 @@ shinyServer(function(input, output) {
   
   
   # --- Scrape individual player points/history
-  
-  # Get current team choice
   withProgress(message = 'Retrieving latest data', value = 0, {
-    incProgress(1/10, detail = paste("Aidan"))
-    Aidan_data <- readHTMLTable("http://fantasy.premierleague.com/entry/1693603/history/", stringsAsFactors=F)
-    Aidan_team <- readHTMLList(paste0("http://fantasy.premierleague.com/entry/1693603/event-history/",gameweek,"/"), stringsAsFactors=F)
-    incProgress(2/10, detail = paste("Wes"))
-    Wes_data <- readHTMLTable("http://fantasy.premierleague.com/entry/1710052/history/", stringsAsFactors=F)
-    Wes_team <- readHTMLList(paste0("http://fantasy.premierleague.com/entry/1710052/event-history/",gameweek,"/"), stringsAsFactors=F)
-    incProgress(2/10, detail = paste("Sean"))
-    Flynn_data <- readHTMLTable("http://fantasy.premierleague.com/entry/1748757/history/", stringsAsFactors=F)
-    Flynn_team <- readHTMLList(paste0("http://fantasy.premierleague.com/entry/1748757/event-history/",gameweek,"/"), stringsAsFactors=F)
-    incProgress(2/10, detail = paste("Garry"))
-    Gazza_data <- readHTMLTable("http://fantasy.premierleague.com/entry/1904476/history/", stringsAsFactors=F)
-    Gazza_team <- readHTMLList(paste0("http://fantasy.premierleague.com/entry/1904476/event-history/",gameweek,"/"), stringsAsFactors=F)
-    incProgress(1/10, detail = paste("Tristan"))
-    Tristan_data <- readHTMLTable("http://fantasy.premierleague.com/entry/304705/history/", stringsAsFactors=F)
-    Tristan_team <- readHTMLList(paste0("http://fantasy.premierleague.com/entry/304705/event-history/",gameweek,"/"), stringsAsFactors=F)
-    incProgress(1/10, detail = paste("Craig"))
-    Craig_data <- readHTMLTable("http://fantasy.premierleague.com/entry/2176015/history/", stringsAsFactors=F)
-    Craig_team <- readHTMLList(paste0("http://fantasy.premierleague.com/entry/2176015/event-history/",gameweek,"/"), stringsAsFactors=F)
-    incProgress(1/10, detail = paste("Combining"))
-    manager_team_history <- list(Aidan_team, Wes_team, Flynn_team, Gazza_team, Tristan_team, Craig_team)
-    manager_data_history <- list(Aidan_data, Wes_data, Flynn_data, Gazza_data, Tristan_data, Craig_data)
+  manager_data_history <- list()
+  manager_team_history <- list()
+  for(i in 1:length(managers)){
+    incProgress(0, detail = paste(managers[i]))
+    manager_data_history[[i]] <- readHTMLTable(paste0("http://fantasy.premierleague.com/entry/",ids[i],"/history/"), stringsAsFactors=F)
+    manager_team_history[[i]] <- readHTMLList(paste0("http://fantasy.premierleague.com/entry/",ids[i],"/event-history/",gameweek,"/"), stringsAsFactors=F)
+    incProgress(1/length(managers), detail = paste(managers[i]))
+    }
   })
+#   # Get current team choice
+#   withProgress(message = 'Retrieving latest data', value = 0, {
+#     incProgress(1/10, detail = paste("Aidan"))
+#     Aidan_data <- readHTMLTable("http://fantasy.premierleague.com/entry/1693603/history/", stringsAsFactors=F)
+#     Aidan_team <- readHTMLList(paste0("http://fantasy.premierleague.com/entry/1693603/event-history/",gameweek,"/"), stringsAsFactors=F)
+#     incProgress(2/10, detail = paste("Wes"))
+#     Wes_data <- readHTMLTable("http://fantasy.premierleague.com/entry/1710052/history/", stringsAsFactors=F)
+#     Wes_team <- readHTMLList(paste0("http://fantasy.premierleague.com/entry/1710052/event-history/",gameweek,"/"), stringsAsFactors=F)
+#     incProgress(2/10, detail = paste("Sean"))
+#     Flynn_data <- readHTMLTable("http://fantasy.premierleague.com/entry/1748757/history/", stringsAsFactors=F)
+#     Flynn_team <- readHTMLList(paste0("http://fantasy.premierleague.com/entry/1748757/event-history/",gameweek,"/"), stringsAsFactors=F)
+#     incProgress(2/10, detail = paste("Garry"))
+#     Gazza_data <- readHTMLTable("http://fantasy.premierleague.com/entry/1904476/history/", stringsAsFactors=F)
+#     Gazza_team <- readHTMLList(paste0("http://fantasy.premierleague.com/entry/1904476/event-history/",gameweek,"/"), stringsAsFactors=F)
+#     incProgress(1/10, detail = paste("Tristan"))
+#     Tristan_data <- readHTMLTable("http://fantasy.premierleague.com/entry/304705/history/", stringsAsFactors=F)
+#     Tristan_team <- readHTMLList(paste0("http://fantasy.premierleague.com/entry/304705/event-history/",gameweek,"/"), stringsAsFactors=F)
+#     incProgress(1/10, detail = paste("Craig"))
+#     Craig_data <- readHTMLTable("http://fantasy.premierleague.com/entry/2176015/history/", stringsAsFactors=F)
+#     Craig_team <- readHTMLList(paste0("http://fantasy.premierleague.com/entry/2176015/event-history/",gameweek,"/"), stringsAsFactors=F)
+#     incProgress(1/10, detail = paste("Combining"))
+#     manager_team_history <- list(Aidan_team, Wes_team, Flynn_team, Gazza_team, Tristan_team, Craig_team)
+#     manager_data_history <- list(Aidan_data, Wes_data, Flynn_data, Gazza_data, Tristan_data, Craig_data)
+#   })
   
-  managers <- c("Aidan", "Wes", "Sean", "Garry", "Tristan", "Craig")
+  
   
   
   # Choice for managers table gameweek
