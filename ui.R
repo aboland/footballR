@@ -15,7 +15,7 @@ shinyUI(fluidPage(
       tabsetPanel(
         tabPanel("Summary",
                  h4("League code: 1693603-401525"),
-                 p("The current plan is a pay-in of €15 each. The person with most points within each month will get €10 and the overall
+                 p("The current plan is a pay-in of 15 each. The person with most points within each month will get 10 and the overall
                    winner will get the left over money. 6 players will give enough money for the monthly prizes. Some gameweeks
                    occuring at the beginning/end of a month will span two months. The month a gameweek starts in will be the
                    month that the gameweek counts in. A list of the months and repective gameweeks is displayed on the right."),

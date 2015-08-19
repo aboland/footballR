@@ -66,7 +66,7 @@ shinyServer(function(input, output) {
   
   # Side panel shite talk ------------------------
   output$n_managers<- renderPrint(cat(paste0("We currently have ",nrow(page_tables[[1]]))," managers."))
-  output$pricing<- renderPrint(cat(paste0("Putting in €15 each gives a pot of €",15*nrow(page_tables[[2]])),"."))
+  output$pricing<- renderPrint(cat(paste0("Putting in 15 each gives a pot of ",15*nrow(page_tables[[2]])),"."))
   #output$n_players<- renderPrint(cat(nrow(page_tables[[2]])))
   
   # Main Panel -------------------------------------------------------------
