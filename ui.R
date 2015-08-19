@@ -56,25 +56,27 @@ shinyUI(fluidPage(
                           tableOutput("MonthGW")))),
                  tabPanel("Graphs",
                           fluidRow(
-                            column(4,
+                            column(3,
                                    uiOutput("plot_data_type")),
                             column(4,
-                                   p("..."))
+                                   uiOutput("plot_gw_range"))
                             ),
                           plotOutput("points_plot")
                  ),
                  tabPanel("Compare Teams",
                           fluidRow(
-                            column(6,
-                                   h3("Team 1"),
+                            column(3,
                                     uiOutput("manager_choice1"),
                                     tableOutput("manager_team1")
                             ),
-                            column(6,
-                                  h3("Team 2"),
+                            column(3,
                                   uiOutput("manager_choice2"),
                                   tableOutput("manager_team2")
-                                  )
+                                  ),
+                            column(3,
+                                   uiOutput("manager_choice3"),
+                                   tableOutput("manager_team3")
+                            )
                           )
                  )
                           #tableOutput("player_history")))
