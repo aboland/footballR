@@ -224,7 +224,7 @@ shinyServer(function(input, output) {
   # Choice for managers table gameweek
   output$table_gameweek_choice<-renderUI({
     selectInput("table_gw", 
-                label = h5("Gameweek"),
+                label = h3("Weekly Points"),
                 choices = as.list(1:gameweek),
                 selected = gameweek)
   })

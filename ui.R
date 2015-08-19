@@ -43,7 +43,6 @@ shinyUI(fluidPage(
                           ),
                           #tableOutput("personal_table")),
                             column(6,
-                              h3("Current Standings"),
                               uiOutput("table_gameweek_choice"),
                               tableOutput("manager_current_stand"))
                           )
