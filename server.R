@@ -224,13 +224,13 @@ shinyServer(function(input, output) {
   # Choice for managers table gameweek
   output$table_gameweek_choice<-renderUI({
     selectInput("table_gw", 
-                label = h3("Weekly Points"),
+                label = h3("Week"),
                 choices = as.list(1:gameweek),
                 selected = gameweek)
   })
   
   # Create data frame of points
-  own_league_table <- data.frame(Manager = managers, Pts = rep(0, length(managers)), GW = rep(0, length(managers)), Bench = rep(0,length(managers)), Transfers = rep(0,length(managers)))
+  own_league_table <- data.frame(Manager = managers, Total = rep(0, length(managers)), Gameweek = rep(0, length(managers)), Bench = rep(0,length(managers)), Transfers = rep(0,length(managers)))
   
   output$manager_current_stand <- renderTable({
     if(is.null(input$table_gw))
