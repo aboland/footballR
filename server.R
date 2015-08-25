@@ -268,7 +268,8 @@ shinyServer(function(input, output) {
   
   output$manager_current_stand_monthly <- renderTable({
     # Create data frame of points
-    own_league_table_monthly <- data.frame(Manager = managers, Total = rep(0, length(managers)), Bench = rep(0,length(managers)), Transfers = rep(0,length(managers)))
+    own_league_table_monthly <- data.frame(Manager = managers, Total = rep(0, length(managers)), Bench = rep(0,length(managers)), Transfers = rep(0,length(managers)), 
+                                           TransferCost = rep(0,length(managers)), TeamValue = rep(0,length(managers)))
     
     if(is.null(input$table_month))
       return(own_league_table_monthly)
@@ -298,10 +299,15 @@ shinyServer(function(input, output) {
       }else
         return(own_league_table_monthly)
     }
+     
+     for(i in 1:6)
+       own_league_table_monthly[i,6] <- manager_data_history[[i]][[1]][weeks[length(weeks)], c("TV")]
     
     for(j in weeks)
-    for(i in 1:6)
-      own_league_table_monthly[i,2:4] <- own_league_table_monthly[i,2:4] + as.numeric(manager_data_history[[i]][[1]][j, c("GP","PB","TM")])
+    for(i in 1:6){
+      own_league_table_monthly[i,2:5] <- own_league_table_monthly[i,2:5] + as.numeric(manager_data_history[[i]][[1]][j, c("GP","PB","TM","TC")])
+      own_league_table_monthly[i,2] <- own_league_table_monthly[i,2] - as.numeric(manager_data_history[[i]][[1]][j, c("TC")])
+    }
     return(own_league_table_monthly[order(as.numeric(own_league_table_monthly[,2]), decreasing = T),])
     
   }, include.rownames=F, digits=0)
