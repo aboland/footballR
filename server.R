@@ -400,12 +400,14 @@ shinyServer(function(input, output) {
   
   # ---- Display current teams
   
+  managers_sample<- sample(managers,4)
+  
   output$manager_choice1<-renderUI({
     # Reactive input displaying possible managers
     selectInput("manager_ch1", 
                 label = h4("Manager 1"),
                 choices = as.list(managers),
-                selected = sample(managers,1))
+                selected = managers_sample[1])
   })
   
   output$manager_choice2<-renderUI({
@@ -413,7 +415,7 @@ shinyServer(function(input, output) {
     selectInput("manager_ch2", 
                 label = h4("Manager 2"),
                 choices = as.list(managers),
-                selected = sample(managers,1))
+                selected = managers_sample[2])
   })
   
   output$manager_choice3<-renderUI({
@@ -421,7 +423,15 @@ shinyServer(function(input, output) {
     selectInput("manager_ch3", 
                 label = h4("Manager 3"),
                 choices = as.list(managers),
-                selected = sample(managers,1))
+                selected = managers_sample[3])
+  })
+  
+  output$manager_choice4<-renderUI({
+    # Reactive input displaying possible managers
+    selectInput("manager_ch4", 
+                label = h4("Manager 4"),
+                choices = as.list(managers),
+                selected = managers_sample[4])
   })
   
   output$manager_team1 <- renderTable({
@@ -487,6 +497,27 @@ shinyServer(function(input, output) {
     managers_selected
   },include.rownames=F)
     
+  output$manager_team4 <- renderTable({
+    managers_selected <- data.frame(Names=rep(" ",15),Points=rep(" ",15),stringsAsFactors = F)
+    
+    if(is.null(input$manager_ch4))
+      return(managers_selected)
+    if(sum(managers==input$manager_ch4)==0)
+      return(data.frame("No history available"=c(" ")))
+    
+    p_ch <- which(managers==input$manager_ch4)
+    if(input$manager_ch4=="All")
+      p_ch <- 1
+    if(input$manager_ch4=="All")
+      p_ch <- 1
+    
+    for(i in 65:79){
+      managers_selected[i-64,1] <- names(manager_team_history[[p_ch]][[i]])
+      managers_selected[i-64,2] <- gsub(" \n\n ", "",as.character(manager_team_history[[p_ch]][[i]]))
+    }
+    managers_selected
+  },include.rownames=F)
+  
   })
 
 

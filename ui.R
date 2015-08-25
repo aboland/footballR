@@ -69,6 +69,10 @@ shinyUI(fluidPage(
                             column(2,
                                    uiOutput("manager_choice3"),
                                    tableOutput("manager_team3")
+                            ),
+                            column(2,
+                                   uiOutput("manager_choice4"),
+                                   tableOutput("manager_team4")
                             )
                           )
                  )
