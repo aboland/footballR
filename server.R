@@ -14,8 +14,8 @@ managers <- c("Aidan", "Wes", "Sean", "Garry", "Tristan", "Craig")
 ids = c(1693603, 1710052, 1748757, 1904476, 304705, 2176015)
 league_id <- 401525
 monthly_weeks <- data.frame(Month = c("August","September", "October", "November", "December", "January", "February", "March", "April"),
-           Gameweeks = c("1, 2, 3, 4", "5, 6, 7", "8, 9, 10, 11", "12, 13, 14", "15, 16, 17, 18, 19", "21, 22, 23",
-                         "24, 25, 26 27", "28, 29, 30, 31", "32, 33, 34, 35, 36"))
+                            Gameweeks = c("1 2 3 4", "5 6 7", "8 9 10 11", "12 13 14", "15 16 17 18 19", "21 22 23",
+                                          "24 25 26 27", "28 29 30 31", "32 33 34 35 36"))
 
 shinyServer(function(input, output) {
   
@@ -221,7 +221,7 @@ shinyServer(function(input, output) {
   
   
   
-  # Choice for managers table gameweek
+  # ---  Choice for managers table gameweek
   output$table_gameweek_choice<-renderUI({
     selectInput("table_gw", 
                 label = h3("Week"),
@@ -237,11 +237,51 @@ shinyServer(function(input, output) {
       return(own_league_table)
     for(i in 1:6)
       own_league_table[i,2:5] <- manager_data_history[[i]][[1]][input$table_gw, c("OP","GP","PB","TM")]
-    own_league_table[order(as.numeric(own_league_table[,2]), decreasing = T),]
+    own_league_table[order(as.numeric(own_league_table[,3]), decreasing = T),]
   }, include.rownames=F)
   
+  # -----------------------------------------  Monthly Code
+  # ---  Monthly total!! Choice for managers table
   
-  # Create plot of results
+  monthly_numeric <- lapply(sapply(as.character(monthly_weeks[[2]]),strsplit,split=" "),as.numeric)
+  
+  months_current <- as.character(monthly_weeks[[1]][sapply(monthly_numeric,function(x)sum(which(x==gameweek)))!=0])
+  
+  output$table_monthly_choice<-renderUI({
+    selectInput("table_month", 
+                label = h3("Month"),
+                choices = as.list(as.character(monthly_weeks[[1]])),
+                selected = months_current)
+  })
+  
+  #month_ch <- sapply(monthly_numeric,function(x)sum(which(x==1)))
+  
+  # Create data frame of points
+  own_league_table_monthly <- data.frame(Manager = managers, Total = rep(0, length(managers)), Bench = rep(0,length(managers)), Transfers = rep(0,length(managers)))
+  
+  output$manager_current_stand_monthly <- renderTable({
+    if(is.null(input$table_month))
+      return(own_league_table_monthly)
+    
+    weeks <- lapply(sapply(as.character(monthly_weeks[[2]][which(monthly_weeks[[1]]==input$table_month)]),strsplit,split=" "),as.numeric)[[1]]
+   # browser()
+    if(weeks[length(weeks)] > gameweek){
+      if(weeks[1] <= gameweek){
+        weeks <- weeks[1]:gameweek
+      }else
+        return(own_league_table_monthly)
+    }
+    
+    for(j in weeks)
+    for(i in 1:6)
+      own_league_table_monthly[i,2:4] <- own_league_table_monthly[i,2:4] + as.numeric(manager_data_history[[i]][[1]][j, c("GP","PB","TM")])
+    
+    own_league_table_monthly[order(as.numeric(own_league_table_monthly[,2]), decreasing = T),]
+    
+  }, include.rownames=F, digits=0)
+  
+  
+  # -----Create plot of results
   
   output$plot_data_type<-renderUI({
     selectInput("data_dis", 

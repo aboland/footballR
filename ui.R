@@ -52,7 +52,12 @@ shinyUI(fluidPage(
                             column(5,
                             h3("Monthly Gameweeks"),
                             p("The following gameweeks will be used to decide the monthly prizes"),
-                          tableOutput("MonthGW")))),
+                          tableOutput("MonthGW")),
+                          column(5,
+                                 uiOutput("table_monthly_choice"),
+                                 tableOutput("manager_current_stand_monthly")
+                          )
+                          )),
                  tabPanel("Graphs",
                           fluidRow(
                             column(3,
