@@ -9,95 +9,101 @@ shinyUI(fluidPage(
   
   
   # Sidebar ---------------------------------------------------------------------------------------
-  sidebarLayout(
-    
-    sidebarPanel(
-      tabsetPanel(
-        tabPanel("Summary",
-                 h4("League code: 1693603-401525"),
-                 p("The current plan is a pay-in of 15 each. The person with most points within each month will get 10 and the overall
-                   winner will get the left over money. 6 players will give enough money for the monthly prizes. Some gameweeks
-                   occuring at the beginning/end of a month will span two months. The month a gameweek starts in will be the
-                   month that the gameweek counts in. A list of the months and repective gameweeks is displayed on the right."),
-          p(textOutput("n_managers"))),
-        tabPanel("Player Data Controls",
-                 h3("Choose fields to display"),
-                 uiOutput("field1"),
-                 uiOutput("field2"),
-                 uiOutput("field3"),
-                 uiOutput("field4"),
-                 uiOutput("sort_field"))
-        )),
-  
-    # Main panel -------------------------------------------------------------------------------------------------
-    mainPanel(
       tabsetPanel(
         tabPanel("League",
                  tabsetPanel(
-                 tabPanel("Overall",
+                 tabPanel("Summary",
                           #p("This takes the data straight from the web, once I get it set up properly it should run the monthly leagues automatically."),
-                          fluidRow(
-                            column(6,
+                          
+                          sidebarLayout(
+                            sidebarPanel(
+                                   h4("League code: 1693603-401525"),
+                                   p("The current plan is a pay-in of 15 each. The person with most points within each month will get 10 and the overall
+                                     winner will get the left over money. 6 players will give enough money for the monthly prizes. Some gameweeks
+                                     occuring at the beginning/end of a month will span two months. The month a gameweek starts in will be the
+                                     month that the gameweek counts in. A list of the months and repective gameweeks is displayed on the right."),
+                                   p(textOutput("n_managers"))
+                            ),
+                            mainPanel(
                               h3("Fantasy Table (Official)"),
                               tableOutput("personal_table2")
-                          ),
-                          #tableOutput("personal_table")),
-                            column(6,
-                              uiOutput("table_gameweek_choice"),
-                              tableOutput("manager_current_stand"))
                           )
-                 ),
-                 tabPanel("Monthly",
+                 )),
+                 tabPanel("Tables",
                           fluidRow(
+                            column(width = 4, offset = 1,
+                                   h3("Monthly Gameweeks"),
+                                   p("The following gameweeks will be used to decide the monthly prizes"),
+                                   tableOutput("MonthGW")),
                             column(5,
-                            h3("Monthly Gameweeks"),
-                            p("The following gameweeks will be used to decide the monthly prizes"),
-                          tableOutput("MonthGW")),
-                          column(5,
-                                 uiOutput("table_monthly_choice"),
-                                 tableOutput("manager_current_stand_monthly")
-                          )
+                                   h3("Monthly Tables"),
+                                   fluidRow(
+                                     column(4,
+                                   uiOutput("table_monthly_choice")),
+                                   column(4,
+                                   uiOutput("table_gameweek_choice"))
+                                   ),
+                                   tableOutput("manager_current_stand_monthly"))
                           )),
                  tabPanel("Graphs",
                           fluidRow(
-                            column(3,
+                            column(width = 3, offset = 1,
                                    uiOutput("plot_data_type")),
                             column(4,
-                                   uiOutput("plot_gw_range"))
-                            ),
+                                   uiOutput("plot_gw_range")),
+                            column(3,
+                                 uiOutput("graph_monthly_choice"))
+                          ),
                           plotOutput("points_plot")
                  ),
                  tabPanel("Compare Teams",
                           fluidRow(
-                            column(3,
+                            column(width = 2, offset = 1,
                                     uiOutput("manager_choice1"),
                                     tableOutput("manager_team1")
                             ),
-                            column(3,
+                            column(2,
                                   uiOutput("manager_choice2"),
                                   tableOutput("manager_team2")
                                   ),
-                            column(3,
+                            column(2,
                                    uiOutput("manager_choice3"),
                                    tableOutput("manager_team3")
                             )
                           )
                  )
-                          #tableOutput("player_history")))
-                 )
-        ),
+        )),
         tabPanel("Fixtures/Results",
-                 uiOutput("gameweek_choice"),
-                 tableOutput("fix_res")),
+                 fluidRow(
+                   column(width = 6, offset =1 ,
+                          uiOutput("gameweek_choice"),
+                          tableOutput("fix_res")
+                   ),
+                   column(4,
+                          h3("League Table"),
+                          tableOutput("personal_table")
+                   )
+                   )
+                 
+        ),
         
         tabPanel("Player Data",
+                 sidebarLayout(
+                   sidebarPanel(h3("Player Data Controls"),
+                          h4("Choose fields to display"),
+                          uiOutput("field1"),
+                          uiOutput("field2"),
+                          uiOutput("field3"),
+                          uiOutput("field4"),
+                          uiOutput("sort_field")),
+                   mainPanel(
                  fluidRow(
                    column(3, uiOutput("team_choice")),
                    column(3, uiOutput("position_choice")),
                    column(3, uiOutput("cost_choice"))),
-                 tableOutput("data_display")
+                 tableOutput("data_display"))
                  )
         )
-      )
-    )
-))
+      
+    
+)))
