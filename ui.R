@@ -104,7 +104,7 @@ shinyUI(fluidPage(
                  fluidRow(
                    column(3, uiOutput("team_choice")),
                    column(3, uiOutput("position_choice")),
-                   column(3, uiOutput("cost_choice"))),
+                   column(5, uiOutput("cost_choice"))),
                  tableOutput("data_display"))
                  )
         )

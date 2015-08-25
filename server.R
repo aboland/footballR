@@ -280,10 +280,16 @@ shinyServer(function(input, output) {
       }else{
         weeks <- input$table_gw
       }
-      for(j in weeks)
-        for(i in 1:6)
-          own_league_table_monthly[i,2:4] <- own_league_table_monthly[i,2:4] + as.numeric(manager_data_history[[i]][[1]][j, c("GP","PB","TM")])
-        return(own_league_table_monthly[order(as.numeric(own_league_table_monthly[,2]), decreasing = T),])
+      
+        for(i in 1:6){
+          own_league_table_monthly[i,6] <- manager_data_history[[i]][[1]][weeks[length(weeks)], c("TV")]
+          for(j in weeks){
+            own_league_table_monthly[i,2:5] <- own_league_table_monthly[i,2:5] + as.numeric(manager_data_history[[i]][[1]][j, c("GP","PB","TM","TC")])
+            own_league_table_monthly[i,2] <- own_league_table_monthly[i,2] - as.numeric(manager_data_history[[i]][[1]][j, c("TC")])
+            
+          }
+        }
+          return(own_league_table_monthly[order(as.numeric(own_league_table_monthly[,2]), decreasing = T),])
     }
     
     
@@ -299,14 +305,13 @@ shinyServer(function(input, output) {
       }else
         return(own_league_table_monthly)
     }
-     
-     for(i in 1:6)
-       own_league_table_monthly[i,6] <- manager_data_history[[i]][[1]][weeks[length(weeks)], c("TV")]
-    
-    for(j in weeks)
+
     for(i in 1:6){
-      own_league_table_monthly[i,2:5] <- own_league_table_monthly[i,2:5] + as.numeric(manager_data_history[[i]][[1]][j, c("GP","PB","TM","TC")])
-      own_league_table_monthly[i,2] <- own_league_table_monthly[i,2] - as.numeric(manager_data_history[[i]][[1]][j, c("TC")])
+      own_league_table_monthly[i,6] <- manager_data_history[[i]][[1]][weeks[length(weeks)], c("TV")]
+      for(j in weeks){
+        own_league_table_monthly[i,2:5] <- own_league_table_monthly[i,2:5] + as.numeric(manager_data_history[[i]][[1]][j, c("GP","PB","TM","TC")])
+        own_league_table_monthly[i,2] <- own_league_table_monthly[i,2] - as.numeric(manager_data_history[[i]][[1]][j, c("TC")])
+      }
     }
     return(own_league_table_monthly[order(as.numeric(own_league_table_monthly[,2]), decreasing = T),])
     
@@ -318,7 +323,7 @@ shinyServer(function(input, output) {
   output$plot_data_type<-renderUI({
     selectInput("data_dis", 
                 label = h5("Data"),
-                choices = as.list(c("Overall","Gameweek","Bench")),
+                choices = as.list(c("Overall","Gameweek","Bench","Transfers")),
                 selected = "Overall")
   })
   
@@ -370,6 +375,8 @@ shinyServer(function(input, output) {
       return("GP")
     if(input$data_dis == "Bench")
       return("PB")
+    if(input$data_dis == "Transfers")
+      return("TM")
   })
   
   output$points_plot <- renderPlot({
