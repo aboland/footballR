@@ -9,7 +9,7 @@ shinyUI(fluidPage(
   
   
   # Sidebar ---------------------------------------------------------------------------------------
-      tabsetPanel(
+      navlistPanel(widths =c(2, 10),
         tabPanel("League",
                  tabsetPanel(
                  tabPanel("Summary",
