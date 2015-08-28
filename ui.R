@@ -12,6 +12,22 @@ shinyUI(fluidPage(
       navlistPanel(widths =c(2, 10),
         tabPanel("League",
                  tabsetPanel(
+                   tabPanel("Standings",
+                            fluidRow(
+                              column(width = 4,
+                                     h3("Monthly Gameweeks"),
+                                     p("The following gameweeks will be used to decide the monthly prizes"),
+                                     tableOutput("MonthGW")),
+                              column(8,
+                                     h3("Fantasy Table"),
+                                     fluidRow(
+                                       column(4,
+                                              uiOutput("table_monthly_choice")),
+                                       column(4,
+                                              uiOutput("table_gameweek_choice"))
+                                     ),
+                                     tableOutput("manager_current_stand_monthly"))
+                            )),
                  tabPanel("Summary",
                           #p("This takes the data straight from the web, once I get it set up properly it should run the monthly leagues automatically."),
                           
@@ -29,22 +45,6 @@ shinyUI(fluidPage(
                               tableOutput("personal_table2")
                           )
                  )),
-                 tabPanel("Tables",
-                          fluidRow(
-                            column(width = 4, offset = 1,
-                                   h3("Monthly Gameweeks"),
-                                   p("The following gameweeks will be used to decide the monthly prizes"),
-                                   tableOutput("MonthGW")),
-                            column(7,
-                                   h3("Monthly Tables"),
-                                   fluidRow(
-                                     column(4,
-                                   uiOutput("table_monthly_choice")),
-                                   column(4,
-                                   uiOutput("table_gameweek_choice"))
-                                   ),
-                                   tableOutput("manager_current_stand_monthly"))
-                          )),
                  tabPanel("Graphs",
                           fluidRow(
                             column(width = 3, offset = 1,
