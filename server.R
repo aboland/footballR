@@ -138,7 +138,7 @@ shinyServer(function(input, output) {
             
           }
         }
-          return(own_league_table_monthly[order(as.numeric(own_league_table_monthly[,2]), decreasing = T),])
+          return(own_league_table_monthly[order(as.numeric(own_league_table_monthly[,"Total"]), decreasing = T),])
     }
     
     
