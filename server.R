@@ -12,7 +12,7 @@ load("current_web_data_tidy.RData")
 
 managers_id <- data.frame(names = c("Aidan", "Wes", "Sean", "Garry", "Tristan", "Craig", "Keith"),
                            ids = c(1693603, 1710052, 1748757, 1904476, 304705, 2176015, 509881))
-
+league_id <- 401525
 page_tables<-readHTMLTable(paste0("http://fantasy.premierleague.com/my-leagues/",league_id,"/standings/"))
 managers <- as.character(page_tables[[1]]$Manager[order(as.character(page_tables[[1]]$Manager))])
 team_names <- as.character(page_tables[[1]]$Team[order(as.character(page_tables[[1]]$Manager))])
