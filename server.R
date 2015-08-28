@@ -25,7 +25,8 @@ for(i in 1:length(managers)){
     noid <- c(noid,i)  # Mark manager without ID
   }
 }
-managers <- managers[-noid]  # Remove managers without an id
+if(length(noid)>0)
+  managers <- managers[-noid]  # Remove managers without an id
 
 monthly_weeks <- data.frame(Month = c("August","September", "October", "November", "December", "January", "February", "March", "April"),
                             Gameweeks = c("1 2 3 4", "5 6 7", "8 9 10 11", "12 13 14", "15 16 17 18 19", "21 22 23",
