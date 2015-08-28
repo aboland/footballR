@@ -391,7 +391,7 @@ shinyServer(function(input, output) {
     
     
     my_ylim <- range(as.numeric(manager_data_history[[1]][[1]][,data_plot_choice()]))
-    for(i in 2:6){
+    for(i in 2:length(managers)){
       my_ylim[1] <- ifelse(min(as.numeric(manager_data_history[[i]][[1]][gw_min:gw_max,data_plot_choice()])) < my_ylim[1],
                         min(as.numeric(manager_data_history[[i]][[1]][gw_min:gw_max,data_plot_choice()])),
                         my_ylim[1])
@@ -403,7 +403,7 @@ shinyServer(function(input, output) {
          ylim= my_ylim, ylab = "Points", xlab="Gameweek", xaxt="n",
          main=input$data_dis)
     axis(1,at=1:nrow(manager_data_history[[1]][[1]]))
-    for(i in 1:6)
+    for(i in 1:length(managers))
       lines(manager_data_history[[i]][[1]][gw_min:gw_max,data_plot_choice()], type="b", col = i)
     legend("topleft", managers, col=1:length(managers), lty=1)
   })
