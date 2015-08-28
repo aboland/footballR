@@ -10,9 +10,23 @@ library(XML)
 #load("current_web_data.RData")
 load("current_web_data_tidy.RData")
 
-managers <- c("Aidan", "Wes", "Sean", "Garry", "Tristan", "Craig", "Keith")
-ids = c(1693603, 1710052, 1748757, 1904476, 304705, 2176015, 509881)
-league_id <- 401525
+managers_id <- data.frame(names = c("Aidan", "Wes", "Sean", "Garry", "Tristan", "Craig", "Keith"),
+                           ids = c(1693603, 1710052, 1748757, 1904476, 304705, 2176015, 509881))
+
+page_tables<-readHTMLTable(paste0("http://fantasy.premierleague.com/my-leagues/",league_id,"/standings/"))
+managers <- as.character(page_tables[[1]]$Manager[order(as.character(page_tables[[1]]$Manager))])
+team_names <- as.character(page_tables[[1]]$Team[order(as.character(page_tables[[1]]$Manager))])
+
+ids <- noid <- NULL
+for(i in 1:length(managers)){
+  if(sum(strsplit(managers[i],split=" ")[[1]][1] == managers_id$names)!=0){  # Check for a valid id number
+    ids <- c(ids, managers_id$ids[which(strsplit(managers[i],split=" ")[[1]][1] == managers_id$names)])
+  }else{
+    noid <- c(noid,i)  # Mark manager without ID
+  }
+}
+managers <- managers[-noid]  # Remove managers without an id
+
 monthly_weeks <- data.frame(Month = c("August","September", "October", "November", "December", "January", "February", "March", "April"),
                             Gameweeks = c("1 2 3 4", "5 6 7", "8 9 10 11", "12 13 14", "15 16 17 18 19", "21 22 23",
                                           "24 25 26 27", "28 29 30 31", "32 33 34 35 36"))
@@ -133,7 +147,6 @@ shinyServer(function(input, output) {
   
   # ------------------ Our table
   
-  page_tables<-readHTMLTable(paste0("http://fantasy.premierleague.com/my-leagues/",league_id,"/standings/"))
   output$personal_table <- renderTable({
     #page_tables[[1]]  # Table 1 will give standing!
     page_tables[[2]]  # Table 2 gives people in the league
@@ -268,7 +281,7 @@ shinyServer(function(input, output) {
   
   output$manager_current_stand_monthly <- renderTable({
     # Create data frame of points
-    own_league_table_monthly <- data.frame(Manager = managers, Total = rep(0, length(managers)), Bench = rep(0,length(managers)), Transfers = rep(0,length(managers)), 
+    own_league_table_monthly <- data.frame(Team = team_names, Manager = managers, Total = rep(0, length(managers)), Bench = rep(0,length(managers)), Transfers = rep(0,length(managers)), 
                                            TransferCost = rep(0,length(managers)), TeamValue = rep(0,length(managers)))
     
     if(is.null(input$table_month))
@@ -282,10 +295,10 @@ shinyServer(function(input, output) {
       }
       
         for(i in 1:length(managers)){
-          own_league_table_monthly[i,6] <- manager_data_history[[i]][[1]][weeks[length(weeks)], c("TV")]
+          own_league_table_monthly[i,"TeamValue"] <- manager_data_history[[i]][[1]][weeks[length(weeks)], c("TV")]
           for(j in weeks){
-            own_league_table_monthly[i,2:5] <- own_league_table_monthly[i,2:5] + as.numeric(manager_data_history[[i]][[1]][j, c("GP","PB","TM","TC")])
-            own_league_table_monthly[i,2] <- own_league_table_monthly[i,2] - as.numeric(manager_data_history[[i]][[1]][j, c("TC")])
+            own_league_table_monthly[i,c("Total", "Bench", "Transfers", "TransferCost")] <- own_league_table_monthly[i,c("Total", "Bench", "Transfers", "TransferCost")] + as.numeric(manager_data_history[[i]][[1]][j, c("GP","PB","TM","TC")])
+            own_league_table_monthly[i,"Total"] <- own_league_table_monthly[i,"Total"] - as.numeric(manager_data_history[[i]][[1]][j, c("TC")])
             
           }
         }
@@ -307,13 +320,13 @@ shinyServer(function(input, output) {
     }
 
     for(i in 1:length(managers)){
-      own_league_table_monthly[i,6] <- manager_data_history[[i]][[1]][weeks[length(weeks)], c("TV")]
+      own_league_table_monthly[i,"TeamValue"] <- manager_data_history[[i]][[1]][weeks[length(weeks)], c("TV")]
       for(j in weeks){
-        own_league_table_monthly[i,2:5] <- own_league_table_monthly[i,2:5] + as.numeric(manager_data_history[[i]][[1]][j, c("GP","PB","TM","TC")])
-        own_league_table_monthly[i,2] <- own_league_table_monthly[i,2] - as.numeric(manager_data_history[[i]][[1]][j, c("TC")])
+        own_league_table_monthly[i,c("Total", "Bench", "Transfers", "TransferCost")] <- own_league_table_monthly[i,c("Total", "Bench", "Transfers", "TransferCost")] + as.numeric(manager_data_history[[i]][[1]][j, c("GP","PB","TM","TC")])
+        own_league_table_monthly[i,"Total"] <- own_league_table_monthly[i,"Total"] - as.numeric(manager_data_history[[i]][[1]][j, c("TC")])
       }
     }
-    return(own_league_table_monthly[order(as.numeric(own_league_table_monthly[,2]), decreasing = T),])
+    return(own_league_table_monthly[order(as.numeric(own_league_table_monthly[,"Total"]), decreasing = T),])
     
   }, include.rownames=F, digits=0)
   
