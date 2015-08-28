@@ -21,9 +21,9 @@ shinyUI(fluidPage(
                               column(8,
                                      h3("Fantasy Table"),
                                      fluidRow(
-                                       column(4,
+                                       column(3,
                                               uiOutput("table_monthly_choice")),
-                                       column(4,
+                                       column(3,
                                               uiOutput("table_gameweek_choice"))
                                      ),
                                      tableOutput("manager_current_stand_monthly"))
@@ -47,11 +47,11 @@ shinyUI(fluidPage(
                  )),
                  tabPanel("Graphs",
                           fluidRow(
-                            column(width = 3, offset = 1,
+                            column(width = 2, offset = 1,
                                    uiOutput("plot_data_type")),
                             column(4,
                                    uiOutput("plot_gw_range")),
-                            column(3,
+                            column(2,
                                  uiOutput("graph_monthly_choice"))
                           ),
                           plotOutput("points_plot")
