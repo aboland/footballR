@@ -10,8 +10,8 @@ library(XML)
 #load("current_web_data.RData")
 load("current_web_data_tidy.RData")
 
-managers <- c("Aidan", "Wes", "Sean", "Garry", "Tristan", "Craig")
-ids = c(1693603, 1710052, 1748757, 1904476, 304705, 2176015)
+managers <- c("Aidan", "Wes", "Sean", "Garry", "Tristan", "Craig", "Keith")
+ids = c(1693603, 1710052, 1748757, 1904476, 304705, 2176015, 509881)
 league_id <- 401525
 monthly_weeks <- data.frame(Month = c("August","September", "October", "November", "December", "January", "February", "March", "April"),
                             Gameweeks = c("1 2 3 4", "5 6 7", "8 9 10 11", "12 13 14", "15 16 17 18 19", "21 22 23",
