@@ -172,7 +172,7 @@ shinyServer(function(input, output) {
   output$plot_data_type<-renderUI({
     selectInput("data_dis", 
                 label = h5("Data"),
-                choices = as.list(c("Overall","Gameweek","Bench","Transfers")),
+                choices = as.list(c("Overall", "Gameweek", "Bench", "Transfers", "Team Value")),
                 selected = "Overall")
   })
   
@@ -236,6 +236,8 @@ shinyServer(function(input, output) {
       return("PB")
     if(input$data_dis == "Transfers")
       return("TM")
+    if(input$data_dis == "Team Value")
+      return("TV")
   })
   
   output$points_plot <- renderPlot({
@@ -258,12 +260,14 @@ shinyServer(function(input, output) {
                            max(as.numeric(current_stand_plot()[[i]][[1]][gw_min:gw_max,data_plot_choice()])),
                            my_ylim[2])
     }
-    plot(current_stand_plot()[[1]][[1]][gw_min:gw_max, data_plot_choice()], type="n", 
+    plot(gw_min:gw_max, current_stand_plot()[[1]][[1]][gw_min:gw_max, data_plot_choice()], type="n", 
          ylim= my_ylim, ylab = "Points", xlab="Gameweek", xaxt="n",
          main=input$data_dis)
-    axis(1,at=1:nrow(current_stand_plot()[[1]][[1]]))
+    #browser()
+    #axis(1,at=1:nrow(current_stand_plot()[[1]][[1]]),labels=gw_min:gw_max)
+    axis(1,at=gw_min:gw_max,labels=gw_min:gw_max)
     for(i in 1:length(managers))
-      lines(current_stand_plot()[[i]][[1]][gw_min:gw_max,data_plot_choice()], type="b", col = i)
+      lines(gw_min:gw_max, current_stand_plot()[[i]][[1]][gw_min:gw_max,data_plot_choice()], type="b", col = i)
     legend("topleft", managers, col=1:length(managers), lty=1)
     }else{
       plot(c(0,0), type="n", 
@@ -276,21 +280,23 @@ shinyServer(function(input, output) {
   
   # Table for plot!!!!
   current_stand_plot <- reactive({
-    # Create data frame of points
     
+    manager_data_history2 <- manager_data_history
+    if(data_plot_choice() == "TV")
+      for(i in 1:length(managers))
+        manager_data_history2[[i]][[1]][,"TV"] <- as.numeric(gsub("£|m","",manager_data_history2[[i]][[1]][,"TV"]))
+      
     if(is.null(input$plot_month)||input$plot_month=="All"){
-      return(manager_data_history)
+      return(manager_data_history2)
     }else{
       if(input$plot_month=="All"){
-        return(manager_data_history)
+        return(manager_data_history2)
       }else if(as.numeric(strsplit(as.character(monthly_weeks[[2]][which(monthly_weeks[[1]]==input$plot_month)]),split=" ")[[1]][1]) > gameweek){
-        return(manager_data_history)
+        return(manager_data_history2)
       }else{
-        #return(manager_data_history)
-        manager_data_history2 <- manager_data_history
         prev_month <- as.numeric(strsplit(as.character(monthly_weeks[[2]][which(monthly_weeks[[1]]==input$plot_month)]),split=" ")[[1]][1]) - 1
         if(prev_month == 0){
-          return(manager_data_history)
+          return(manager_data_history2)
         }else{
           #browser()
         for(i in 1:length(managers))
