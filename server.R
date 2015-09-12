@@ -283,6 +283,8 @@ shinyServer(function(input, output) {
     }else{
       if(input$plot_month=="All"){
         return(manager_data_history)
+      }else if(as.numeric(strsplit(as.character(monthly_weeks[[2]][which(monthly_weeks[[1]]==input$plot_month)]),split=" ")[[1]][1]) > gameweek){
+        return(manager_data_history)
       }else{
         #return(manager_data_history)
         manager_data_history2 <- manager_data_history
