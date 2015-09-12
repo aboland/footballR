@@ -99,8 +99,8 @@ shinyServer(function(input, output) {
     if(is.null(input$table_month)||input$table_month=="All"){
       weeks_avail = as.list(c("All",1:gameweek))
     }else{
-      monthly_weeks <- lapply(sapply(as.character(monthly_weeks[[2]][which(monthly_weeks[[1]]==input$table_month)]),strsplit,split=" "),as.numeric)[[1]]
-      weeks_avail = as.list(c("All", monthly_weeks))
+      monthly_weeks_table <- lapply(sapply(as.character(monthly_weeks[[2]][which(monthly_weeks[[1]]==input$table_month)]),strsplit,split=" "),as.numeric)[[1]]
+      weeks_avail = as.list(c("All", monthly_weeks_table))
     }
     
     selectInput("table_gw", 
@@ -178,18 +178,22 @@ shinyServer(function(input, output) {
   
   
   output$graph_monthly_choice<-renderUI({
-    selectInput("table_month", 
+    selectInput("plot_month", 
                 label = h5("Month"),
                 choices = as.list(c("All",as.character(monthly_weeks[[1]]))),
                 selected = "All")
   })
   
   output$plot_gw_range<-renderUI({
-    if(is.null(input$table_month)||input$table_month=="All"){
+    if(is.null(input$plot_month)||input$plot_month=="All"){
       weeks_avail = 1:gameweek
     }else{
-      monthly_weeks <- lapply(sapply(as.character(monthly_weeks[[2]][which(monthly_weeks[[1]]==input$table_month)]),strsplit,split=" "),as.numeric)[[1]]
-      weeks_avail = monthly_weeks
+      if(input$plot_month=="All"){
+        weeks_avail = 1:gameweek
+      }else{
+      monthly_weeks_plot <- lapply(sapply(as.character(monthly_weeks[[2]][which(monthly_weeks[[1]]==input$plot_month)]),strsplit,split=" "),as.numeric)[[1]]
+      weeks_avail = monthly_weeks_plot
+      }
     }
       if(weeks_avail[1] > gameweek){
         week_min <- 1
@@ -201,11 +205,17 @@ shinyServer(function(input, output) {
       }else{
         week_max <- weeks_avail[length(weeks_avail)]
       }
-    
-    sliderInput("graph_range", 
-                label = h5("Gameweeks"),
-                min = week_min, max = week_max,
-                value = c(week_min,week_max), step=1)
+    if(week_min==week_max){
+      sliderInput("graph_range", 
+                  label = h5("Gameweeks"),
+                  min = 1, max = week_max,
+                  value = c(week_min,week_max), step=1)
+    }else{
+      sliderInput("graph_range", 
+                  label = h5("Gameweeks"),
+                  min = week_min, max = week_max,
+                  value = c(week_min,week_max), step=1)
+    }
   })
   
 #   output$plot_gw_range<-renderUI({
@@ -238,25 +248,58 @@ shinyServer(function(input, output) {
       gw_max<-input$graph_range[2]
 
     
-    
-    my_ylim <- range(as.numeric(manager_data_history[[1]][[1]][,data_plot_choice()]))
+    if(!is.null(current_stand_plot())){
+    my_ylim <- range(as.numeric(current_stand_plot()[[1]][[1]][,data_plot_choice()]))
     for(i in 2:length(managers)){
-      my_ylim[1] <- ifelse(min(as.numeric(manager_data_history[[i]][[1]][gw_min:gw_max,data_plot_choice()])) < my_ylim[1],
-                        min(as.numeric(manager_data_history[[i]][[1]][gw_min:gw_max,data_plot_choice()])),
-                        my_ylim[1])
-      my_ylim[2] <- ifelse(max(as.numeric(manager_data_history[[i]][[1]][gw_min:gw_max,data_plot_choice()])) > my_ylim[2],
-                        max(as.numeric(manager_data_history[[i]][[1]][gw_min:gw_max,data_plot_choice()])),
-                        my_ylim[2])
+      my_ylim[1] <- ifelse(min(as.numeric(current_stand_plot()[[i]][[1]][gw_min:gw_max,data_plot_choice()])) < my_ylim[1],
+                           min(as.numeric(current_stand_plot()[[i]][[1]][gw_min:gw_max,data_plot_choice()])),
+                           my_ylim[1])
+      my_ylim[2] <- ifelse(max(as.numeric(current_stand_plot()[[i]][[1]][gw_min:gw_max,data_plot_choice()])) > my_ylim[2],
+                           max(as.numeric(current_stand_plot()[[i]][[1]][gw_min:gw_max,data_plot_choice()])),
+                           my_ylim[2])
     }
-    plot(manager_data_history[[1]][[1]][gw_min:gw_max, data_plot_choice()], type="n", 
+    plot(current_stand_plot()[[1]][[1]][gw_min:gw_max, data_plot_choice()], type="n", 
          ylim= my_ylim, ylab = "Points", xlab="Gameweek", xaxt="n",
          main=input$data_dis)
-    axis(1,at=1:nrow(manager_data_history[[1]][[1]]))
+    axis(1,at=1:nrow(current_stand_plot()[[1]][[1]]))
     for(i in 1:length(managers))
-      lines(manager_data_history[[i]][[1]][gw_min:gw_max,data_plot_choice()], type="b", col = i)
+      lines(current_stand_plot()[[i]][[1]][gw_min:gw_max,data_plot_choice()], type="b", col = i)
     legend("topleft", managers, col=1:length(managers), lty=1)
+    }else{
+      plot(c(0,0), type="n", 
+           ylim= c(1,100),xlim=c(1,gameweek), ylab = "Points", xlab="Gameweek", xaxt="n",
+           main=input$data_dis)
+    }
   })
     
+  
+  
+  # Table for plot!!!!
+  current_stand_plot <- reactive({
+    # Create data frame of points
+    
+    if(is.null(input$plot_month)||input$plot_month=="All"){
+      return(manager_data_history)
+    }else{
+      if(input$plot_month=="All"){
+        return(manager_data_history)
+      }else{
+        #return(manager_data_history)
+        manager_data_history2 <- manager_data_history
+        prev_month <- as.numeric(strsplit(as.character(monthly_weeks[[2]][which(monthly_weeks[[1]]==input$plot_month)]),split=" ")[[1]][1]) - 1
+        if(prev_month == 0){
+          return(manager_data_history)
+        }else{
+          #browser()
+        for(i in 1:length(managers))
+          manager_data_history2[[i]][[1]][,"OP"] <- as.numeric(manager_data_history2[[i]][[1]][,"OP"]) - as.numeric(manager_data_history2[[i]][[1]][prev_month,"OP"])
+        return(manager_data_history2)
+        }
+      }
+    }
+  })
+  
+  
   
   
   
