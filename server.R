@@ -297,7 +297,7 @@ shinyServer(function(input, output) {
       #browser()
       #my_ylim <- range(as.numeric(current_stand_plot()[[1]][[1]][,data_plot_choice()]))
       my_ylim <- c(1000,-10)
-      for(i in 2:length(managers)){
+      for(i in 1:length(managers)){
         my_ylim[1] <- ifelse(min(as.numeric(current_stand_plot()[[i]][[1]][ylim_range, data_plot_choice()])) < my_ylim[1],
                              min(as.numeric(current_stand_plot()[[i]][[1]][ylim_range, data_plot_choice()])),
                              my_ylim[1])
