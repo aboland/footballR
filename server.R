@@ -208,13 +208,20 @@ shinyServer(function(input, output) {
     if(week_min==week_max){
       sliderInput("graph_range", 
                   label = h5("Gameweeks"),
-                  min = 1, max = week_max,
-                  value = c(week_min,week_max), step=1)
+                  min = week_min - 0.1, max = week_max,
+                  value = c(week_min,week_max), step=1, round=T)
     }else{
-      sliderInput("graph_range", 
-                  label = h5("Gameweeks"),
-                  min = week_min, max = week_max,
-                  value = c(week_min,week_max), step=1)
+      #if(input$animate == TRUE){
+      #  sliderInput("graph_range", 
+      #            label = h5("Gameweeks"),
+      #            min = week_min, max = week_max,
+      #            value = c(week_min,week_max), step=1, animate=T)
+      #}else{
+        sliderInput("graph_range", 
+                    label = h5("Gameweeks"),
+                    min = week_min, max = week_max,
+                    value = c(week_min,week_max), step=1)
+      #}
     }
   })
   
@@ -265,8 +272,11 @@ shinyServer(function(input, output) {
     }else{ 
         week_min <- weeks_avail[1]
         }
-    if(weeks_avail[length(weeks_avail)] > gameweek){ week_max <- gameweek
-    }else{ week_max <- weeks_avail[length(weeks_avail)]}
+    if(weeks_avail[length(weeks_avail)] > gameweek){ 
+      week_max <- gameweek
+    }else{ 
+      week_max <- weeks_avail[length(weeks_avail)]
+      }
     
     
     
@@ -274,12 +284,12 @@ shinyServer(function(input, output) {
       ylim_range <- gw_min
       my_xlim <- c(gw_min - 1, gw_max + 1)
     }else{
-      if(input$reactive_lim == TRUE){
-        ylim_range <- gw_min:gw_max
-        my_xlim <- c(gw_min, gw_max)
-      }else{
+      if(input$reactive_lim == FALSE){
         ylim_range <- week_min:week_max
         my_xlim <- c(week_min, week_max)
+      }else{
+        ylim_range <- gw_min:gw_max
+        my_xlim <- c(gw_min, gw_max)
       }
     }
     
@@ -295,7 +305,7 @@ shinyServer(function(input, output) {
                              max(as.numeric(current_stand_plot()[[i]][[1]][ylim_range, data_plot_choice()])),
                              my_ylim[2])
       }
-      if(ylim_range[1] == 1 || data_plot_choice() == "GP" || input$reactive_lim == FALSE)
+      if(ylim_range[1] == 1 || data_plot_choice() == "GP")# || input$reactive_lim == FALSE)
         my_ylim[1] = 0
       
       plot(gw_min:gw_max, current_stand_plot()[[1]][[1]][gw_min:gw_max, data_plot_choice()], type = "n", 
@@ -303,10 +313,11 @@ shinyServer(function(input, output) {
            xaxt ="n", main = input$data_dis)
       
       #axis(1,at=1:nrow(current_stand_plot()[[1]][[1]]),labels=gw_min:gw_max)
-      if(input$reactive_lim == TRUE)
-        axis(1, at = gw_min:gw_max, labels = gw_min:gw_max)
-      else
+      #if(input$reactive_lim == TRUE)
+      if(input$reactive_lim == FALSE)
         axis(1, at = week_min:week_max, labels = week_min:week_max)
+      else
+        axis(1, at = gw_min:gw_max, labels = gw_min:gw_max)
       
       for(i in 1:length(managers))
         lines(gw_min:gw_max, current_stand_plot()[[i]][[1]][gw_min:gw_max, data_plot_choice()], type = "b", col = i)

@@ -55,7 +55,10 @@ shinyUI(fluidPage(
                                  uiOutput("graph_monthly_choice")),
                             column(2,
                                    h5("Reactive Boundaries"),
-                                   checkboxInput("reactive_lim", label = "Yes", value = FALSE))
+                                   checkboxInput("reactive_lim","Yes", value = FALSE)
+                                   #checkboxInput("animate","Animate", value = FALSE)
+                                   
+                                   )
                           ),
                           plotOutput("points_plot")
                  ),
