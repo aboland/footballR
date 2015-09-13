@@ -1,6 +1,5 @@
 # Fantasy Football server script
 
-
 library(shiny)
 library(plyr)
 library(XML)
@@ -237,8 +236,8 @@ shinyServer(function(input, output) {
       return("PB")
     if(input$data_dis == "Transfers")
       return("TM")
-    if(input$data_dis == "Team Value")
-      return("TV")
+    ##if(input$data_dis == "Team Value")
+    ##  return("TV")
   })
   
   output$points_plot <- renderPlot({
@@ -264,7 +263,6 @@ shinyServer(function(input, output) {
     plot(gw_min:gw_max, current_stand_plot()[[1]][[1]][gw_min:gw_max, data_plot_choice()], type="n", 
          ylim= my_ylim, ylab = "Points", xlab="Gameweek", xaxt="n",
          main=input$data_dis)
-    #browser()
     #axis(1,at=1:nrow(current_stand_plot()[[1]][[1]]),labels=gw_min:gw_max)
     axis(1,at=gw_min:gw_max,labels=gw_min:gw_max)
     for(i in 1:length(managers))
@@ -283,9 +281,9 @@ shinyServer(function(input, output) {
   current_stand_plot <- reactive({
     
     manager_data_history2 <- manager_data_history
-    if(data_plot_choice() == "TV")
-      for(i in 1:length(managers))
-        manager_data_history2[[i]][[1]][,"TV"] <- as.numeric(gsub("£|m","",manager_data_history2[[i]][[1]][,"TV"]))
+    ##if(data_plot_choice() == "TV")
+    ##  for(i in 1:length(managers))
+    ##    manager_data_history2[[i]][[1]][,"TV"] <- as.numeric(gsub("£|m","",manager_data_history2[[i]][[1]][,"TV"]))
       
     if(is.null(input$plot_month)||input$plot_month=="All"){
       return(manager_data_history2)
