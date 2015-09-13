@@ -280,10 +280,10 @@ shinyServer(function(input, output) {
     
     
     
-    if(gw_min==gw_max){
-      ylim_range <- gw_min
-      my_xlim <- c(gw_min - 1, gw_max + 1)
-    }else{
+    #if(gw_min==gw_max){
+    #  ylim_range <- gw_min
+    #  my_xlim <- c(gw_min - 1, gw_max + 1)
+    #}else{
       if(input$reactive_lim == FALSE){
         ylim_range <- week_min:week_max
         my_xlim <- c(week_min, week_max)
@@ -291,7 +291,7 @@ shinyServer(function(input, output) {
         ylim_range <- gw_min:gw_max
         my_xlim <- c(gw_min, gw_max)
       }
-    }
+    #}
     
     if(!is.null(current_stand_plot())){
       #browser()
