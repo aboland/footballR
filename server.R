@@ -349,7 +349,7 @@ shinyServer(function(input, output) {
   })
   
   output$manager_team1 <- renderTable({
-    managers_selected <- data.frame(Names=rep(" ",15),Points=rep(" ",15),Mins = rep(" ",15),stringsAsFactors = F)
+    managers_selected <- data.frame(Names=rep(" ",15),Points=rep(" ",15),stringsAsFactors = F)
     
     if(is.null(input$manager_ch1))
       return(managers_selected)
@@ -366,9 +366,9 @@ shinyServer(function(input, output) {
     browser()
     for(i in 65:79){
       managers_selected[i-64,1] <- names(manager_team_history[[p_ch]][[i]])
-      temp_id[i-64] <- which(player_data[,"Name"]==gsub("^\\s+|\\s+$","",names(manager_team_history[[p_ch]][[i]])))
-      #managers_selected[i-64,2] <- gsub(" \n\n ", "",as.character(manager_team_history[[p_ch]][[i]]))
-      managers_selected[i-64,2:3] <- player_data[temp_id[i-64],c("GW points","Minutes played")]
+      ##temp_id[i-64] <- which(player_data[,"Name"]==gsub("^\\s+|\\s+$","",names(manager_team_history[[p_ch]][[i]])))
+      managers_selected[i-64,2] <- gsub(" \n\n ", "",as.character(manager_team_history[[p_ch]][[i]]))
+      ##managers_selected[i-64,2:3] <- player_data[temp_id[i-64],c("GW points","Minutes played")]
     }
     managers_selected
   },include.rownames=F)
