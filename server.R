@@ -283,7 +283,7 @@ shinyServer(function(input, output) {
     manager_data_history2 <- manager_data_history
     ##if(data_plot_choice() == "TV")
     ##  for(i in 1:length(managers))
-    ##    manager_data_history2[[i]][[1]][,"TV"] <- as.numeric(gsub("£|m","",manager_data_history2[[i]][[1]][,"TV"]))
+    ##    manager_data_history2[[i]][[1]][,"TV"] <- as.numeric(gsub("(removed pound symbol)|m","",manager_data_history2[[i]][[1]][,"TV"]))
       
     if(is.null(input$plot_month)||input$plot_month=="All"){
       return(manager_data_history2)
