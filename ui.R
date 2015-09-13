@@ -52,7 +52,10 @@ shinyUI(fluidPage(
                             column(4,
                                    uiOutput("plot_gw_range")),
                             column(2,
-                                 uiOutput("graph_monthly_choice"))
+                                 uiOutput("graph_monthly_choice")),
+                            column(2,
+                                   h5("Reactive Boundaries"),
+                                   checkboxInput("reactive_lim", label = "Yes", value = FALSE))
                           ),
                           plotOutput("points_plot")
                  ),

@@ -248,31 +248,81 @@ shinyServer(function(input, output) {
       gw_min<-input$graph_range[1]
     if(!is.null(input$graph_range[2]))
       gw_max<-input$graph_range[2]
-
+    
+    # Poorly written....but gives the gameweeks available....
+    if(is.null(input$plot_month)||input$plot_month=="All"){ 
+      weeks_avail = 1:gameweek
+    }else{ 
+      if(input$plot_month=="All"){ 
+        weeks_avail = 1:gameweek
+        }else{ 
+          monthly_weeks_plot <- lapply(sapply(as.character(monthly_weeks[[2]][which(monthly_weeks[[1]]==input$plot_month)]),strsplit,split=" "),as.numeric)[[1]]
+          weeks_avail = monthly_weeks_plot
+          }
+      }
+    if(weeks_avail[1] > gameweek){ 
+      week_min <- 1
+    }else{ 
+        week_min <- weeks_avail[1]
+        }
+    if(weeks_avail[length(weeks_avail)] > gameweek){ week_max <- gameweek
+    }else{ week_max <- weeks_avail[length(weeks_avail)]}
+    
+    
+    
+    if(gw_min==gw_max){
+      ylim_range <- gw_min
+      my_xlim <- c(gw_min - 1, gw_max + 1)
+    }else{
+      if(input$reactive_lim == TRUE){
+        ylim_range <- gw_min:gw_max
+        my_xlim <- c(gw_min, gw_max)
+      }else{
+        ylim_range <- week_min:week_max
+        my_xlim <- c(week_min, week_max)
+      }
+    }
     
     if(!is.null(current_stand_plot())){
-    my_ylim <- range(as.numeric(current_stand_plot()[[1]][[1]][,data_plot_choice()]))
-    for(i in 2:length(managers)){
-      my_ylim[1] <- ifelse(min(as.numeric(current_stand_plot()[[i]][[1]][gw_min:gw_max,data_plot_choice()])) < my_ylim[1],
-                           min(as.numeric(current_stand_plot()[[i]][[1]][gw_min:gw_max,data_plot_choice()])),
-                           my_ylim[1])
-      my_ylim[2] <- ifelse(max(as.numeric(current_stand_plot()[[i]][[1]][gw_min:gw_max,data_plot_choice()])) > my_ylim[2],
-                           max(as.numeric(current_stand_plot()[[i]][[1]][gw_min:gw_max,data_plot_choice()])),
-                           my_ylim[2])
-    }
-    plot(gw_min:gw_max, current_stand_plot()[[1]][[1]][gw_min:gw_max, data_plot_choice()], type="n", 
-         ylim= my_ylim, ylab = "Points", xlab="Gameweek", xaxt="n",
-         main=input$data_dis)
-    #axis(1,at=1:nrow(current_stand_plot()[[1]][[1]]),labels=gw_min:gw_max)
-    axis(1,at=gw_min:gw_max,labels=gw_min:gw_max)
-    for(i in 1:length(managers))
-      lines(gw_min:gw_max, current_stand_plot()[[i]][[1]][gw_min:gw_max,data_plot_choice()], type="b", col = i)
-    legend("topleft", managers, col=1:length(managers), lty=1)
-    }else{
-      plot(c(0,0), type="n", 
-           ylim= c(1,100),xlim=c(1,gameweek), ylab = "Points", xlab="Gameweek", xaxt="n",
-           main=input$data_dis)
-    }
+      #browser()
+      #my_ylim <- range(as.numeric(current_stand_plot()[[1]][[1]][,data_plot_choice()]))
+      my_ylim <- c(1000,-10)
+      for(i in 2:length(managers)){
+        my_ylim[1] <- ifelse(min(as.numeric(current_stand_plot()[[i]][[1]][ylim_range, data_plot_choice()])) < my_ylim[1],
+                             min(as.numeric(current_stand_plot()[[i]][[1]][ylim_range, data_plot_choice()])),
+                             my_ylim[1])
+        my_ylim[2] <- ifelse(max(as.numeric(current_stand_plot()[[i]][[1]][ylim_range, data_plot_choice()])) > my_ylim[2],
+                             max(as.numeric(current_stand_plot()[[i]][[1]][ylim_range, data_plot_choice()])),
+                             my_ylim[2])
+      }
+      if(ylim_range[1] == 1 || data_plot_choice() == "GP" || input$reactive_lim == FALSE)
+        my_ylim[1] = 0
+      
+      plot(gw_min:gw_max, current_stand_plot()[[1]][[1]][gw_min:gw_max, data_plot_choice()], type = "n", 
+           ylim = my_ylim, xlim = my_xlim, ylab = "Points", xlab="Gameweek", 
+           xaxt ="n", main = input$data_dis)
+      
+      #axis(1,at=1:nrow(current_stand_plot()[[1]][[1]]),labels=gw_min:gw_max)
+      if(input$reactive_lim == TRUE)
+        axis(1, at = gw_min:gw_max, labels = gw_min:gw_max)
+      else
+        axis(1, at = week_min:week_max, labels = week_min:week_max)
+      
+      for(i in 1:length(managers))
+        lines(gw_min:gw_max, current_stand_plot()[[i]][[1]][gw_min:gw_max, data_plot_choice()], type = "b", col = i)
+      
+      if(data_plot_choice() == "GP"){
+        legend("bottomleft", sapply(managers, function(x)strsplit(x,split=" ")[[1]][1]), 
+               col=1:length(managers), lty=1)
+      }else{
+        legend("topleft", sapply(managers, function(x)strsplit(x,split=" ")[[1]][1]), 
+               col=1:length(managers), lty=1)
+      }
+      }else{
+        plot(c(0,0), type="n", 
+             ylim= c(1,100),xlim=c(1,gameweek), ylab = "Points", xlab="Gameweek", xaxt="n",
+             main=input$data_dis)
+      }
   })
     
   
