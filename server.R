@@ -172,7 +172,7 @@ shinyServer(function(input, output) {
   output$plot_data_type<-renderUI({
     selectInput("data_dis", 
                 label = h5("Data"),
-                choices = as.list(c("Overall", "Gameweek", "Bench", "Transfers", "Team Value")),
+                choices = as.list(c("Overall", "Gameweek", "Bench", "Transfers")),# ,"Team Value")),
                 selected = "Overall")
   })
   
@@ -362,9 +362,13 @@ shinyServer(function(input, output) {
     if(input$manager_ch1=="All")
       p_ch <- 1
     
+    temp_id <- NULL
+    browser()
     for(i in 65:79){
       managers_selected[i-64,1] <- names(manager_team_history[[p_ch]][[i]])
-      managers_selected[i-64,2] <- gsub(" \n\n ", "",as.character(manager_team_history[[p_ch]][[i]]))
+      temp_id[i-64] <- which(player_data[,"Name"]==gsub("^\\s+|\\s+$","",names(manager_team_history[[p_ch]][[i]])))
+      #managers_selected[i-64,2] <- gsub(" \n\n ", "",as.character(manager_team_history[[p_ch]][[i]]))
+      managers_selected[i-64,2] <- player_data[temp_id[i-64],"GW points"]
     }
     managers_selected
   },include.rownames=F)
