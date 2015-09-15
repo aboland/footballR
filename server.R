@@ -71,10 +71,10 @@ shinyServer(function(input, output) {
   manager_data_history <- list()
   manager_team_history <- list()
   for(i in 1:length(managers)){
-    incProgress(0, detail = paste(managers[i]))
+    incProgress(0, detail = paste(sapply(managers, function(x)strsplit(x,split=" ")[[1]][1])[i]))
     manager_data_history[[i]] <- readHTMLTable(paste0("http://fantasy.premierleague.com/entry/",ids[i],"/history/"), stringsAsFactors=F)
     manager_team_history[[i]] <- readHTMLList(paste0("http://fantasy.premierleague.com/entry/",ids[i],"/event-history/",gameweek,"/"), stringsAsFactors=F)
-    incProgress(1/length(managers), detail = paste(managers[i]))
+    incProgress(1/length(managers), detail = paste(sapply(managers, function(x)strsplit(x,split=" ")[[1]][1])[i]))
     }
   })
   
@@ -117,7 +117,8 @@ shinyServer(function(input, output) {
   
   output$manager_current_stand_monthly <- renderTable({
     # Create data frame of points
-    own_league_table_monthly <- data.frame(Team = team_names, Manager = managers, Total = rep(0, length(managers)), Bench = rep(0,length(managers)), Transfers = rep(0,length(managers)), 
+    own_league_table_monthly <- data.frame(Team = team_names, Manager = sapply(managers, function(x)strsplit(x,split=" ")[[1]][1]), 
+                                           Total = rep(0, length(managers)), Bench = rep(0,length(managers)), Transfers = rep(0,length(managers)), 
                                            TransferCost = rep(0,length(managers)), TeamValue = rep(0,length(managers)))
     
     if(is.null(input$table_month))
