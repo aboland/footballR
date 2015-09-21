@@ -564,20 +564,28 @@ shinyServer(function(input, output) {
   
   sort_choice <- reactive({
     if(is.null(input$player_data_sort))
-      return("id")
+      return("Total points")
     input$player_data_sort
   })
   
   output$sort_field<-renderUI({
-    # Reactive input displaying possible fields
-    selectInput("player_data_sort", 
-                label = h4("Sort by"),
-                choices = list("id", "Cost",
-                               isolate(input$field_choice_1), 
+    # Very poor if construct!!! Could be improved
+    if(is.null(sort_choice())||is.null(input$field_choice_1)||is.null(input$field_choice_2)||is.null(input$field_choice_3)||is.null(input$field_choice_4)){
+      selectInput("player_data_sort", 
+                  label = h4("Sort by"),
+                  choices = list("id", "Cost", "Total points"),
+                  selected = "Total points")
+    }else{
+      # Reactive input displaying possible fields
+      selectInput("player_data_sort", 
+                  label = h4("Sort by"),
+                  choices = list("id", "Cost",
+                               input$field_choice_1, 
                                input$field_choice_2, 
                                input$field_choice_3, 
                                input$field_choice_4),
-                selected = sort_choice())
+                  selected = sort_choice())
+    }
   })
   
   
@@ -627,7 +635,7 @@ shinyServer(function(input, output) {
                                   input$field_choice_3, 
                                   input$field_choice_4)]
     
-    if(!is.null(input$player_data_sort))
+    if(!is.null(input$player_data_sort)&&(input$player_data_sort=="id"||input$player_data_sort=="Cost"||input$player_data_sort==input$field_choice_1||input$player_data_sort==input$field_choice_2||input$player_data_sort==input$field_choice_3||input$player_data_sort==input$field_choice_4))
       if(input$player_data_sort!="id")
         return(output_table[order(output_table[,input$player_data_sort],decreasing = T),])
     return(output_table)
