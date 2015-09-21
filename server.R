@@ -306,7 +306,7 @@ shinyServer(function(input, output) {
                              max(as.numeric(current_stand_plot()[[i]][[1]][ylim_range, data_plot_choice()])),
                              my_ylim[2])
       }
-      if(ylim_range[1] == 1 || data_plot_choice() == "GP")# || input$reactive_lim == FALSE)
+      if(ylim_range[1] == 1 || data_plot_choice() == "GP" || input$reactive_lim == FALSE)
         my_ylim[1] = 0
       
       plot(gw_min:gw_max, current_stand_plot()[[1]][[1]][gw_min:gw_max, data_plot_choice()], type = "n", 
@@ -332,7 +332,7 @@ shinyServer(function(input, output) {
       }
       }else{
         plot(c(0,0), type="n", 
-             ylim= c(1,100),xlim=c(1,gameweek), ylab = "Points", xlab="Gameweek", xaxt="n",
+             ylim= c(0,100),xlim=c(1,gameweek), ylab = "Points", xlab="Gameweek", xaxt="n",
              main=input$data_dis)
       }
   })
