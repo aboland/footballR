@@ -67,7 +67,7 @@ shinyServer(function(input, output) {
   
   
   # --- Scrape individual player points/history
-  withProgress(message = 'Retrieving latest data', value = 0, {
+  withProgress(message = 'Retrieving latest fantasy data', value = 0, {
   manager_data_history <- list()
   manager_team_history <- list()
   for(i in 1:length(managers)){
@@ -536,15 +536,19 @@ shinyServer(function(input, output) {
   
   
   #  ------------------------ Historical Data!!!!!
+  withProgress(message = "Loading team data", value = 0, {
   
-  load(file="FullHist.RData")
+    incProgress(0.1, detail = "Loading historical data")
+    load(file="FullHist.RData")
   
   current_season <-read.csv(paste0("http://www.football-data.co.uk/mmz4281/1516/E0.csv"))
+  incProgress(0.3, detail = "Downloading this seasons data")
+  
   current_season$Date <- as.Date(current_season$Date,"%d/%m/%y")
   vars<-c("Div", "Date", "HomeTeam", "AwayTeam", "FTHG", "FTAG", "FTR", "HTHG", "HTAG", "HTR", "Referee",
           "HS", "AS", "HST", "AST", "HC", "AC", "HF", "AF", "HY", "AY", "HR", "AR")
   current_season <- current_season[,vars]
-  
+  incProgress(0.5, detail = "Cleaning this seasons data")
   current_season$Div<-as.character(current_season$Div)
   current_season$HomeTeam<-as.character(current_season$HomeTeam)
   current_season$AwayTeam<-as.character(current_season$AwayTeam)
@@ -553,12 +557,12 @@ shinyServer(function(input, output) {
   current_season$FTR<-as.character(current_season$FTR)
   current_season$HTR<-as.character(current_season$HTR)
   current_season$Referee<-as.character(current_season$Referee)
-  
+  incProgress(0.7, detail = "Cleaning this seasons data")
   
   fulld <- rbind(histPL,current_season)
   current_teams <- levels(current_season$HomeTeam)
   
-  
+  incProgress(0.8, detail = "Cleaning this seasons data")
   possible_games <- reactive({
     gw2 <- readHTMLTable(paste0("http://fantasy.premierleague.com/fixtures/",input$gw_choice,"/"))$ismFixtureTable
     gw2 <- gw2[!is.na(gw2[,2]),]
@@ -569,7 +573,9 @@ shinyServer(function(input, output) {
       output[[i]] <- paste(as.character(gw2[i,2]),"vs",as.character(gw2[i,6]))
     output
   })
+  incProgress(1, detail = "Cleaning this seasons data")
   
+  })  # end progress bar
 
   output$game_hist_choice<-renderUI({
     selectInput("game_hist", 
@@ -608,7 +614,7 @@ shinyServer(function(input, output) {
         current_data <- fulld[which((fulld$HomeTeam==ht & fulld$AwayTeam==at)|(fulld$HomeTeam==at & fulld$AwayTeam==ht)),]
       }
       
-      current_data[,"Date"] <-  format(current_data[,"Date"], "%d %b %y")
+      current_data[,"Date"] <-  format(current_data[,"Date"], "%d %b '%y")
       #current_data[,"Date"] <- as.character(current_data[,"Date"])
       
       df_out <- data.frame(current_data[,c("Date","HomeTeam","FTHG","FTAG","AwayTeam")])
