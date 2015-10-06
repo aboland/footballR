@@ -948,7 +948,10 @@ shinyServer(function(input, output) {
     plot(hh_team_dataA[,"Date"],
          hh_team_dataA[,1],type = "b",
          xlim = hh_xlim, ylim = hh_ylim, col = "Black",
-         xlab = "Date", ylab = hhlab, pch = 19, lty=2)
+         xlab = "Date", ylab = hhlab, pch = 19, lty=2, xaxt="n")
+    
+    tdiff <- abs(as.numeric(difftime(hh_xlim[1], hh_xlim[2], units="days")))
+    axis.Date(1, at=seq(hh_xlim[1], hh_xlim[2], by=tdiff/7) ,format="%d %b %y")
     
     lines(hh_team_dataA[,"Date"],
          hh_team_dataA[,1],type = "p",
