@@ -772,7 +772,7 @@ shinyServer(function(input, output) {
     v1 <- plot_data[closest_team]
     v2 <- plot_data2[closest_team]
     output$info <- renderText({
-      paste0(teams_selected[closest_team],": Home ", plot_data[closest_team], "; \  Away ", plot_data2[closest_team])
+      paste0(teams_selected[closest_team],": Home ", plot_data[closest_team], "\ \  Away ", plot_data2[closest_team])
     })
   }else{
     output$info <- renderText({
