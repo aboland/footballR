@@ -39,7 +39,7 @@ shinyUI(fluidPage(
                               ),
                               tabPanel("Statistics",
                                        fluidRow(
-                                         column(4,
+                                         column(3,
                                                 selectInput("stat_choice", label = h4("Choose stat"), 
                                                             choices = list("Goals" = "goals", 
                                                                            "Shots on target" = "starget",
