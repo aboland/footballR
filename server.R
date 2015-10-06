@@ -720,11 +720,20 @@ shinyServer(function(input, output) {
     plot_data <<- plot_data2 <<- NULL
     
     if(input$stat_choice!="gpers" && input$stat_choice!="gperst"){ # Special case when shots per goal
-      for(k in 1:length(teams_selected)){
-          plot_data[k] <- mean(plot_data_teams[which(plot_data_teams$HomeTeam==teams_selected[k]),s1])
-          plot_data2[k] <- mean(plot_data_teams[which(plot_data_teams$AwayTeam==teams_selected[k]),s2])
-      }
-    }else{
+      if(input$sum_tot=="avg"){
+        for(k in 1:length(teams_selected)){
+          plot_data[k] <- mean(plot_data_teams[which(plot_data_teams$HomeTeam == teams_selected[k]),s1])
+          plot_data2[k] <- mean(plot_data_teams[which(plot_data_teams$AwayTeam == teams_selected[k]),s2])
+          title_begin <- "Average"
+          }
+        }else if(input$sum_tot=="tot"){
+          for(k in 1:length(teams_selected)){
+            plot_data[k] <- sum(plot_data_teams[which(plot_data_teams$HomeTeam == teams_selected[k]), s1])
+            plot_data2[k] <- sum(plot_data_teams[which(plot_data_teams$AwayTeam == teams_selected[k]), s2])
+            title_begin <- "Total"
+          }
+          }
+      }else{
       if(input$stat_choice=="gpers"){
       for(k in 1:length(teams_selected)){
         plot_data[k] <- sum(plot_data_teams[which(plot_data_teams$HomeTeam==teams_selected[k]),"FTHG"])/
@@ -732,6 +741,7 @@ shinyServer(function(input, output) {
         plot_data2[k] <- sum(plot_data_teams[which(plot_data_teams$AwayTeam==teams_selected[k]),"FTAG"])/
           sum(plot_data_teams[which(plot_data_teams$HomeTeam==teams_selected[k]),"AS"])
         lab <- "Goals per shot"
+        title_begin <- ""
       }
       }else{
         for(k in 1:length(teams_selected)){
@@ -740,6 +750,7 @@ shinyServer(function(input, output) {
           plot_data2[k] <- sum(plot_data_teams[which(plot_data_teams$AwayTeam==teams_selected[k]),"FTAG"])/
             sum(plot_data_teams[which(plot_data_teams$HomeTeam==teams_selected[k]),"AST"])
           lab <- "Goals per shot on target"
+          title_begin <- ""
         }
       }
     }
@@ -758,7 +769,7 @@ shinyServer(function(input, output) {
     mymax <- max(c(plot_data,plot_data2))
     mymin <- min(c(plot_data,plot_data2))
     pd2_jit <<- jitter(plot_data2, factor = 1.5)
-    plot(plot_data, pd2_jit, xlab = "Home", ylab = "Away", main = paste("Average", lab, lab2),
+    plot(plot_data, pd2_jit, xlab = "Home", ylab = "Away", main = paste(title_begin, lab, lab2),
          pch = 19, col = team_colours, 
          xlim = c(mymin, mymax + (abs(range(plot_data)[1] - range(plot_data)[2])/10)),
          ylim = c(mymin, mymax)
