@@ -65,17 +65,21 @@ shinyServer(function(input, output) {
   
   
   # --- Scrape individual player points/history
-#   withProgress(message = 'Retrieving latest fantasy data', value = 0, {
-#   manager_data_history <- list()
-#   manager_team_history <- list()
-#   for(i in 1:length(managers)){
-#     incProgress(0, detail = paste(sapply(managers, function(x)strsplit(x,split=" ")[[1]][1])[i]))
-#     manager_data_history[[i]] <- readHTMLTable(paste0("http://fantasy.premierleague.com/entry/",ids[i],"/history/"), stringsAsFactors=F)
-#     manager_team_history[[i]] <- readHTMLList(paste0("http://fantasy.premierleague.com/entry/",ids[i],"/event-history/",gameweek,"/"), stringsAsFactors=F)
-#     incProgress(1/length(managers), detail = paste(sapply(managers, function(x)strsplit(x,split=" ")[[1]][1])[i]))
-#     }
-#   })
+  combined_manager_data <- reactive({
+    withProgress(message = 'Retrieving latest fantasy data', value = 0, {
+  manager_data_history <- list()
+  manager_team_history <- list()
+  for(i in 1:length(managers)){
+    incProgress(0, detail = paste(sapply(managers, function(x)strsplit(x,split=" ")[[1]][1])[i]))
+    manager_data_history[[i]] <- readHTMLTable(paste0("http://fantasy.premierleague.com/entry/",ids[i],"/history/"), stringsAsFactors=F)
+    manager_team_history[[i]] <- readHTMLList(paste0("http://fantasy.premierleague.com/entry/",ids[i],"/event-history/",gameweek,"/"), stringsAsFactors=F)
+    incProgress(1/length(managers), detail = paste(sapply(managers, function(x)strsplit(x,split=" ")[[1]][1])[i]))
+    }
+  })
+    list(manager_data_history,manager_team_history)
+  })
   
+ 
   
   # ---------------------------------------------------
   # ---  Choice for managers table gameweek
@@ -130,10 +134,10 @@ shinyServer(function(input, output) {
       }
       
         for(i in 1:length(managers)){
-          own_league_table_monthly[i,"TeamValue"] <- manager_data_history[[i]][[1]][weeks[length(weeks)], c("TV")]
+          own_league_table_monthly[i,"TeamValue"] <- combined_manager_data()[[1]][[i]][[1]][weeks[length(weeks)], c("TV")]
           for(j in weeks){
-            own_league_table_monthly[i,c("Total", "Bench", "Transfers", "TransferCost")] <- own_league_table_monthly[i,c("Total", "Bench", "Transfers", "TransferCost")] + as.numeric(manager_data_history[[i]][[1]][j, c("GP","PB","TM","TC")])
-            own_league_table_monthly[i,"Total"] <- own_league_table_monthly[i,"Total"] - as.numeric(manager_data_history[[i]][[1]][j, c("TC")])
+            own_league_table_monthly[i,c("Total", "Bench", "Transfers", "TransferCost")] <- own_league_table_monthly[i,c("Total", "Bench", "Transfers", "TransferCost")] + as.numeric(combined_manager_data()[[1]][[i]][[1]][j, c("GP","PB","TM","TC")])
+            own_league_table_monthly[i,"Total"] <- own_league_table_monthly[i,"Total"] - as.numeric(combined_manager_data()[[1]][[i]][[1]][j, c("TC")])
             
           }
         }
@@ -155,10 +159,10 @@ shinyServer(function(input, output) {
     }
 
     for(i in 1:length(managers)){
-      own_league_table_monthly[i,"TeamValue"] <- manager_data_history[[i]][[1]][weeks[length(weeks)], c("TV")]
+      own_league_table_monthly[i,"TeamValue"] <- combined_manager_data()[[1]][[i]][[1]][weeks[length(weeks)], c("TV")]
       for(j in weeks){
-        own_league_table_monthly[i,c("Total", "Bench", "Transfers", "TransferCost")] <- own_league_table_monthly[i,c("Total", "Bench", "Transfers", "TransferCost")] + as.numeric(manager_data_history[[i]][[1]][j, c("GP","PB","TM","TC")])
-        own_league_table_monthly[i,"Total"] <- own_league_table_monthly[i,"Total"] - as.numeric(manager_data_history[[i]][[1]][j, c("TC")])
+        own_league_table_monthly[i,c("Total", "Bench", "Transfers", "TransferCost")] <- own_league_table_monthly[i,c("Total", "Bench", "Transfers", "TransferCost")] + as.numeric(combined_manager_data()[[1]][[i]][[1]][j, c("GP","PB","TM","TC")])
+        own_league_table_monthly[i,"Total"] <- own_league_table_monthly[i,"Total"] - as.numeric(combined_manager_data()[[1]][[i]][[1]][j, c("TC")])
       }
     }
     return(own_league_table_monthly[order(as.numeric(own_league_table_monthly[,"Total"]), decreasing = T),])
@@ -340,7 +344,7 @@ shinyServer(function(input, output) {
   # Table for plot!!!!
   current_stand_plot <- reactive({
     
-    manager_data_history2 <- manager_data_history
+    manager_data_history2 <- combined_manager_data()[[1]]
     ##if(data_plot_choice() == "TV")
     ##  for(i in 1:length(managers))
     ##    manager_data_history2[[i]][[1]][,"TV"] <- as.numeric(gsub("(removed pound symbol)|m","",manager_data_history2[[i]][[1]][,"TV"]))
@@ -425,9 +429,9 @@ shinyServer(function(input, output) {
     temp_id <- NULL
     browser()
     for(i in 65:79){
-      managers_selected[i-64,1] <- names(manager_team_history[[p_ch]][[i]])
-      ##temp_id[i-64] <- which(player_data[,"Name"]==gsub("^\\s+|\\s+$","",names(manager_team_history[[p_ch]][[i]])))
-      managers_selected[i-64,2] <- gsub(" \n\n ", "",as.character(manager_team_history[[p_ch]][[i]]))
+      managers_selected[i-64,1] <- names(combined_manager_data()[[2]][[p_ch]][[i]])
+      ##temp_id[i-64] <- which(player_data[,"Name"]==gsub("^\\s+|\\s+$","",names(combined_manager_data()[[2]][[p_ch]][[i]])))
+      managers_selected[i-64,2] <- gsub(" \n\n ", "",as.character(combined_manager_data()[[2]][[p_ch]][[i]]))
       ##managers_selected[i-64,2:3] <- player_data[temp_id[i-64],c("GW points","Minutes played")]
     }
     managers_selected
@@ -448,8 +452,8 @@ shinyServer(function(input, output) {
       p_ch <- 1
     
     for(i in 65:79){
-      managers_selected[i-64,1] <- names(manager_team_history[[p_ch]][[i]])
-      managers_selected[i-64,2] <- gsub(" \n\n ", "",as.character(manager_team_history[[p_ch]][[i]]))
+      managers_selected[i-64,1] <- names(combined_manager_data()[[2]][[p_ch]][[i]])
+      managers_selected[i-64,2] <- gsub(" \n\n ", "",as.character(combined_manager_data()[[2]][[p_ch]][[i]]))
     }
     managers_selected
   },include.rownames=F)
@@ -469,8 +473,8 @@ shinyServer(function(input, output) {
       p_ch <- 1
     
     for(i in 65:79){
-      managers_selected[i-64,1] <- names(manager_team_history[[p_ch]][[i]])
-      managers_selected[i-64,2] <- gsub(" \n\n ", "",as.character(manager_team_history[[p_ch]][[i]]))
+      managers_selected[i-64,1] <- names(combined_manager_data()[[2]][[p_ch]][[i]])
+      managers_selected[i-64,2] <- gsub(" \n\n ", "",as.character(combined_manager_data()[[2]][[p_ch]][[i]]))
     }
     managers_selected
   },include.rownames=F)
@@ -490,8 +494,8 @@ shinyServer(function(input, output) {
       p_ch <- 1
     
     for(i in 65:79){
-      managers_selected[i-64,1] <- names(manager_team_history[[p_ch]][[i]])
-      managers_selected[i-64,2] <- gsub(" \n\n ", "",as.character(manager_team_history[[p_ch]][[i]]))
+      managers_selected[i-64,1] <- names(combined_manager_data()[[2]][[p_ch]][[i]])
+      managers_selected[i-64,2] <- gsub(" \n\n ", "",as.character(combined_manager_data()[[2]][[p_ch]][[i]]))
     }
     managers_selected
   },include.rownames=F)
@@ -753,12 +757,13 @@ shinyServer(function(input, output) {
     
     mymax <- max(c(plot_data,plot_data2))
     mymin <- min(c(plot_data,plot_data2))
-    plot(plot_data, plot_data2, xlab = "Home", ylab = "Away", main = paste("Average", lab, lab2),
+    pd2_jit <- jitter(plot_data2, factor = 1.5)
+    plot(plot_data, pd2_jit, xlab = "Home", ylab = "Away", main = paste("Average", lab, lab2),
          pch = 19, col = team_colours, 
          xlim = c(mymin, mymax + (abs(range(plot_data)[1] - range(plot_data)[2])/10)),
          ylim = c(mymin, mymax)
          )
-    text(plot_data, jitter(plot_data2, factor = 1.5), current_teams, pos=4)
+    text(plot_data, pd2_jit, current_teams, pos=4)
   })
   
   
@@ -777,7 +782,7 @@ shinyServer(function(input, output) {
     })
   }else{
     output$info <- renderText({
-      paste0("Click on graph to see exact values of nearest team.")
+      paste0("Click on graph to see exact values.")
     })
   }
     
