@@ -93,7 +93,8 @@ shinyUI(fluidPage(
                                                 #sliderInput("season_range", label= h4("Season"),
                                                 #            min = 2000, max = 2016, value = c(2015, 2016),step=1, sep=""),
                                                 dateRangeInput("hh_season_range", label= h4("Date range"),
-                                                               format = "dd-mm-yyyy", start = "2015-08-08", end = Sys.Date(), min="2000-08-09")
+                                                               format = "dd-mm-yyyy", start = "2015-08-08", end = Sys.Date(), min="2000-08-09"),
+                                                checkboxInput("cumul_sum","Cumulative sum", value = FALSE)
                                          )
                                          ),
                                        plotOutput("plot_hh")

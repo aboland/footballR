@@ -905,6 +905,11 @@ shinyServer(function(input, output) {
       hh_team_dataB <- rbind(hh_team_dataB1, hh_team_dataB2)
       hh_team_dataB <- hh_team_dataB[order(hh_team_dataB$Date),]
       
+      if(input$cumul_sum==TRUE){
+        hh_team_dataA[,1] <- cumsum(hh_team_dataA[,1])
+        hh_team_dataB[,1] <- cumsum(hh_team_dataB[,1])
+      }
+      
       hh_ylim <- c(min(hh_team_dataA[,1],
                        hh_team_dataB[,1]),
                 max(hh_team_dataA[,1],
