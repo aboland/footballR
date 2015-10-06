@@ -70,7 +70,7 @@ shinyUI(fluidPage(
                                        fluidRow(
                                          column(2,
                                                 selectInput("hh_stat_choice", label = h4("Statistic"), 
-                                                            choices = list("Goals" = "goals",
+                                                            choices = list("Goals scored" = "goals",
                                                                            "Goals conceded" = "goals_conc",
                                                                            "Shots on target" = "starget",
                                                                            "Shots" = "shots",
