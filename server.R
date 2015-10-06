@@ -54,8 +54,6 @@ shinyServer(function(input, output) {
     page_tables[[1]][,-1]  # Table 1 will give standing!
   }, include.rownames=F)
   
-  
-  
     
   output$MonthGW <- renderTable({
     #output_table <- monthly_weeks
@@ -501,6 +499,9 @@ shinyServer(function(input, output) {
   
   
   
+  
+  
+  
   # ------------------ Fixture and results tables -------------------------------------------
   
   
@@ -536,6 +537,8 @@ shinyServer(function(input, output) {
   
   
   #  ------------------------ Historical Data!!!!!
+  
+  
   withProgress(message = "Loading team data", value = 0, {
   
     incProgress(0.1, detail = "Loading historical data")
@@ -633,19 +636,49 @@ shinyServer(function(input, output) {
   
   # -------------- Stat plots!!
   
-  
   team_colours <- c("firebrick", "maroon3", "red2", "royalblue4", "red3", "mediumblue", "blue3", "red",
                     "lightskyblue", "red", "black", "green", "red", "red", "red", "blue", "navy", "goldenrod2", "steelblue4", "maroon4")
   
   
   output$plot_stats <- renderPlot({
     
-    if(input$this_season == TRUE || is.null(input$this_season)){
-      plot_data_teams <- fulld
-      lab2 <- "since 2000"
-    }else{
+#     if(input$this_season == TRUE || is.null(input$this_season)){
+#       plot_data_teams <- fulld
+#       lab2 <- "since 00/01"
+#     }else{
+#       plot_data_teams <- current_season
+#       lab2 <- "this season"
+#     }
+#     
+#     if(input$season_range[1]==2015 && input$season_range[2]==2016){
+#       plot_data_teams <- current_season
+#       lab2 <- "this season"
+#     }else if(input$season_range[1] == input$season_range[2]){
+#       plot_data_teams <- current_season
+#       lab2 <- "this season"
+#     }else{
+#       #browser()
+#       sel_range <- which(as.numeric(format(fulld$Date,"%Y")) >= input$season_range[1] & as.numeric(format(fulld$Date,"%Y")) <= input$season_range[2])
+#       plot_data_teams <- fulld[sel_range,]
+#       if(input$season_range[2]==2016)
+#         lab2 <- paste("between",input$season_range[1],"and 15/16")
+#       else
+#         lab2 <- paste("between",input$season_range[1],"and",input$season_range[2])
+#     }
+    #browser()
+    #range1 <- format(input$season_range2[1],"%Y-%m-%d")
+    #range2 <- format(input$season_range2[2],"%Y-%m-%d")
+    if(input$season_range2[1] == "2015-08-08" && input$season_range2[2] == Sys.Date()){
       plot_data_teams <- current_season
       lab2 <- "this season"
+    }else if(input$season_range2[1] == input$season_range2[2]){
+      plot_data_teams <- current_season
+      lab2 <- "this season"
+    }else{
+      #browser()
+      sel_range <- which(fulld$Date >= input$season_range2[1] & fulld$Date <= input$season_range2[2])
+      plot_data_teams <- fulld[sel_range,]
+      lab2 <- paste("between",format(input$season_range2[1],"%d %b %y"),"and",format(input$season_range2[2],"%d %b %y"))
     }
     
     if(input$stat_choice=="goals" || is.null(input$stat_choice)){
@@ -709,6 +742,10 @@ shinyServer(function(input, output) {
          )
     text(plot_data, jitter(plot_data2, factor = 1.5), current_teams, pos=4)
   })
+  
+  
+  
+  
   
   
   

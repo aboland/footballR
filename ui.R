@@ -50,8 +50,12 @@ shinyUI(fluidPage(
                                                                            "Fouls" = "fouls",
                                                                            "Halftime Goals" = "halfgoals"), selected = "goals")),
                                          column(6,
-                                                h4("Time range"),
-                                                checkboxInput("this_season", label = "All seasons", value = FALSE)
+                                                #h4("Time range"),
+                                                #checkboxInput("this_season", label = "All seasons", value = FALSE),
+                                                #sliderInput("season_range", label= h4("Season"),
+                                                #            min = 2000, max = 2016, value = c(2015, 2016),step=1, sep=""),
+                                                dateRangeInput("season_range2", label= h4("Range"),
+                                                      format = "dd-mm-yyyy", start = "2015-08-08", end = Sys.Date(), min="2000-08-09")
                                          )),
                                        plotOutput("plot_stats")
                               )
