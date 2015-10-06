@@ -777,7 +777,7 @@ shinyServer(function(input, output) {
     })
   }else{
     output$info <- renderText({
-      paste0("Team: Home ", 0, " Away ", 0)
+      paste0("Click on graph to see exact values of nearest team.")
     })
   }
     
