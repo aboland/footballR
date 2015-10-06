@@ -957,8 +957,9 @@ shinyServer(function(input, output) {
       
     }
     }else{
-      plot(hh_plot_data_teams[which(hh_plot_data_teams$HomeTeam=="Tottenham"),"Date"],
-           hh_plot_data_teams[which(hh_plot_data_teams$HomeTeam=="Tottenham"),"FTHG"], type = "b")
+      plot(hh_plot_data_teams[which(hh_plot_data_teams$HomeTeam=="Tottenham"||hh_plot_data_teams$AwayTeam=="Tottenham"),"Date"],
+           hh_plot_data_teams[which(hh_plot_data_teams$HomeTeam=="Tottenham"||hh_plot_data_teams$AwayTeam=="Tottenham"),"FTHG"], type = "b",
+           ylab="Goals", xlab = "Date")
     }
   })
   
