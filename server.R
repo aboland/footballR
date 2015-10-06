@@ -717,23 +717,23 @@ shinyServer(function(input, output) {
     
     if(input$stat_choice!="gpers" && input$stat_choice!="gperst"){ # Special case when shots per goal
       for(k in 1:length(teams_selected)){
-          plot_data[k] <<- mean(plot_data_teams[which(plot_data_teams$HomeTeam==teams_selected[k]),s1])
-          plot_data2[k] <<- mean(plot_data_teams[which(plot_data_teams$AwayTeam==teams_selected[k]),s2])
+          plot_data[k] <- mean(plot_data_teams[which(plot_data_teams$HomeTeam==teams_selected[k]),s1])
+          plot_data2[k] <- mean(plot_data_teams[which(plot_data_teams$AwayTeam==teams_selected[k]),s2])
       }
     }else{
       if(input$stat_choice=="gpers"){
       for(k in 1:length(teams_selected)){
-        plot_data[k] <<- sum(plot_data_teams[which(plot_data_teams$HomeTeam==teams_selected[k]),"FTHG"])/
+        plot_data[k] <- sum(plot_data_teams[which(plot_data_teams$HomeTeam==teams_selected[k]),"FTHG"])/
           sum(plot_data_teams[which(plot_data_teams$HomeTeam==teams_selected[k]),"HS"])
-        plot_data2[k] <<- sum(plot_data_teams[which(plot_data_teams$AwayTeam==teams_selected[k]),"FTAG"])/
+        plot_data2[k] <- sum(plot_data_teams[which(plot_data_teams$AwayTeam==teams_selected[k]),"FTAG"])/
           sum(plot_data_teams[which(plot_data_teams$HomeTeam==teams_selected[k]),"AS"])
         lab <- "Goals per shot"
       }
       }else{
         for(k in 1:length(teams_selected)){
-          plot_data[k] <<- sum(plot_data_teams[which(plot_data_teams$HomeTeam==teams_selected[k]),"FTHG"])/
+          plot_data[k] <- sum(plot_data_teams[which(plot_data_teams$HomeTeam==teams_selected[k]),"FTHG"])/
             sum(plot_data_teams[which(plot_data_teams$HomeTeam==teams_selected[k]),"HST"])
-          plot_data2[k] <<- sum(plot_data_teams[which(plot_data_teams$AwayTeam==teams_selected[k]),"FTAG"])/
+          plot_data2[k] <- sum(plot_data_teams[which(plot_data_teams$AwayTeam==teams_selected[k]),"FTAG"])/
             sum(plot_data_teams[which(plot_data_teams$HomeTeam==teams_selected[k]),"AST"])
           lab <- "Goals per shot on target"
         }
@@ -748,7 +748,8 @@ shinyServer(function(input, output) {
      # })
     
     
-    
+    plot_data <<- round(plot_data, digits=4)
+    plot_data2 <<- round(plot_data2, digits=4)
     
     mymax <- max(c(plot_data,plot_data2))
     mymin <- min(c(plot_data,plot_data2))
