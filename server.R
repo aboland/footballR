@@ -701,12 +701,15 @@ shinyServer(function(input, output) {
         }
       }
     }
-    #browser()
-    plot(plot_data, plot_data2, xlab=paste(lab,"at home"), ylab=paste(lab,"away"), main=paste("Average",lab,lab2),
-         pch=19,col=team_colours, 
-         xlim=c(min(plot_data),max(plot_data) + (abs(range(plot_data)[1]-range(plot_data)[2])/10))
+    
+    mymax <- max(c(plot_data,plot_data2))
+    mymin <- min(c(plot_data,plot_data2))
+    plot(plot_data, plot_data2, xlab = "Home", ylab = "Away", main = paste("Average", lab, lab2),
+         pch = 19, col = team_colours, 
+         xlim = c(mymin, mymax + (abs(range(plot_data)[1] - range(plot_data)[2])/10)),
+         ylim = c(mymin, mymax)
          )
-    text(plot_data, jitter(plot_data2), current_teams, pos=4)
+    text(plot_data, jitter(plot_data2, factor = 1.5), current_teams, pos=4)
   })
   
   
