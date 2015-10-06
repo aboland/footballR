@@ -639,6 +639,8 @@ shinyServer(function(input, output) {
   team_colours <- c("firebrick", "maroon3", "red2", "royalblue4", "red3", "mediumblue", "blue3", "red",
                     "lightskyblue", "red", "black", "green", "red", "red", "red", "blue", "navy", "goldenrod2", "steelblue4", "maroon4")
   
+  teams_selected <- current_teams
+  plot_data <<- plot_data2 <<- NULL
   
   output$plot_stats <- renderPlot({
     
@@ -671,17 +673,17 @@ shinyServer(function(input, output) {
     if(input$season_range2[1] == "2015-08-08" && input$season_range2[2] == Sys.Date()){
       plot_data_teams <- current_season
       lab2 <- "this season"
-      teams_selected <- current_teams
+      teams_selected <<- current_teams
     }else if(input$season_range2[1] == input$season_range2[2]){
       plot_data_teams <- current_season
       lab2 <- "this season"
-      teams_selected <- current_teams
+      teams_selected <<- current_teams
     }else{
       #browser()
       sel_range <- which(fulld$Date >= input$season_range2[1] & fulld$Date <= input$season_range2[2])
       plot_data_teams <- fulld[sel_range,]
       lab2 <- paste("between",format(input$season_range2[1],"%d %b %y"),"and",format(input$season_range2[2],"%d %b %y"))
-      teams_selected <- current_teams
+      teams_selected <<- current_teams
       # Uncomment if you want to add in older teams...
       # teams_selected <- levels(as.factor(as.character(plot_data_teams$HomeTeam)))
     }
@@ -711,32 +713,42 @@ shinyServer(function(input, output) {
       s2 <- "HTAG"
       lab <- "halftime goals"
     }
-    plot_data <- plot_data2 <- NULL
+    plot_data <<- plot_data2 <<- NULL
     
     if(input$stat_choice!="gpers" && input$stat_choice!="gperst"){ # Special case when shots per goal
       for(k in 1:length(teams_selected)){
-          plot_data[k] <- mean(plot_data_teams[which(plot_data_teams$HomeTeam==teams_selected[k]),s1])
-          plot_data2[k] <- mean(plot_data_teams[which(plot_data_teams$AwayTeam==teams_selected[k]),s2])
+          plot_data[k] <<- mean(plot_data_teams[which(plot_data_teams$HomeTeam==teams_selected[k]),s1])
+          plot_data2[k] <<- mean(plot_data_teams[which(plot_data_teams$AwayTeam==teams_selected[k]),s2])
       }
     }else{
       if(input$stat_choice=="gpers"){
       for(k in 1:length(teams_selected)){
-        plot_data[k] <- sum(plot_data_teams[which(plot_data_teams$HomeTeam==teams_selected[k]),"FTHG"])/
+        plot_data[k] <<- sum(plot_data_teams[which(plot_data_teams$HomeTeam==teams_selected[k]),"FTHG"])/
           sum(plot_data_teams[which(plot_data_teams$HomeTeam==teams_selected[k]),"HS"])
-        plot_data2[k] <- sum(plot_data_teams[which(plot_data_teams$AwayTeam==teams_selected[k]),"FTAG"])/
+        plot_data2[k] <<- sum(plot_data_teams[which(plot_data_teams$AwayTeam==teams_selected[k]),"FTAG"])/
           sum(plot_data_teams[which(plot_data_teams$HomeTeam==teams_selected[k]),"AS"])
         lab <- "Goals per shot"
       }
       }else{
         for(k in 1:length(teams_selected)){
-          plot_data[k] <- sum(plot_data_teams[which(plot_data_teams$HomeTeam==teams_selected[k]),"FTHG"])/
+          plot_data[k] <<- sum(plot_data_teams[which(plot_data_teams$HomeTeam==teams_selected[k]),"FTHG"])/
             sum(plot_data_teams[which(plot_data_teams$HomeTeam==teams_selected[k]),"HST"])
-          plot_data2[k] <- sum(plot_data_teams[which(plot_data_teams$AwayTeam==teams_selected[k]),"FTAG"])/
+          plot_data2[k] <<- sum(plot_data_teams[which(plot_data_teams$AwayTeam==teams_selected[k]),"FTAG"])/
             sum(plot_data_teams[which(plot_data_teams$HomeTeam==teams_selected[k]),"AST"])
           lab <- "Goals per shot on target"
         }
       }
     }
+    
+    
+    
+    #browser()
+    #observe({
+    
+     # })
+    
+    
+    
     
     mymax <- max(c(plot_data,plot_data2))
     mymin <- min(c(plot_data,plot_data2))
@@ -749,7 +761,30 @@ shinyServer(function(input, output) {
   })
   
   
-  
+  observe({
+  if(!is.null(input$stat_plot_click$x)&&!is.null(input$stat_plot_click$y)&&!is.null(plot_data)){
+    #browser()
+    selected <- c(input$stat_plot_click$x,input$stat_plot_click$y)
+    closest_team <- which.min(
+      sqrt(apply((cbind(plot_data, plot_data2)- matrix(selected,nrow=length(plot_data),byrow=T,ncol=2))^2,1,sum))
+    )
+    #browser()
+    v1 <- plot_data[closest_team]
+    v2 <- plot_data2[closest_team]
+    output$info <- renderText({
+      paste0(teams_selected[closest_team],": Home ", plot_data[closest_team], "; \  Away ", plot_data2[closest_team])
+    })
+  }else{
+    output$info <- renderText({
+      paste0("Team: Home ", 0, " Away ", 0)
+    })
+  }
+    
+    
+  })
+    
+    
+    
   
   
   

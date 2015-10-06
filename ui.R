@@ -57,7 +57,8 @@ shinyUI(fluidPage(
                                                 dateRangeInput("season_range2", label= h4("Range"),
                                                       format = "dd-mm-yyyy", start = "2015-08-08", end = Sys.Date(), min="2000-08-09")
                                          )),
-                                       plotOutput("plot_stats")
+                                       plotOutput("plot_stats", click = "stat_plot_click"),
+                                       textOutput("info")
                               )
                             )
                    ),
