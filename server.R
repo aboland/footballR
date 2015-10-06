@@ -644,7 +644,7 @@ shinyServer(function(input, output) {
                     "lightskyblue", "red", "black", "green", "red", "red", "red", "blue", "navy", "goldenrod2", "steelblue4", "maroon4")
   
   teams_selected <- current_teams
-  plot_data <<- plot_data2 <<- NULL
+  plot_data <- plot_data2 <- pd2_jit <- NULL
   
   output$plot_stats <- renderPlot({
     
@@ -757,7 +757,7 @@ shinyServer(function(input, output) {
     
     mymax <- max(c(plot_data,plot_data2))
     mymin <- min(c(plot_data,plot_data2))
-    pd2_jit <- jitter(plot_data2, factor = 1.5)
+    pd2_jit <<- jitter(plot_data2, factor = 1.5)
     plot(plot_data, pd2_jit, xlab = "Home", ylab = "Away", main = paste("Average", lab, lab2),
          pch = 19, col = team_colours, 
          xlim = c(mymin, mymax + (abs(range(plot_data)[1] - range(plot_data)[2])/10)),
@@ -772,7 +772,7 @@ shinyServer(function(input, output) {
     #browser()
     selected <- c(input$stat_plot_click$x,input$stat_plot_click$y)
     closest_team <- which.min(
-      sqrt(apply((cbind(plot_data, plot_data2)- matrix(selected,nrow=length(plot_data),byrow=T,ncol=2))^2,1,sum))
+      sqrt(apply((cbind(plot_data, pd2_jit)- matrix(selected,nrow=length(plot_data),byrow=T,ncol=2))^2,1,sum))
     )
     #browser()
     v1 <- plot_data[closest_team]
