@@ -695,7 +695,11 @@ shinyServer(function(input, output) {
     if(input$stat_choice=="goals" || is.null(input$stat_choice)){
       s1 <- "FTHG"
       s2 <- "FTAG"
-      lab <- "goals"
+      lab <- "goals scored"
+    }else if(input$stat_choice=="goals_conc"){
+      s2 <- "FTHG"
+      s1 <- "FTAG"
+      lab <- "goals conceded"
     }else if(input$stat_choice== "starget"){
       s1 <- "HST"
       s2 <- "AST"
@@ -832,7 +836,11 @@ shinyServer(function(input, output) {
     if(input$hh_stat_choice == "goals" || is.null(input$hh_stat_choice)){
       hh1 <- "FTHG"
       hh2 <- "FTAG"
-      hhlab <- "Goals"
+      hhlab <- "Goals scored"
+    }else if(input$hh_stat_choice == "goals_conc"){
+      hh2 <- "FTHG"
+      hh1 <- "FTAG"
+      hhlab <- "Goals conceded"
     }else if(input$hh_stat_choice== "starget"){
       hh1 <- "HST"
       hh2 <- "AST"
