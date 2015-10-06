@@ -671,14 +671,19 @@ shinyServer(function(input, output) {
     if(input$season_range2[1] == "2015-08-08" && input$season_range2[2] == Sys.Date()){
       plot_data_teams <- current_season
       lab2 <- "this season"
+      teams_selected <- current_teams
     }else if(input$season_range2[1] == input$season_range2[2]){
       plot_data_teams <- current_season
       lab2 <- "this season"
+      teams_selected <- current_teams
     }else{
       #browser()
       sel_range <- which(fulld$Date >= input$season_range2[1] & fulld$Date <= input$season_range2[2])
       plot_data_teams <- fulld[sel_range,]
       lab2 <- paste("between",format(input$season_range2[1],"%d %b %y"),"and",format(input$season_range2[2],"%d %b %y"))
+      teams_selected <- current_teams
+      # Uncomment if you want to add in older teams...
+      # teams_selected <- levels(as.factor(as.character(plot_data_teams$HomeTeam)))
     }
     
     if(input$stat_choice=="goals" || is.null(input$stat_choice)){
@@ -709,25 +714,25 @@ shinyServer(function(input, output) {
     plot_data <- plot_data2 <- NULL
     
     if(input$stat_choice!="gpers" && input$stat_choice!="gperst"){ # Special case when shots per goal
-      for(k in 1:length(current_teams)){
-          plot_data[k] <- mean(plot_data_teams[which(plot_data_teams$HomeTeam==current_teams[k]),s1])
-          plot_data2[k] <- mean(plot_data_teams[which(plot_data_teams$AwayTeam==current_teams[k]),s2])
+      for(k in 1:length(teams_selected)){
+          plot_data[k] <- mean(plot_data_teams[which(plot_data_teams$HomeTeam==teams_selected[k]),s1])
+          plot_data2[k] <- mean(plot_data_teams[which(plot_data_teams$AwayTeam==teams_selected[k]),s2])
       }
     }else{
       if(input$stat_choice=="gpers"){
-      for(k in 1:length(current_teams)){
-        plot_data[k] <- sum(plot_data_teams[which(plot_data_teams$HomeTeam==current_teams[k]),"FTHG"])/
-          sum(plot_data_teams[which(plot_data_teams$HomeTeam==current_teams[k]),"HS"])
-        plot_data2[k] <- sum(plot_data_teams[which(plot_data_teams$AwayTeam==current_teams[k]),"FTAG"])/
-          sum(plot_data_teams[which(plot_data_teams$HomeTeam==current_teams[k]),"AS"])
+      for(k in 1:length(teams_selected)){
+        plot_data[k] <- sum(plot_data_teams[which(plot_data_teams$HomeTeam==teams_selected[k]),"FTHG"])/
+          sum(plot_data_teams[which(plot_data_teams$HomeTeam==teams_selected[k]),"HS"])
+        plot_data2[k] <- sum(plot_data_teams[which(plot_data_teams$AwayTeam==teams_selected[k]),"FTAG"])/
+          sum(plot_data_teams[which(plot_data_teams$HomeTeam==teams_selected[k]),"AS"])
         lab <- "Goals per shot"
       }
       }else{
-        for(k in 1:length(current_teams)){
-          plot_data[k] <- sum(plot_data_teams[which(plot_data_teams$HomeTeam==current_teams[k]),"FTHG"])/
-            sum(plot_data_teams[which(plot_data_teams$HomeTeam==current_teams[k]),"HST"])
-          plot_data2[k] <- sum(plot_data_teams[which(plot_data_teams$AwayTeam==current_teams[k]),"FTAG"])/
-            sum(plot_data_teams[which(plot_data_teams$HomeTeam==current_teams[k]),"AST"])
+        for(k in 1:length(teams_selected)){
+          plot_data[k] <- sum(plot_data_teams[which(plot_data_teams$HomeTeam==teams_selected[k]),"FTHG"])/
+            sum(plot_data_teams[which(plot_data_teams$HomeTeam==teams_selected[k]),"HST"])
+          plot_data2[k] <- sum(plot_data_teams[which(plot_data_teams$AwayTeam==teams_selected[k]),"FTAG"])/
+            sum(plot_data_teams[which(plot_data_teams$HomeTeam==teams_selected[k]),"AST"])
           lab <- "Goals per shot on target"
         }
       }
