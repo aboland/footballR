@@ -39,7 +39,7 @@ shinyUI(fluidPage(
                               ),
                               tabPanel("Statistics",
                                        fluidRow(
-                                         column(6,
+                                         column(4,
                                                 selectInput("stat_choice", label = h4("Choose stat"), 
                                                             choices = list("Goals" = "goals", 
                                                                            "Shots on target" = "starget",
@@ -59,6 +59,38 @@ shinyUI(fluidPage(
                                          )),
                                        plotOutput("plot_stats", click = "stat_plot_click"),
                                        textOutput("info")
+                              ),
+                              tabPanel("Head to head",
+                                       fluidRow(
+                                         column(2,
+                                                selectInput("hh_stat_choice", label = h4("Statistic"), 
+                                                            choices = list("Goals" = "goals", 
+                                                                           "Shots on target" = "starget",
+                                                                           "Shots" = "shots",
+                                                                           #"Goals per shot on target" = "gperst",
+                                                                           #"Goals per shot" = "gpers",
+                                                                           "Corners" = "corners",
+                                                                           "Fouls" = "fouls",
+                                                                           "Yellow cards" = "ycard",
+                                                                           "Red cards" = "rcard",
+                                                                           "Goals by halftime" = "halfgoals"), selected = "goals")),
+                                         column(3,
+                                                uiOutput("hh_teamA")
+                                         ),
+                                         column(3,
+                                                uiOutput("hh_teamB")
+                                         ),
+                                         column(4,
+                                                #h4("Time range"),
+                                                #checkboxInput("this_season", label = "All seasons", value = FALSE),
+                                                #sliderInput("season_range", label= h4("Season"),
+                                                #            min = 2000, max = 2016, value = c(2015, 2016),step=1, sep=""),
+                                                dateRangeInput("hh_season_range", label= h4("Range"),
+                                                               format = "dd-mm-yyyy", start = "2015-08-08", end = Sys.Date(), min="2000-08-09")
+                                         )
+                                         ),
+                                       plotOutput("plot_hh")
+                                       
                               )
                             )
                    ),
