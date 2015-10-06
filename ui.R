@@ -49,7 +49,7 @@ shinyUI(fluidPage(
                                                                            "Corners" = "corners",
                                                                            "Fouls" = "fouls",
                                                                            "Halftime Goals" = "halfgoals"), selected = "goals")),
-                                         column(5,
+                                         column(4,
                                                 #h4("Time range"),
                                                 #checkboxInput("this_season", label = "All seasons", value = FALSE),
                                                 #sliderInput("season_range", label= h4("Season"),
