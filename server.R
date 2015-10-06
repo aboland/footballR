@@ -527,6 +527,214 @@ shinyServer(function(input, output) {
   
   
   
+  
+  
+  
+  
+  
+  
+  
+  
+  #  ------------------------ Historical Data!!!!!
+  
+  load(file="FullHist.RData")
+  
+  
+  
+#   output$gameweek_hist_choice<-renderUI({
+#     selectInput("gw_hist_choice", 
+#                 label = h3("Gameweek"),
+#                 choices = as.list(1:38),
+#                 selected = gameweek)
+#   })
+  
+  possible_games <- reactive({
+    gw2 <- readHTMLTable(paste0("http://fantasy.premierleague.com/fixtures/",input$gw_choice,"/"))$ismFixtureTable
+    gw2 <- gw2[!is.na(gw2[,2]),]
+    gw2[,4]<-apply(gw2[,3:5],1,function(x)paste(x[1],x[2],x[3]))
+    dimnames(gw2)[[2]] <- c("Date", "Home", " ", " ", " ", "Away") 
+    output <- list()
+    for(i in 1:nrow(gw2))
+      output[[i]] <- paste(as.character(gw2[i,2]),"vs",as.character(gw2[i,6]))
+    output
+  })
+  
+
+  output$game_hist_choice<-renderUI({
+    selectInput("game_hist", 
+                label ="",# h3("Historical Data"),
+                choices = possible_games(),
+                selected = NULL)
+  })
+  
+  
+  output$historical_result <- renderTable({
+    
+    if(is.null(input$game_hist)){
+      ht <- "Tottenham"
+      at <- "Tottenham"
+    }else{
+      #browser()
+      split_t <- strsplit(input$game_hist, split=" vs ")
+      ht <- split_t[[1]][1]
+      at <- split_t[[1]][2]
+      if(ht == "Spurs")
+        ht <- "Tottenham"
+      if(ht == "Man Utd")
+        ht <- "Man United"
+      if(at == "Spurs")
+        at <- "Tottenham"
+      if(at == "Man Utd")
+        at <- "Man United"
+      # Spurs to Tottenham
+      # Man Utd Man United
+    }
+    
+    #browser()
+    if(sum(histPL$HomeTeam==ht & histPL$AwayTeam==at)!=0){
+      #browser()
+      if(input$return_leg==FALSE){
+        current_data <- histPL[which(histPL$HomeTeam==ht & histPL$AwayTeam==at),]
+      }else{
+        current_data <- histPL[which((histPL$HomeTeam==ht & histPL$AwayTeam==at)|(histPL$HomeTeam==at & histPL$AwayTeam==ht)),]
+      }
+      
+      
+      current_data[,"Date"]<- as.character(current_data[,"Date"])
+      
+      df_out <- data.frame(current_data[,c("Date","HomeTeam","FTHG","FTAG","AwayTeam")])
+      for(i in 1:nrow(df_out))
+        df_out[i,3] <- paste(df_out[i,3],"-",df_out[i,4])
+      dimnames(df_out)[[2]] <- c("Date", "Home", " ", " ", "Away") 
+      df_out <- df_out[,c(1,2,3,5)]
+    }else{
+      df_out <- data.frame(Message="No historical data!")
+    }
+    df_out
+  },include.rownames=F)
+  
+  
+  
+  
+  # -------------- Stat plots!!
+  current_season <-read.csv(paste0("http://www.football-data.co.uk/mmz4281/1516/E0.csv"))
+  current_season$Date <- as.Date(current_season$Date,"%d/%m/%y")
+  vars<-c("Div", "Date", "HomeTeam", "AwayTeam", "FTHG", "FTAG", "FTR", "HTHG", "HTAG", "HTR", "Referee",
+          "HS", "AS", "HST", "AST", "HC", "AC", "HF", "AF", "HY", "AY", "HR", "AR")
+  current_season <- current_season[,vars]
+  
+  current_season$Div<-as.character(current_season$Div)
+  current_season$HomeTeam<-as.character(current_season$HomeTeam)
+  current_season$AwayTeam<-as.character(current_season$AwayTeam)
+  current_season$HomeTeam<-as.factor(current_season$HomeTeam)
+  current_season$AwayTeam<-as.factor(current_season$AwayTeam)
+  current_season$FTR<-as.character(current_season$FTR)
+  current_season$HTR<-as.character(current_season$HTR)
+  current_season$Referee<-as.character(current_season$Referee)
+  
+  
+  fulld<-rbind(histPL,current_season)
+  current_teams <- levels(current_season$HomeTeam)
+  
+  team_colours <- c("firebrick", "maroon3", "red2", "royalblue4", "red3", "mediumblue", "blue3", "red",
+                    "lightskyblue", "red", "black", "green", "red", "red", "red", "blue", "navy", "goldenrod2", "steelblue4", "maroon4")
+  
+  
+  output$plot_stats <- renderPlot({
+    
+    if(input$this_season == TRUE || is.null(input$this_season)){
+      plot_data_teams <- fulld
+      lab2 <- "since 2000"
+    }else{
+      plot_data_teams <- current_season
+      lab2 <- "this season"
+    }
+    
+    if(input$stat_choice=="goals" || is.null(input$stat_choice)){
+      s1 <- "FTHG"
+      s2 <- "FTAG"
+      lab <- "goals"
+    }else if(input$stat_choice== "starget"){
+      s1 <- "HST"
+      s2 <- "AST"
+      lab <- "shots on target"
+    }else if(input$stat_choice== "shots"){
+      s1 <- "HS"
+      s2 <- "AS"
+      lab <- "shots on target"
+    }else if(input$stat_choice== "corners"){
+      s1 <- "HC"
+      s2 <- "AC"
+      lab <- "corners"
+    }else if(input$stat_choice== "fouls"){
+      s1 <- "HF"
+      s2 <- "AF"
+      lab <- "fouls"
+    }else if(input$stat_choice== "halfgoals"){
+      s1 <- "HTHG"
+      s2 <- "HTAG"
+      lab <- "halftime goals"
+    }
+    plot_data <- plot_data2 <- NULL
+    
+    if(input$stat_choice!="gpers" && input$stat_choice!="gperst"){ # Special case when shots per goal
+      for(k in 1:length(current_teams)){
+          plot_data[k] <- mean(plot_data_teams[which(plot_data_teams$HomeTeam==current_teams[k]),s1])
+          plot_data2[k] <- mean(plot_data_teams[which(plot_data_teams$AwayTeam==current_teams[k]),s2])
+      }
+    }else{
+      if(input$stat_choice=="gpers"){
+      for(k in 1:length(current_teams)){
+        plot_data[k] <- sum(plot_data_teams[which(plot_data_teams$HomeTeam==current_teams[k]),"FTHG"])/
+          sum(plot_data_teams[which(plot_data_teams$HomeTeam==current_teams[k]),"HS"])
+        plot_data2[k] <- sum(plot_data_teams[which(plot_data_teams$AwayTeam==current_teams[k]),"FTAG"])/
+          sum(plot_data_teams[which(plot_data_teams$HomeTeam==current_teams[k]),"AS"])
+        lab <- "Goals per shot"
+      }
+      }else{
+        for(k in 1:length(current_teams)){
+          plot_data[k] <- sum(plot_data_teams[which(plot_data_teams$HomeTeam==current_teams[k]),"FTHG"])/
+            sum(plot_data_teams[which(plot_data_teams$HomeTeam==current_teams[k]),"HST"])
+          plot_data2[k] <- sum(plot_data_teams[which(plot_data_teams$AwayTeam==current_teams[k]),"FTAG"])/
+            sum(plot_data_teams[which(plot_data_teams$HomeTeam==current_teams[k]),"AST"])
+          lab <- "Goals per shot on target"
+        }
+      }
+    }
+    #browser()
+    plot(plot_data, plot_data2, xlab=paste(lab,"at home"), ylab=paste(lab,"away"), main=paste("Average",lab,lab2),
+         pch=19,col=team_colours, 
+         xlim=c(min(plot_data),max(plot_data) + (abs(range(plot_data)[1]-range(plot_data)[2])/10))
+         )
+    text(plot_data, jitter(plot_data2), current_teams, pos=4)
+  })
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   # ----------------- Fantasy players table --------------------------------------
   
   

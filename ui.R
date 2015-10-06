@@ -84,18 +84,51 @@ shinyUI(fluidPage(
                  )
         )),
         tabPanel("Fixtures/Results",
-                 fluidRow(
-                   column(width = 6, offset =1 ,
-                          uiOutput("gameweek_choice"),
-                          tableOutput("fix_res")
-                   ),
-                   column(4,
-                          h3("League Table"),
-                          tableOutput("personal_table")
+                 tabsetPanel(
+                   tabPanel("Gameweek",
+                            fluidRow(
+                              column(width = 6, offset = 0 ,
+                                     uiOutput("gameweek_choice"),
+                                     tableOutput("fix_res")
+                              ),
+                              column(6,
+                                     #uiOutput("gameweek_hist_choice"),
+                                     h3("Historical Data"),
+                                     fluidRow(
+                                       column(8,
+                                              uiOutput("game_hist_choice")
+                                              ),
+                                       column(4,
+                                              checkboxInput("return_leg", label = "Return Leg", value = FALSE)
+                                              )
+                                       ),
+                                     tableOutput("historical_result")
+                                     #h3("League Table"),
+                                     #tableOutput("personal_table")
+                                     )
+                              )
+                            ),
+                   tabPanel("Historical Statistics",
+                            h3("Historical Data"),
+                            fluidRow(
+                              column(6,
+                            selectInput("stat_choice", label = h4("Choose stat"), 
+                                        choices = list("Goals" = "goals", 
+                                                       "Shots on target" = "starget",
+                                                       "Shots" = "shots",
+                                                       "Goal per shot on target" = "gperst",
+                                                       "Goal per shot" = "gpers",
+                                                       "Corners" = "corners",
+                                                       "Fouls" = "fouls",
+                                                       "Halftime Goals" = "halfgoals"), selected = "goals")),
+                            column(6,
+                              h4("Time range"),
+                              checkboxInput("this_season", label = "All seasons?", value = FALSE)
+                            )),
+                            plotOutput("plot_stats")
+                            )
                    )
-                   )
-                 
-        ),
+                 ),
         
         tabPanel("Player Data",
                  sidebarLayout(
