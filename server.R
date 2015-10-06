@@ -614,7 +614,7 @@ shinyServer(function(input, output) {
         current_data <- fulld[which((fulld$HomeTeam==ht & fulld$AwayTeam==at)|(fulld$HomeTeam==at & fulld$AwayTeam==ht)),]
       }
       
-      current_data[,"Date"] <-  format(current_data[,"Date"], "%d %b '%y")
+      current_data[,"Date"] <-  format(current_data[,"Date"], "%d %b %y")
       #current_data[,"Date"] <- as.character(current_data[,"Date"])
       
       df_out <- data.frame(current_data[,c("Date","HomeTeam","FTHG","FTAG","AwayTeam")])
