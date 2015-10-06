@@ -703,7 +703,7 @@ shinyServer(function(input, output) {
     }else if(input$stat_choice== "shots"){
       s1 <- "HS"
       s2 <- "AS"
-      lab <- "shots on target"
+      lab <- "shots"
     }else if(input$stat_choice== "corners"){
       s1 <- "HC"
       s2 <- "AC"
@@ -821,35 +821,35 @@ shinyServer(function(input, output) {
     if(input$hh_stat_choice == "goals" || is.null(input$hh_stat_choice)){
       hh1 <- "FTHG"
       hh2 <- "FTAG"
-      hhlab <- "goals"
+      hhlab <- "Goals"
     }else if(input$hh_stat_choice== "starget"){
       hh1 <- "HST"
       hh2 <- "AST"
-      hhlab <- "shots on target"
+      hhlab <- "Shots on target"
     }else if(input$hh_stat_choice == "shots"){
       hh1 <- "HS"
       hh2 <- "AS"
-      hhlab <- "shots on target"
+      hhlab <- "Shots"
     }else if(input$hh_stat_choice== "corners"){
       hh1 <- "HC"
       hh2 <- "AC"
-      hhlab <- "corners"
+      hhlab <- "Corners"
     }else if(input$hh_stat_choice== "fouls"){
       hh1 <- "HF"
       hh2 <- "AF"
-      hhlab <- "fouls"
+      hhlab <- "Fouls"
     }else if(input$hh_stat_choice== "ycard"){
       hh1 <- "HY"
       hh2 <- "AY"
-      hhlab <- "yellows"
+      hhlab <- "Yellows"
     }else if(input$hh_stat_choice== "rcard"){
       hh1 <- "HR"
       hh2 <- "AR"
-      hhlab <- "reds"
+      hhlab <- "Reds"
     }else if(input$hh_stat_choice== "halfgoals"){
       hh1 <- "HTHG"
       hh2 <- "HTAG"
-      hhlab <- "halftime goals"
+      hhlab <- "Halftime goals"
     }
     
     
