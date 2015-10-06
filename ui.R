@@ -21,15 +21,16 @@ shinyUI(fluidPage(
                                          ),
                                          column(6,
                                                 #uiOutput("gameweek_hist_choice"),
-                                                h3("Historical Data"),
-                                                fluidRow(
-                                                  column(8,
-                                                         uiOutput("game_hist_choice")
-                                                  ),
-                                                  column(4,
-                                                         checkboxInput("return_leg", label = "Return Leg", value = FALSE)
-                                                  )
-                                                ),
+                                                #h3("Historical Data"),
+                                                #fluidRow(
+                                                  #column(8,
+                                                         uiOutput("game_hist_choice"),
+                                                         checkboxInput("return_leg", label = "Return Fixture", value = FALSE),
+                                                  #),
+                                                  #column(4,
+                                                  #       checkboxInput("return_leg", label = "Return Leg", value = FALSE)
+                                                  #)
+                                                #),
                                                 tableOutput("historical_result")
                                                 #h3("League Table"),
                                                 #tableOutput("personal_table")
@@ -43,8 +44,8 @@ shinyUI(fluidPage(
                                                             choices = list("Goals" = "goals", 
                                                                            "Shots on target" = "starget",
                                                                            "Shots" = "shots",
-                                                                           "Goal per shot on target" = "gperst",
-                                                                           "Goal per shot" = "gpers",
+                                                                           "Goals per shot on target" = "gperst",
+                                                                           "Goals per shot" = "gpers",
                                                                            "Corners" = "corners",
                                                                            "Fouls" = "fouls",
                                                                            "Halftime Goals" = "halfgoals"), selected = "goals")),

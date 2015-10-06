@@ -539,14 +539,25 @@ shinyServer(function(input, output) {
   
   load(file="FullHist.RData")
   
+  current_season <-read.csv(paste0("http://www.football-data.co.uk/mmz4281/1516/E0.csv"))
+  current_season$Date <- as.Date(current_season$Date,"%d/%m/%y")
+  vars<-c("Div", "Date", "HomeTeam", "AwayTeam", "FTHG", "FTAG", "FTR", "HTHG", "HTAG", "HTR", "Referee",
+          "HS", "AS", "HST", "AST", "HC", "AC", "HF", "AF", "HY", "AY", "HR", "AR")
+  current_season <- current_season[,vars]
+  
+  current_season$Div<-as.character(current_season$Div)
+  current_season$HomeTeam<-as.character(current_season$HomeTeam)
+  current_season$AwayTeam<-as.character(current_season$AwayTeam)
+  current_season$HomeTeam<-as.factor(current_season$HomeTeam)
+  current_season$AwayTeam<-as.factor(current_season$AwayTeam)
+  current_season$FTR<-as.character(current_season$FTR)
+  current_season$HTR<-as.character(current_season$HTR)
+  current_season$Referee<-as.character(current_season$Referee)
   
   
-#   output$gameweek_hist_choice<-renderUI({
-#     selectInput("gw_hist_choice", 
-#                 label = h3("Gameweek"),
-#                 choices = as.list(1:38),
-#                 selected = gameweek)
-#   })
+  fulld <- rbind(histPL,current_season)
+  current_teams <- levels(current_season$HomeTeam)
+  
   
   possible_games <- reactive({
     gw2 <- readHTMLTable(paste0("http://fantasy.premierleague.com/fixtures/",input$gw_choice,"/"))$ismFixtureTable
@@ -562,7 +573,7 @@ shinyServer(function(input, output) {
 
   output$game_hist_choice<-renderUI({
     selectInput("game_hist", 
-                label ="",# h3("Historical Data"),
+                label = h3("Historical Data"),# h3("Historical Data"),
                 choices = possible_games(),
                 selected = NULL)
   })
@@ -590,17 +601,15 @@ shinyServer(function(input, output) {
       # Man Utd Man United
     }
     
-    #browser()
-    if(sum(histPL$HomeTeam==ht & histPL$AwayTeam==at)!=0){
-      #browser()
+    if(sum(fulld$HomeTeam==ht & fulld$AwayTeam==at)!=0){
       if(input$return_leg==FALSE){
-        current_data <- histPL[which(histPL$HomeTeam==ht & histPL$AwayTeam==at),]
+        current_data <- fulld[which(fulld$HomeTeam==ht & fulld$AwayTeam==at),]
       }else{
-        current_data <- histPL[which((histPL$HomeTeam==ht & histPL$AwayTeam==at)|(histPL$HomeTeam==at & histPL$AwayTeam==ht)),]
+        current_data <- fulld[which((fulld$HomeTeam==ht & fulld$AwayTeam==at)|(fulld$HomeTeam==at & fulld$AwayTeam==ht)),]
       }
       
-      
-      current_data[,"Date"]<- as.character(current_data[,"Date"])
+      current_data[,"Date"] <-  format(current_data[,"Date"], "%d %b %y")
+      #current_data[,"Date"] <- as.character(current_data[,"Date"])
       
       df_out <- data.frame(current_data[,c("Date","HomeTeam","FTHG","FTAG","AwayTeam")])
       for(i in 1:nrow(df_out))
@@ -617,24 +626,7 @@ shinyServer(function(input, output) {
   
   
   # -------------- Stat plots!!
-  current_season <-read.csv(paste0("http://www.football-data.co.uk/mmz4281/1516/E0.csv"))
-  current_season$Date <- as.Date(current_season$Date,"%d/%m/%y")
-  vars<-c("Div", "Date", "HomeTeam", "AwayTeam", "FTHG", "FTAG", "FTR", "HTHG", "HTAG", "HTR", "Referee",
-          "HS", "AS", "HST", "AST", "HC", "AC", "HF", "AF", "HY", "AY", "HR", "AR")
-  current_season <- current_season[,vars]
   
-  current_season$Div<-as.character(current_season$Div)
-  current_season$HomeTeam<-as.character(current_season$HomeTeam)
-  current_season$AwayTeam<-as.character(current_season$AwayTeam)
-  current_season$HomeTeam<-as.factor(current_season$HomeTeam)
-  current_season$AwayTeam<-as.factor(current_season$AwayTeam)
-  current_season$FTR<-as.character(current_season$FTR)
-  current_season$HTR<-as.character(current_season$HTR)
-  current_season$Referee<-as.character(current_season$Referee)
-  
-  
-  fulld<-rbind(histPL,current_season)
-  current_teams <- levels(current_season$HomeTeam)
   
   team_colours <- c("firebrick", "maroon3", "red2", "royalblue4", "red3", "mediumblue", "blue3", "red",
                     "lightskyblue", "red", "black", "green", "red", "red", "red", "blue", "navy", "goldenrod2", "steelblue4", "maroon4")
