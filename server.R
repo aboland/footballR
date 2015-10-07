@@ -816,13 +816,13 @@ shinyServer(function(input, output) {
   
   output$hh_teamA <- renderUI({
     selectInput("hh_tA_in", 
-                label = h4("Team A"),
+                label = h4("Teams"),
                 choices = hh_teams_selected,
                 selected = "Tottenham")
   })
   output$hh_teamB <- renderUI({
     selectInput("hh_tB_in", 
-                label = h4("Team B"),
+                label = NULL,#h4("Team B"),
                 choices = hh_teams_selected,
                 selected = "Stoke")
   })

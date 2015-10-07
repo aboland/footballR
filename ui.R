@@ -148,11 +148,12 @@ shinyUI(fluidPage(
                                                                            "Red cards" = "rcard",
                                                                            "Goals by halftime" = "halfgoals"), selected = "goals")),
                                          column(3,
-                                                uiOutput("hh_teamA")
-                                         ),
-                                         column(3,
+                                                uiOutput("hh_teamA"),
                                                 uiOutput("hh_teamB")
                                          ),
+                                         #column(3,
+                                         #       uiOutput("hh_teamB")
+                                         #),
                                          column(4,
                                                 #h4("Time range"),
                                                 #checkboxInput("this_season", label = "All seasons", value = FALSE),
@@ -160,7 +161,7 @@ shinyUI(fluidPage(
                                                 #            min = 2000, max = 2016, value = c(2015, 2016),step=1, sep=""),
                                                 dateRangeInput("hh_season_range", label= h4("Date range"),
                                                                format = "dd-mm-yyyy", start = "2015-08-08", end = Sys.Date(), min="2000-08-09"),
-                                                checkboxInput("cumul_sum","Cumulative sum", value = FALSE)
+                                                checkboxInput("cumul_sum","Cumulative sum", value = TRUE)
                                          )
                                          ),
                                        plotOutput("plot_hh")
