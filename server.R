@@ -779,7 +779,7 @@ shinyServer(function(input, output) {
          ylim = c(mymin, mymax)
          )
     text(plot_data, pd2_jit, current_teams, pos=4)
-  },height=800,width=800)
+  })#,height=800,width=800)
   
   
   observe({
