@@ -69,7 +69,7 @@ shinyUI(fluidPage(
                               tabPanel("Statistics",
                                        fluidRow(
                                          column(3,
-                                                selectInput("stat_choice_x", label = h4("Choose x stat"), 
+                                                selectInput("stat_choice_y", label = h4("Stat 1"), 
                                                             choices = list("Goals scored" = "goals",
                                                                            "Goals conceded" = "goals_conc",
                                                                            "Shots on target" = "starget",
@@ -77,7 +77,7 @@ shinyUI(fluidPage(
                                                                            "Corners" = "corners",
                                                                            "Fouls" = "fouls"), selected = "goals")),
                                          column(3,
-                                                selectInput("stat_choice_y", label = h4("Choose y stat"), 
+                                                selectInput("stat_choice_x", label = h4("Stat 2"), 
                                                             choices = list("Goals scored" = "goals",
                                                                            "Goals conceded" = "goals_conc",
                                                                            "Shots on target" = "starget",
@@ -94,8 +94,8 @@ shinyUI(fluidPage(
                                          )),
                                        fluidRow(
                                          column(3,
-                                                selectInput("stat_choice_x_per", label = h4("Choose x by"), 
-                                                            choices = list("None" = "no_div",
+                                                selectInput("stat_choice_y_per", label = NULL,# h4("Choose x by"), 
+                                                            choices = list("By" = "no_div",
                                                                            "Per game" = "p_game",
                                                                            "Per goal" = "p_goal",
                                                                            "Per goal conceded" = "p_goal_conc",
@@ -108,8 +108,8 @@ shinyUI(fluidPage(
                                                                            "Per corner faced" = "p_corner_f",
                                                                            "Per foul" = "p_foul"), selected = "no_div")),
                                          column(3,
-                                                selectInput("stat_choice_y_per", label = h4("Choose y by"), 
-                                                            choices = list("None" = "no_div",
+                                                selectInput("stat_choice_x_per", label = NULL,#h4("Choose y by"), 
+                                                            choices = list("By" = "no_div",
                                                                            "Per game" = "p_game",
                                                                            "Per goal" = "p_goal",
                                                                            "Per goal conceded" = "p_goal_conc",
@@ -126,8 +126,8 @@ shinyUI(fluidPage(
                                                 #radioButtons("custom_boundaries", label = h4("Fixed aspect"),
                                                 #            choices = list("Yes" = "yes", 
                                                 #                           "No" = "No"),selected = "yes"))
-                                                h4("Fixed aspect"),
-                                                checkboxInput("custom_boundaries","Yes", value = TRUE))
+                                                #h4("Fixed aspect"),
+                                                checkboxInput("custom_boundaries","Fixed aspect", value = TRUE))
                                        ),
                                        plotOutput("plot_stats_custom", click = "custom_plot_click"),# , height="auto", width = "100%"),
                                        textOutput("info_cus")
