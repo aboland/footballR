@@ -63,7 +63,7 @@ shinyUI(fluidPage(
                                                              choices = list("Average" = "avg", 
                                                                             "Total" = "tot"),selected = "avg")
                                          )),
-                                       plotOutput("plot_stats", click = "stat_plot_click", width = "100%"),
+                                       plotOutput("plot_stats", click = "stat_plot_click"),# , height="auto", width = "100%"),
                                        textOutput("info")
                               ),
                               tabPanel("Head to head",
