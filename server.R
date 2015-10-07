@@ -640,8 +640,10 @@ shinyServer(function(input, output) {
   
   # -------------- Stat plots!!
   
-  team_colours <- c("firebrick", "maroon3", "red2", "royalblue4", "red3", "mediumblue", "blue3", "red",
+  team_colours <- c("firebrick", "maroon4", "red2", "royalblue4", "red3", "mediumblue", "blue3", "red",
                     "lightskyblue", "red", "black", "green", "red", "red", "red", "blue", "navy", "goldenrod2", "steelblue4", "maroon4")
+  team_colours2 <- c("firebrick", "lightskyblue", "black", "royalblue4", "blue", "mediumblue", "blue3", "red",
+                    "lightskyblue", "black", "white", "yellow", "white", "white", "white", "blue", "white", "black", "white", "lightskyblue")
   
   teams_selected <- current_teams
   plot_data <- plot_data2 <- pd2_jit <- NULL
@@ -1288,10 +1290,15 @@ shinyServer(function(input, output) {
     }
     plot(plot_data_cx, pd2_jit_cy, xlab = paste(cxlab,per_cxlab) , ylab = paste(cylab,per_cylab), 
          main = paste(cylab,per_cylab,"vs.",cxlab,per_cxlab,clab2),
-         pch = 19, col = team_colours, 
+         pch = 19, col = team_colours,cex=1.4, 
          xlim = my_xlim,
          ylim = my_ylim
     )
+    
+    points(plot_data_cx, pd2_jit_cy,
+         pch = 4, col = team_colours2, lwd=1.2
+    )
+    
     text(plot_data_cx, pd2_jit_cy, current_teams, pos=4)
     
   })
