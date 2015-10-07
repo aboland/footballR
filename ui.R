@@ -37,34 +37,100 @@ shinyUI(fluidPage(
                                          )
                                        )
                               ),
+#                               tabPanel("Statistics",
+#                                        fluidRow(
+#                                          column(3,
+#                                                 selectInput("stat_choice", label = h4("Choose stat"), 
+#                                                             choices = list("Goals scored" = "goals",
+#                                                                            "Goals conceded" = "goals_conc",
+#                                                                            "Shots on target" = "starget",
+#                                                                            "Shots" = "shots",
+#                                                                            "Goals per shot on target" = "gperst",
+#                                                                            "Goals per shot" = "gpers",
+#                                                                            "Corners" = "corners",
+#                                                                            "Fouls" = "fouls",
+#                                                                            "Halftime Goals" = "halfgoals"), selected = "goals")),
+#                                          column(4,
+#                                                 #h4("Time range"),
+#                                                 #checkboxInput("this_season", label = "All seasons", value = FALSE),
+#                                                 #sliderInput("season_range", label= h4("Season"),
+#                                                 #            min = 2000, max = 2016, value = c(2015, 2016),step=1, sep=""),
+#                                                 dateRangeInput("season_range2", label= h4("Date range"),
+#                                                       format = "dd-mm-yyyy", start = "2015-08-08", end = Sys.Date(), min="2000-08-09")
+#                                          ),
+#                                          column(3,
+#                                                 radioButtons("sum_tot", label = h4("Summary variable"),
+#                                                              choices = list("Average" = "avg", 
+#                                                                             "Total" = "tot"),selected = "avg")
+#                                          )),
+#                                        plotOutput("plot_stats", click = "stat_plot_click"),# , height="auto", width = "100%"),
+#                                        textOutput("info")
+#                               ),
                               tabPanel("Statistics",
                                        fluidRow(
                                          column(3,
-                                                selectInput("stat_choice", label = h4("Choose stat"), 
+                                                selectInput("stat_choice_x", label = h4("Choose x-axis stat"), 
                                                             choices = list("Goals scored" = "goals",
                                                                            "Goals conceded" = "goals_conc",
                                                                            "Shots on target" = "starget",
                                                                            "Shots" = "shots",
-                                                                           "Goals per shot on target" = "gperst",
-                                                                           "Goals per shot" = "gpers",
                                                                            "Corners" = "corners",
-                                                                           "Fouls" = "fouls",
-                                                                           "Halftime Goals" = "halfgoals"), selected = "goals")),
+                                                                           "Fouls" = "fouls"), selected = "goals")),
+                                         column(3,
+                                                selectInput("stat_choice_y", label = h4("Choose y-axis stat"), 
+                                                            choices = list("Goals scored" = "goals",
+                                                                           "Goals conceded" = "goals_conc",
+                                                                           "Shots on target" = "starget",
+                                                                           "Shots" = "shots",
+                                                                           "Corners" = "corners",
+                                                                           "Fouls" = "fouls"), selected = "goals_conc")),
                                          column(4,
                                                 #h4("Time range"),
                                                 #checkboxInput("this_season", label = "All seasons", value = FALSE),
                                                 #sliderInput("season_range", label= h4("Season"),
                                                 #            min = 2000, max = 2016, value = c(2015, 2016),step=1, sep=""),
-                                                dateRangeInput("season_range2", label= h4("Date range"),
-                                                      format = "dd-mm-yyyy", start = "2015-08-08", end = Sys.Date(), min="2000-08-09")
-                                         ),
-                                         column(3,
-                                                radioButtons("sum_tot", label = h4("Summary variable"),
-                                                             choices = list("Average" = "avg", 
-                                                                            "Total" = "tot"),selected = "avg")
+                                                dateRangeInput("season_range_c", label= h4("Date range"),
+                                                               format = "dd-mm-yyyy", start = "2015-08-08", end = Sys.Date(), min="2000-08-09")
                                          )),
-                                       plotOutput("plot_stats", click = "stat_plot_click"),# , height="auto", width = "100%"),
-                                       textOutput("info")
+                                       fluidRow(
+                                         column(3,
+                                                selectInput("stat_choice_x_per", label = h4("Choose 2nd x"), 
+                                                            choices = list("None" = "no_div",
+                                                                           "Per game" = "p_game",
+                                                                           "Per goal" = "p_goal",
+                                                                           "Per goal conceded" = "p_goal_conc",
+                                                                           "At home" = "p_home",
+                                                                           "Away" = "p_away",
+                                                                           "Per shot" = "p_shot",
+                                                                           "Per shot on target" = "p_shot_t",
+                                                                           "Per shot faced" = "p_shot_f",
+                                                                           "Per corner" = "p_corner",
+                                                                           "Per corner faced" = "p_corner_f",
+                                                                           "Per foul" = "p_foul"), selected = "no_div")),
+                                         column(3,
+                                                selectInput("stat_choice_y_per", label = h4("Choose 2nd y"), 
+                                                            choices = list("None" = "no_div",
+                                                                           "Per game" = "p_game",
+                                                                           "Per goal" = "p_goal",
+                                                                           "Per goal conceded" = "p_goal_conc",
+                                                                           "At home" = "p_home",
+                                                                           "Away" = "p_away",
+                                                                           "Per shot" = "p_shot",
+                                                                           "Per shot on target" = "p_shot_t",
+                                                                           "Per shot faced" = "p_shot_f",
+                                                                           "Per corner" = "p_corner",
+                                                                           "Per corner faced" = "p_corner_f",
+                                                                           "Per foul" = "p_foul"), selected = "no_div")),
+                                         
+                                         column(5,
+                                                #radioButtons("custom_boundaries", label = h4("Fixed aspect"),
+                                                #            choices = list("Yes" = "yes", 
+                                                #                           "No" = "No"),selected = "yes"))
+                                                h4("Fixed aspect"),
+                                                checkboxInput("custom_boundaries","Yes", value = TRUE))
+                                       ),
+                                       plotOutput("plot_stats_custom", click = "custom_plot_click"),# , height="auto", width = "100%"),
+                                       textOutput("info_cus")
                               ),
                               tabPanel("Head to head",
                                        fluidRow(
@@ -100,8 +166,8 @@ shinyUI(fluidPage(
                                        plotOutput("plot_hh")
                                        
                               )
-                            )
-                   ),
+                            
+                   )),
                    
         tabPanel("Fantasy League",
                  tabsetPanel(
