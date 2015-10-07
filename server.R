@@ -596,7 +596,7 @@ shinyServer(function(input, output) {
     
     if(is.null(input$game_hist)){
       ht <- "Tottenham"
-      at <- "Tottenham"
+      at <- "Stoke"
     }else{
       #browser()
       split_t <- strsplit(input$game_hist, split=" vs ")
@@ -632,7 +632,7 @@ shinyServer(function(input, output) {
     }else{
       df_out <- data.frame(Message="No historical data!")
     }
-    df_out
+    df_out[rev(rownames(df_out)),]
   },include.rownames=F)
   
   
