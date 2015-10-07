@@ -127,7 +127,7 @@ shinyUI(fluidPage(
                                                 #            choices = list("Yes" = "yes", 
                                                 #                           "No" = "No"),selected = "yes"))
                                                 #h4("Fixed aspect"),
-                                                checkboxInput("custom_boundaries","Fixed aspect", value = TRUE))
+                                                checkboxInput("custom_boundaries","Fixed aspect", value = FALSE))
                                        ),
                                        plotOutput("plot_stats_custom", click = "custom_plot_click"),# , height="auto", width = "100%"),
                                        textOutput("info_cus")
