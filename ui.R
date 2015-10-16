@@ -2,7 +2,7 @@ library(shiny)
 
 
 # Define UI for application to display data
-shinyUI(fluidPage(
+shinyUI(fluidPage(theme="united.min.css",
   
   # Application title
   titlePanel("Premier League 15/16"),
