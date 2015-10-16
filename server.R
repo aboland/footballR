@@ -676,7 +676,8 @@ shinyServer(function(input, output) {
     #browser()
     #range1 <- format(input$season_range2[1],"%Y-%m-%d")
     #range2 <- format(input$season_range2[2],"%Y-%m-%d")
-    if(input$season_range2[1] == "2015-08-08" && input$season_range2[2] == Sys.Date()){
+    if((input$season_range2[1] <= "2015-08-08" &&  input$season_range2[1] >= "2015-06-08") 
+        && input$season_range2[2] > Sys.Date()){
       plot_data_teams <- current_season
       lab2 <- "this season"
       teams_selected <<- current_teams
