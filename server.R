@@ -677,7 +677,7 @@ shinyServer(function(input, output) {
     #range1 <- format(input$season_range2[1],"%Y-%m-%d")
     #range2 <- format(input$season_range2[2],"%Y-%m-%d")
     if((input$season_range2[1] <= "2015-08-08" &&  input$season_range2[1] >= "2015-06-08") 
-        && input$season_range2[2] > Sys.Date()){
+        && input$season_range2[2] >= Sys.Date()){
       plot_data_teams <- current_season
       lab2 <- "this season"
       teams_selected <<- current_teams
@@ -1014,7 +1014,8 @@ shinyServer(function(input, output) {
     #       "goals_conc" = c("FTHG","FTAG"))
     
     
-    if(input$season_range_c[1] == "2015-08-08" && input$season_range_c[2] == Sys.Date()){
+    if((input$season_range_c[1] <= "2015-08-08" &&  input$season_range_c[1] >= "2015-06-08") 
+       && input$season_range_c[2] >= Sys.Date()){
       plot_data_teams <- current_season
       clab2 <- "this season"
       teams_selected2 <<- current_teams
