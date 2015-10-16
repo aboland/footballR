@@ -1280,7 +1280,10 @@ shinyServer(function(input, output) {
     plot_data_cy <- round(plot_data_cy/plot_data_cy2, digits=4)
     click_ydata <<- plot_data_cy
     
-    pd2_jit_cy <<- jitter(plot_data_cy, factor = 1.5)
+
+    pd2_jit_cy <<- plot_data_cy
+    pd2_jit_cy[duplicated(cbind(plot_data_cy,plot_data_cx))] <<- jitter(plot_data_cy[duplicated(cbind(plot_data_cy,plot_data_cx))], factor = 1.5)
+    
     if(input$custom_boundaries == TRUE){
       mymax <- max(c(plot_data_cx,pd2_jit_cy))
       mymin <- min(c(plot_data_cx,pd2_jit_cy))
