@@ -593,7 +593,6 @@ shinyServer(function(input, output) {
   
   
   output$historical_result <- renderTable({
-    
     if(is.null(input$game_hist)){
       ht <- "Tottenham"
       at <- "Stoke"
@@ -631,6 +630,7 @@ shinyServer(function(input, output) {
       df_out <- df_out[,c(1,2,3,5)]
     }else{
       df_out <- data.frame(Message="No historical data!")
+      return(df_out)
     }
     df_out[rev(rownames(df_out)),]
   },include.rownames=F)
