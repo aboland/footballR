@@ -1015,7 +1015,7 @@ shinyServer(function(input, output) {
     
     
     if((input$season_range_c[1] <= "2015-08-08" &&  input$season_range_c[1] >= "2015-06-08") 
-       && input$season_range_c[2] >= Sys.Date()){
+       && input$season_range_c[2] >= (Sys.Date()-1)){
       plot_data_teams <- current_season
       clab2 <- "this season"
       teams_selected2 <<- current_teams
