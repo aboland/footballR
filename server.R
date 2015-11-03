@@ -60,7 +60,7 @@ shinyServer(function(input, output) {
     data.frame(Month = c("August","September", "October", "November", "December", "January", "February", "March", "April"),
              Gameweeks = c("1, 2, 3, 4", "5, 6, 7", "8, 9, 10, 11", "12, 13, 14", "15, 16, 17, 18, 19", "21, 22, 23",
                            "24, 25, 26 27", "28, 29, 30, 31", "32, 33, 34, 35, 36"),
-             Winner = c("Tristan","Tristan","","","","","","",""))
+             Winner = c("Tristan","Tristan","Keith","","","","","",""))
   },include.rownames=F)
   
   
@@ -118,6 +118,7 @@ shinyServer(function(input, output) {
   
   
   output$manager_current_stand_monthly <- renderTable({
+    #browser()
     # Create data frame of points
     own_league_table_monthly <- data.frame(Team = team_names, Manager = sapply(managers, function(x)strsplit(x,split=" ")[[1]][1]), 
                                            Total = rep(0, length(managers)), Bench = rep(0,length(managers)), Transfers = rep(0,length(managers)), 
@@ -151,7 +152,7 @@ shinyServer(function(input, output) {
       weeks <- input$table_gw
     }
      lapply(sapply(as.character(monthly_weeks[[2]][which(monthly_weeks[[1]]==input$table_month)]),strsplit,split=" "),as.numeric)[[1]]
-    if(weeks[length(weeks)] > gameweek){
+    if(as.numeric(weeks[length(weeks)]) > gameweek){
       if(weeks[1] <= gameweek){
         weeks <- weeks[1]:gameweek
       }else
@@ -180,14 +181,14 @@ shinyServer(function(input, output) {
   })
   
   
-  output$graph_monthly_choice<-renderUI({
+  output$graph_monthly_choice <- renderUI({
     selectInput("plot_month", 
                 label = h5("Month"),
                 choices = as.list(c("All",as.character(monthly_weeks[[1]]))),
                 selected = "All")
   })
   
-  output$plot_gw_range<-renderUI({
+  output$plot_gw_range <- renderUI({
     if(is.null(input$plot_month)||input$plot_month=="All"){
       weeks_avail = 1:gameweek
     }else{
