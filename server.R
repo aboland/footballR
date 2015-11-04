@@ -52,7 +52,10 @@ shinyServer(function(input, output) {
   },include.rownames=F)
   output$personal_table2 <- renderTable({
     summ_tab <- page_tables[[1]][,-1]  # Table 1 will give standing!
-    summ_tab[,3] <- sapply(managers,function(x)strsplit(x,split=" ")[[1]][1])
+    summ_tab[,3] <- as.character(summ_tab[,3])
+    for(i in 1:nrow(summ_tab))
+      summ_tab[i,3] <- as.character(managers_id$names[which(strsplit(as.character(summ_tab[i,3]),split=" ")[[1]][1] == managers_id$names)])
+     #<- sapply(managers,function(x)strsplit(x,split=" ")[[1]][1])
     summ_tab
   }, include.rownames=F)
   
