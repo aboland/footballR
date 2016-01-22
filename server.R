@@ -77,6 +77,7 @@ shinyServer(function(input, output) {
   for(i in 1:length(managers)){
     incProgress(0, detail = paste(sapply(managers, function(x)strsplit(x,split=" ")[[1]][1])[i]))
     manager_data_history[[i]] <- readHTMLTable(paste0("http://fantasy.premierleague.com/entry/",ids[i],"/history/"), stringsAsFactors=F)
+    manager_data_history[[i]][[1]][,"OP"] <- gsub(",","",manager_data_history[[i]][[1]][,"OP"])
     manager_team_history[[i]] <- readHTMLList(paste0("http://fantasy.premierleague.com/entry/",ids[i],"/event-history/",gameweek,"/"), stringsAsFactors=F)
     incProgress(1/length(managers), detail = paste(sapply(managers, function(x)strsplit(x,split=" ")[[1]][1])[i]))
     }
@@ -293,6 +294,7 @@ shinyServer(function(input, output) {
     #  ylim_range <- gw_min
     #  my_xlim <- c(gw_min - 1, gw_max + 1)
     #}else{
+    
       if(input$reactive_lim == FALSE){
         ylim_range <- week_min:week_max
         my_xlim <- c(week_min, week_max)
@@ -307,16 +309,16 @@ shinyServer(function(input, output) {
       #my_ylim <- range(as.numeric(current_stand_plot()[[1]][[1]][,data_plot_choice()]))
       my_ylim <- c(1000,-10)
       for(i in 1:length(managers)){
-        my_ylim[1] <- ifelse(min(as.numeric(current_stand_plot()[[i]][[1]][ylim_range, data_plot_choice()])) < my_ylim[1],
-                             min(as.numeric(current_stand_plot()[[i]][[1]][ylim_range, data_plot_choice()])),
+        my_ylim[1] <- ifelse(min(as.numeric(current_stand_plot()[[i]][[1]][ylim_range, data_plot_choice()]),na.rm=T) < my_ylim[1],
+                             min(as.numeric(current_stand_plot()[[i]][[1]][ylim_range, data_plot_choice()]),na.rm=T),
                              my_ylim[1])
-        my_ylim[2] <- ifelse(max(as.numeric(current_stand_plot()[[i]][[1]][ylim_range, data_plot_choice()])) > my_ylim[2],
-                             max(as.numeric(current_stand_plot()[[i]][[1]][ylim_range, data_plot_choice()])),
+        my_ylim[2] <- ifelse(max(as.numeric(current_stand_plot()[[i]][[1]][ylim_range, data_plot_choice()]),na.rm=T) > my_ylim[2],
+                             max(as.numeric(current_stand_plot()[[i]][[1]][ylim_range, data_plot_choice()]),na.rm=T),
                              my_ylim[2])
       }
       if(ylim_range[1] == 1 || data_plot_choice() == "GP" || input$reactive_lim == FALSE)
         my_ylim[1] = 0
-      
+
       plot(gw_min:gw_max, current_stand_plot()[[1]][[1]][gw_min:gw_max, data_plot_choice()], type = "n", 
            ylim = my_ylim, xlim = my_xlim, ylab = "Points", xlab="Gameweek", 
            xaxt ="n", main = input$data_dis)
@@ -354,7 +356,7 @@ shinyServer(function(input, output) {
     ##if(data_plot_choice() == "TV")
     ##  for(i in 1:length(managers))
     ##    manager_data_history2[[i]][[1]][,"TV"] <- as.numeric(gsub("(removed pound symbol)|m","",manager_data_history2[[i]][[1]][,"TV"]))
-      
+    
     if(is.null(input$plot_month)||input$plot_month=="All"){
       return(manager_data_history2)
     }else{
