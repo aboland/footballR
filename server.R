@@ -45,13 +45,15 @@ shinyServer(function(input, output) {
   events <- c(as.POSIXct("2016-01-27 19:45:00", "GMT"),
               as.POSIXct("2016-01-27 20:03:00", "GMT"),
               as.POSIXct("2016-01-27 20:09:00", "GMT"),
-              as.POSIXct("2016-01-27 20:32:00", "GMT"))
+              as.POSIXct("2016-01-27 20:32:00", "GMT"),
+              as.POSIXct("2016-01-27 20:47:00", "GMT"))
   event_labels <- c("Kick off",
                     "Goal E",
                     "Goal MC",
-                    "Half time")
+                    "Half time",
+                    "Second half")
   
-  odds_xlim <- c(as.POSIXct("2016-01-27 18:30:00", "GMT"),
+  odds_xlim <- c(as.POSIXct("2016-01-27 18:45:00", "GMT"),
             as.POSIXct("2016-01-27 21:45:00", "GMT"))
   ################
   
