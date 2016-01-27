@@ -1494,6 +1494,22 @@ shinyServer(function(input, output) {
          y = range(as.numeric(odds_data[,1:2]))[1], 
          pos = 4,
          labels=event_labels)
+    
+    plot(times, as.numeric(odds_data[,3]), 
+         type="l", 
+         main="Everton",
+         ylab="Odds", 
+         col="cornflowerblue", 
+         ylim = range(as.numeric(odds_data[,3:4])))
+    lines(times, as.numeric(odds_data[,4]), col = "lightpink1")
+    legend("topright", c("Back", "Lay"), 
+           col=c("cornflowerblue", "lightpink1"),
+           lty=1)
+    abline(v = events, lty=2)
+    text(x = events, 
+         y = range(as.numeric(odds_data[,3:4]))[1], 
+         pos = 4,
+         labels=event_labels)
   })
   
   })
