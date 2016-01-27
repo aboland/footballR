@@ -50,6 +50,9 @@ shinyServer(function(input, output) {
                     "Goal E",
                     "Goal MC",
                     "Half time")
+  
+  odds_xlim <- c(as.POSIXct("2016-01-27 18:30:00", "GMT"),
+            as.POSIXct("2016-01-27 21:45:00", "GMT"))
   ################
   
   gameweek <- nrow(readHTMLTable("http://fantasy.premierleague.com/entry/1693603/history/", stringsAsFactors=F)[[1]])
@@ -1494,7 +1497,8 @@ shinyServer(function(input, output) {
          ylab="Odds",
          xlab="",
          col="cornflowerblue", 
-         ylim = range(as.numeric(odds_data[,1:2])))
+         ylim = range(as.numeric(odds_data[,1:2])),
+         xlim = odds_xlim)
     lines(times, as.numeric(odds_data[,2]), col = "lightpink1")
     legend("topright", c("Back", "Lay"), 
            col=c("cornflowerblue", "lightpink1"),
@@ -1516,7 +1520,8 @@ shinyServer(function(input, output) {
          ylab="Odds", 
          xlab="",
          col="cornflowerblue", 
-         ylim = range(as.numeric(odds_data[,3:4])))
+         ylim = range(as.numeric(odds_data[,3:4])),
+         xlim = odds_xlim)
     lines(times, as.numeric(odds_data[,4]), col = "lightpink1")
     legend("topright", c("Back", "Lay"), 
            col=c("cornflowerblue", "lightpink1"),
@@ -1537,7 +1542,8 @@ shinyServer(function(input, output) {
          ylab="Odds", 
          xlab="",
          col="cornflowerblue", 
-         ylim = range(as.numeric(odds_data[,c(5,6)])))
+         ylim = range(as.numeric(odds_data[,c(5,6)])),
+         xlim = odds_xlim)
     lines(times, as.numeric(odds_data[,6]), col = "lightpink1")
     legend("topright", c("Back", "Lay"), 
            col=c("cornflowerblue", "lightpink1"),
