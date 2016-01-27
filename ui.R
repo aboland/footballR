@@ -257,7 +257,7 @@ shinyUI(fluidPage(#theme="bootstrap.css",
 
       tabPanel("Odds tracker (beta)",
                tabsetPanel(
-                 tabPanel("Gameweek",
+                 tabPanel("Man City vs Everton",
                           plotOutput("odds_plot", click = "custom_plot_click")# , height="auto", width = "100%"),
                  )
                )
