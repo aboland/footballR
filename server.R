@@ -18,7 +18,7 @@ load("current_web_data_tidy.RData")
   events <- c(as.POSIXct("2016-01-27 19:45:00", "GMT"), 
             as.POSIXct("2016-01-27 16:30:00", "GMT"))
   event_labels <- c("Start", 
-                  "Goal test")
+                  "test")
  ################
 
 managers_id <- data.frame(names = c("Aidan", "Wes", "Sean", "Garry", "Tristan", "Craig", "Keith"),
@@ -1534,7 +1534,7 @@ shinyServer(function(input, output) {
            lty=1)
     abline(v = events, lty=2)
     text(x = events, 
-         y = range(as.numeric(odds_data[,1:2]))[1], 
+         y = range(as.numeric(odds_data[,5:6]))[1], 
          pos = 4,
          labels=event_labels)
   })
