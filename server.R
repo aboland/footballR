@@ -15,7 +15,7 @@ load("current_web_data_tidy.RData")
  #  Testing for a match, not automated enough!!!
   load("ManCity_Everton_27Jan.RData")
   times <- as.POSIXct(as.numeric(odds_data[,7]) - 3600, origin = "1970-01-01")
-  events <- c(as.POSIXct("2016-01-27 15:45:00", "GMT"),
+  events <- c(as.POSIXct("2016-01-27 19:45:00", "GMT"),
               as.POSIXct("2016-01-27 13:45:00", "GMT"),
               as.POSIXct("2016-01-27 20:30:00", "GMT"))
   event_labels <- c("Kick off",
