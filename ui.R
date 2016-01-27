@@ -11,6 +11,16 @@ shinyUI(fluidPage(#theme="bootstrap.css",
   # Sidebar ---------------------------------------------------------------------------------------
       navlistPanel(widths =c(2, 10),
                    
+                   tabPanel("Odds tracker (beta)",
+                            tabsetPanel(
+                              tabPanel("Man City vs Everton",
+                                       plotOutput("odds_plot_home", click = "custom_plot_click"),# , height="auto", width = "100%"),
+                                       plotOutput("odds_plot_away"),
+                                       plotOutput("odds_plot_draw")
+                              )
+                            )
+                   ),
+                   
                    tabPanel("Fixtures/Results",
                             tabsetPanel(
                               tabPanel("Gameweek",
@@ -253,17 +263,6 @@ shinyUI(fluidPage(#theme="bootstrap.css",
                    column(5, uiOutput("cost_choice"))),
                  tableOutput("data_display"))
                  )
-        ),
-
-      tabPanel("Odds tracker (beta)",
-               tabsetPanel(
-                 tabPanel("Man City vs Everton",
-                          plotOutput("odds_plot_home", click = "custom_plot_click"),# , height="auto", width = "100%"),
-                          plotOutput("odds_plot_away"),
-                          plotOutput("odds_plot_draw")
-                 )
-               )
-               
-               )
+        )
       )
 ))
