@@ -42,6 +42,11 @@ shinyServer(function(input, output) {
   #  Testing for a match, not automated enough!!!
   load("ManCity_Everton_27Jan.RData")
   times <- as.POSIXct(as.numeric(odds_data[,7]) - 3815, origin = "1970-01-01")
+  
+  odds_data[,1:6] <- as.numeric(odds_data[,1:6])
+  
+  odds_data[is.na(odds_data)] <- 0
+  
   events <- c(as.POSIXct("2016-01-27 19:45:00", "GMT"),
               as.POSIXct("2016-01-27 20:03:00", "GMT"),
               as.POSIXct("2016-01-27 20:09:00", "GMT"),
