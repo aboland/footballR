@@ -67,7 +67,7 @@ shinyServer(function(input, output) {
                     "90 mins")
   
   odds_xlim <- c(as.POSIXct("2016-01-27 18:45:00", "GMT"),
-            as.POSIXct("2016-01-27 22:45:00", "GMT"))
+            as.POSIXct("2016-01-27 21:45:00", "GMT"))
   ################
   
   gameweek <- nrow(readHTMLTable("http://fantasy.premierleague.com/entry/1693603/history/", stringsAsFactors=F)[[1]])
