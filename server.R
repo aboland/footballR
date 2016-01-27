@@ -1472,7 +1472,7 @@ shinyServer(function(input, output) {
     #plot(runif(3))
     #source("plot_ts.R")
     
-    load("~/Odds/ManCity_Everton_27Jan.RData")
+    load("/home/aidan/Odds/ManCity_Everton_27Jan.RData")
     plot(as.numeric(odds_data[,7]), as.numeric(odds_data[,1]), type="l")
   })
   
