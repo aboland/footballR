@@ -10,6 +10,17 @@ library(XML)
 #load("current_web_data.RData")
 load("current_web_data_tidy.RData")
 
+
+ ########
+ #  Testing for a match, not automated enough!!!
+  load("ManCity_Everton_27Jan.RData")
+  times <- as.POSIXct(as.numeric(odds_data[,7]) - 3600, origin = "1970-01-01")
+  events <- c(as.POSIXct("2016-01-27 19:45:00", "GMT"), 
+            as.POSIXct("2016-01-27 16:30:00", "GMT"))
+  event_labels <- c("Start", 
+                  "Goal test")
+ ################
+
 managers_id <- data.frame(names = c("Aidan", "Wes", "Sean", "Garry", "Tristan", "Craig", "Keith"),
                            ids = c(1693603, 1710052, 1748757, 1904476, 304705, 2176015, 509881))
 league_id <- 401525
@@ -1467,18 +1478,9 @@ shinyServer(function(input, output) {
     
   })
   
-  output$odds_plot <- renderPlot({
+  
+  output$odds_plot_home <- renderPlot({
     #source("plot_ts.R")
-    
-    events <- c(as.POSIXct("2016-01-27 19:45:00", "GMT"), 
-                as.POSIXct("2016-01-27 16:30:00", "GMT"))
-    event_labels <- c("Start", 
-                      "Goal test")
-    
-    load("ManCity_Everton_27Jan.RData")
-    
-    times <- as.POSIXct(as.numeric(odds_data[,7]) - 3600, origin = "1970-01-01")
-    
     par(mfrow=c(2,1))
     plot(times, as.numeric(odds_data[,1]), 
          type="l", 
@@ -1495,6 +1497,11 @@ shinyServer(function(input, output) {
          y = range(as.numeric(odds_data[,1:2]))[1], 
          pos = 4,
          labels=event_labels)
+
+  })
+  
+  output$odds_plot_away <- renderPlot({
+    #source("plot_ts.R")
     
     plot(times, as.numeric(odds_data[,3]), 
          type="l", 
