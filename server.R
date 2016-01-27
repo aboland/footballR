@@ -18,7 +18,7 @@ load("current_web_data_tidy.RData")
   events <- c(as.POSIXct("2016-01-27 19:45:00", "GMT"), 
             as.POSIXct("2016-01-27 16:30:00", "GMT"))
   event_labels <- c("Start", 
-                  "test")
+                  "test event")
  ################
 
 managers_id <- data.frame(names = c("Aidan", "Wes", "Sean", "Garry", "Tristan", "Craig", "Keith"),
