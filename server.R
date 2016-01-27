@@ -1479,6 +1479,7 @@ shinyServer(function(input, output) {
     
     times <- as.POSIXct(as.numeric(odds_data[,7]) - 3600, origin = "1970-01-01")
     
+    par(mfrow=c(2,1))
     plot(times, as.numeric(odds_data[,1]), 
          type="l", 
          main="Man City", 
