@@ -1580,41 +1580,6 @@ shinyServer(function(input, output) {
   })
   
   
-  
-  
-#   load("matchodds/2Feb.RData")
-#   n_matches <- length(match)
-#   times <- as.POSIXct(as.numeric(match_odds[[1]][,7]) - 3815, origin = "1970-01-01")
-#   
-#   #odds_xlim <- c(as.POSIXct("2016-01-27 18:45:00", "GMT"),
-#   #               as.POSIXct("2016-01-27 21:45:00", "GMT"))
-#   ################
-#   
-#   
-#   
-#   output$odds_plot_home2 <- renderPlot({
-#     #source("plot_ts.R")
-#     plot(times, as.numeric(match_odds[[1]][,1]), 
-#          type="l", 
-#          main="Man City", 
-#          ylab="Odds",
-#          xlab="",
-#          col="cornflowerblue", 
-#          ylim = range(as.numeric(match_odds[[1]][,1:2]),na.rm = T))
-#        #  xlim = odds_xlim)
-#     lines(times, as.numeric(match_odds[[1]][,2]), col = "lightpink1")
-#     legend("topright", c("Back", "Lay"), 
-#            col=c("cornflowerblue", "lightpink1"),
-#            lty=1)
-#     abline(v = events, lty=2)
-#     text(x = events, 
-#          y = range(as.numeric(match_odds[[1]][,1:2]),na.rm = T)[1], 
-#          pos = 4,
-#          labels=event_labels)
-#     
-#   })
-  
-  
   })
 
 
