@@ -43,11 +43,13 @@ shinyServer(function(input, output) {
   load("ManCity_Everton_27Jan.RData")
   times <- as.POSIXct(as.numeric(odds_data[,7]) - 3600, origin = "1970-01-01")
   events <- c(as.POSIXct("2016-01-27 19:45:00", "GMT"),
-              as.POSIXct("2016-01-27 13:45:00", "GMT"),
-              as.POSIXct("2016-01-27 20:30:00", "GMT"))
+              as.POSIXct("2016-01-27 20:03:00", "GMT"),
+              as.POSIXct("2016-01-27 20:09:00", "GMT"),
+              as.POSIXct("2016-01-27 20:32:00", "GMT"))
   event_labels <- c("Kick off",
-                    "Enter event",
-                    "45 mins")
+                    "Goal E",
+                    "Goal MC",
+                    "Half time")
   ################
   
   gameweek <- nrow(readHTMLTable("http://fantasy.premierleague.com/entry/1693603/history/", stringsAsFactors=F)[[1]])
