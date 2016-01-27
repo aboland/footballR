@@ -45,7 +45,7 @@ shinyServer(function(input, output) {
   
   odds_data[,1:6] <- as.numeric(odds_data[,1:6])
   
-  odds_data[is.na(odds_data)] <- 0
+  odds_data[is.na(odds_data)] <- 1
   
   events <- c(as.POSIXct("2016-01-27 19:45:00", "GMT"),
               as.POSIXct("2016-01-27 20:03:00", "GMT"),
