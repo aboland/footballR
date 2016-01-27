@@ -1468,12 +1468,32 @@ shinyServer(function(input, output) {
   })
   
   output$odds_plot <- renderPlot({
-    
-    #plot(runif(3))
     #source("plot_ts.R")
     
+    events <- c(as.POSIXct("2016-01-27 19:45:00", "GMT"), 
+                as.POSIXct("2016-01-27 16:30:00", "GMT"))
+    event_labels <- c("Start", 
+                      "Goal test")
+    
     load("ManCity_Everton_27Jan.RData")
-    plot(as.numeric(odds_data[,7]), as.numeric(odds_data[,1]), type="l")
+    
+    times <- as.POSIXct(as.numeric(odds_data[,7]) - 3600, origin = "1970-01-01")
+    
+    plot(times, as.numeric(odds_data[,1]), 
+         type="l", 
+         main="Man City", 
+         ylab="Odds",
+         col="cornflowerblue", 
+         ylim = range(as.numeric(odds_data[,1:2])))
+    lines(times, as.numeric(odds_data[,2]), col = "lightpink1")
+    legend("topright", c("Back", "Lay"), 
+           col=c("cornflowerblue", "lightpink1"),
+           lty=1)
+    abline(v = events, lty=2)
+    text(x = events, 
+         y = range(as.numeric(odds_data[,1:2]))[1], 
+         pos = 4,
+         labels=event_labels)
   })
   
   })
