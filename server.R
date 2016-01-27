@@ -11,17 +11,7 @@ library(XML)
 load("current_web_data_tidy.RData")
 
 
- ########
- #  Testing for a match, not automated enough!!!
-  load("ManCity_Everton_27Jan.RData")
-  times <- as.POSIXct(as.numeric(odds_data[,7]) - 3600, origin = "1970-01-01")
-  events <- c(as.POSIXct("2016-01-27 19:45:00", "GMT"),
-              as.POSIXct("2016-01-27 13:45:00", "GMT"),
-              as.POSIXct("2016-01-27 20:30:00", "GMT"))
-  event_labels <- c("Kick off",
-                    "Enter event",
-                    "45 mins")
- ################
+
 
 managers_id <- data.frame(names = c("Aidan", "Wes", "Sean", "Garry", "Tristan", "Craig", "Keith"),
                            ids = c(1693603, 1710052, 1748757, 1904476, 304705, 2176015, 509881))
@@ -46,6 +36,19 @@ monthly_weeks <- data.frame(Month = c("August","September", "October", "November
                                           "24 25 26 27", "28 29 30 31", "32 33 34 35 36"))
 
 shinyServer(function(input, output) {
+  
+  
+  ########
+  #  Testing for a match, not automated enough!!!
+  load("ManCity_Everton_27Jan.RData")
+  times <- as.POSIXct(as.numeric(odds_data[,7]) - 3600, origin = "1970-01-01")
+  events <- c(as.POSIXct("2016-01-27 19:45:00", "GMT"),
+              as.POSIXct("2016-01-27 13:45:00", "GMT"),
+              as.POSIXct("2016-01-27 20:30:00", "GMT"))
+  event_labels <- c("Kick off",
+                    "Enter event",
+                    "45 mins")
+  ################
   
   gameweek <- nrow(readHTMLTable("http://fantasy.premierleague.com/entry/1693603/history/", stringsAsFactors=F)[[1]])
 
