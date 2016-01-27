@@ -37,39 +37,6 @@ monthly_weeks <- data.frame(Month = c("August","September", "October", "November
 
 shinyServer(function(input, output) {
   
-  
-  ########
-  #  Testing for a match, not automated enough!!!
-  load("ManCity_Everton_27Jan.RData")
-  times <- as.POSIXct(as.numeric(odds_data[,7]) - 3815, origin = "1970-01-01")
-  
-  odds_data[,1:6] <- as.numeric(odds_data[,1:6])
-  
-  odds_data[is.na(odds_data)] <- 1
-  
-  events <- c(as.POSIXct("2016-01-27 19:45:00", "GMT"),
-              as.POSIXct("2016-01-27 20:03:00", "GMT"),
-              as.POSIXct("2016-01-27 20:09:00", "GMT"),
-              as.POSIXct("2016-01-27 20:32:00", "GMT"),
-              as.POSIXct("2016-01-27 20:47:00", "GMT"),
-              #as.POSIXct("2016-01-27 21:02:00", "GMT"),
-              as.POSIXct("2016-01-27 21:11:00", "GMT"),
-              as.POSIXct("2016-01-27 21:17:00", "GMT"),
-              as.POSIXct("2016-01-27 21:37:00", "GMT"))
-  event_labels <- c("Kick off",
-                    "G E",
-                    "G MC",
-                    "Half time",
-                    "Second half",
-                    #"MC chances",
-                    "G MC",
-                    "G MC",
-                    "FT")
-  
-  odds_xlim <- c(as.POSIXct("2016-01-27 18:45:00", "GMT"),
-            as.POSIXct("2016-01-27 21:45:00", "GMT"))
-  ################
-  
   gameweek <- nrow(readHTMLTable("http://fantasy.premierleague.com/entry/1693603/history/", stringsAsFactors=F)[[1]])
 
   # Side panel shite talk ------------------------
@@ -1504,6 +1471,47 @@ shinyServer(function(input, output) {
   })
   
   
+  
+  
+  
+  
+  
+  #### -------------------------------------------------------------------------------------
+  #########
+  ########
+  #  Testing for a match, not automated enough!!!
+  load("matchodds/ManCity_Everton_27Jan.RData")
+  times <- as.POSIXct(as.numeric(odds_data[,7]) - 3815, origin = "1970-01-01")
+  
+  odds_data[,1:6] <- as.numeric(odds_data[,1:6])
+  
+  #odds_data[is.na(odds_data)] <- 1
+  
+  events <- c(as.POSIXct("2016-01-27 19:45:00", "GMT"),
+              as.POSIXct("2016-01-27 20:03:00", "GMT"),
+              as.POSIXct("2016-01-27 20:09:00", "GMT"),
+              as.POSIXct("2016-01-27 20:32:00", "GMT"),
+              as.POSIXct("2016-01-27 20:47:00", "GMT"),
+              #as.POSIXct("2016-01-27 21:02:00", "GMT"),
+              as.POSIXct("2016-01-27 21:11:00", "GMT"),
+              as.POSIXct("2016-01-27 21:17:00", "GMT"),
+              as.POSIXct("2016-01-27 21:37:00", "GMT"))
+  event_labels <- c("Kick off",
+                    "G E",
+                    "G MC",
+                    "Half time",
+                    "Second half",
+                    #"MC chances",
+                    "G MC",
+                    "G MC",
+                    "FT")
+  
+  odds_xlim <- c(as.POSIXct("2016-01-27 18:45:00", "GMT"),
+                 as.POSIXct("2016-01-27 21:45:00", "GMT"))
+  ################
+  
+  
+  
   output$odds_plot_home <- renderPlot({
     #source("plot_ts.R")
     plot(times, as.numeric(odds_data[,1]), 
@@ -1512,7 +1520,7 @@ shinyServer(function(input, output) {
          ylab="Odds",
          xlab="",
          col="cornflowerblue", 
-         ylim = range(as.numeric(odds_data[,1:2])),
+         ylim = range(as.numeric(odds_data[,1:2]),na.rm = T),
          xlim = odds_xlim)
     lines(times, as.numeric(odds_data[,2]), col = "lightpink1")
     legend("topright", c("Back", "Lay"), 
@@ -1520,7 +1528,7 @@ shinyServer(function(input, output) {
            lty=1)
     abline(v = events, lty=2)
     text(x = events, 
-         y = range(as.numeric(odds_data[,1:2]))[1], 
+         y = range(as.numeric(odds_data[,1:2]),na.rm = T)[1], 
          pos = 4,
          labels=event_labels)
 
@@ -1535,7 +1543,7 @@ shinyServer(function(input, output) {
          ylab="Odds", 
          xlab="",
          col="cornflowerblue", 
-         ylim = range(as.numeric(odds_data[,3:4])),
+         ylim = range(as.numeric(odds_data[,3:4]),na.rm = T),
          xlim = odds_xlim)
     lines(times, as.numeric(odds_data[,4]), col = "lightpink1")
     legend("topright", c("Back", "Lay"), 
@@ -1543,7 +1551,7 @@ shinyServer(function(input, output) {
            lty=1)
     abline(v = events, lty=2)
     text(x = events, 
-         y = range(as.numeric(odds_data[,3:4]))[1], 
+         y = range(as.numeric(odds_data[,3:4]),na.rm = T)[1], 
          pos = 4,
          labels=event_labels)
   })
@@ -1557,7 +1565,7 @@ shinyServer(function(input, output) {
          ylab="Odds", 
          xlab="",
          col="cornflowerblue", 
-         ylim = range(as.numeric(odds_data[,c(5,6)])),
+         ylim = range(as.numeric(odds_data[,c(5,6)]),na.rm = T),
          xlim = odds_xlim)
     lines(times, as.numeric(odds_data[,6]), col = "lightpink1")
     legend("topright", c("Back", "Lay"), 
@@ -1565,7 +1573,7 @@ shinyServer(function(input, output) {
            lty=1)
     abline(v = events, lty=2)
     text(x = events, 
-         y = range(as.numeric(odds_data[,5:6]))[1], 
+         y = range(as.numeric(odds_data[,5:6]),na.rm = T)[1], 
          pos = 4,
          labels=event_labels)
   })
