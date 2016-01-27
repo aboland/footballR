@@ -259,7 +259,8 @@ shinyUI(fluidPage(#theme="bootstrap.css",
                tabsetPanel(
                  tabPanel("Man City vs Everton",
                           plotOutput("odds_plot_home", click = "custom_plot_click"),# , height="auto", width = "100%"),
-                          plotOutput("odds_plot_away")
+                          plotOutput("odds_plot_away"),
+                          plotOutput("odds_plot_draw")
                  )
                )
                

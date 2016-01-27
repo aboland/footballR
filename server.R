@@ -1481,7 +1481,6 @@ shinyServer(function(input, output) {
   
   output$odds_plot_home <- renderPlot({
     #source("plot_ts.R")
-    par(mfrow=c(2,1))
     plot(times, as.numeric(odds_data[,1]), 
          type="l", 
          main="Man City", 
@@ -1516,6 +1515,26 @@ shinyServer(function(input, output) {
     abline(v = events, lty=2)
     text(x = events, 
          y = range(as.numeric(odds_data[,3:4]))[1], 
+         pos = 4,
+         labels=event_labels)
+  })
+  
+  output$odds_plot_draw <- renderPlot({
+    #source("plot_ts.R")
+    
+    plot(times, as.numeric(odds_data[,5]), 
+         type="l", 
+         main="Draw",
+         ylab="Odds", 
+         col="cornflowerblue", 
+         ylim = range(as.numeric(odds_data[,c(5,6)])))
+    lines(times, as.numeric(odds_data[,6]), col = "lightpink1")
+    legend("topright", c("Back", "Lay"), 
+           col=c("cornflowerblue", "lightpink1"),
+           lty=1)
+    abline(v = events, lty=2)
+    text(x = events, 
+         y = range(as.numeric(odds_data[,1:2]))[1], 
          pos = 4,
          labels=event_labels)
   })
