@@ -1467,7 +1467,22 @@ shinyServer(function(input, output) {
     
   })
   
+  output$odds_plot <- renderPlot({
+    
+    plot(runif(3))
+  })
+  
   })
 
 
 
+
+
+
+  
+  
+  
+  
+  
+  
+  

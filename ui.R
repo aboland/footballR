@@ -253,7 +253,15 @@ shinyUI(fluidPage(#theme="bootstrap.css",
                    column(5, uiOutput("cost_choice"))),
                  tableOutput("data_display"))
                  )
-        )
-      
-    
-)))
+        ),
+
+      tabPanel("Odds tracker (beta)",
+               tabsetPanel(
+                 tabPanel("Gameweek",
+                          plotOutput("odds_plot", click = "custom_plot_click")# , height="auto", width = "100%"),
+                 )
+               )
+               
+               )
+      )
+))
