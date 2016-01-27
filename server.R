@@ -1485,6 +1485,7 @@ shinyServer(function(input, output) {
          type="l", 
          main="Man City", 
          ylab="Odds",
+         xlab="",
          col="cornflowerblue", 
          ylim = range(as.numeric(odds_data[,1:2])))
     lines(times, as.numeric(odds_data[,2]), col = "lightpink1")
@@ -1506,6 +1507,7 @@ shinyServer(function(input, output) {
          type="l", 
          main="Everton",
          ylab="Odds", 
+         xlab="",
          col="cornflowerblue", 
          ylim = range(as.numeric(odds_data[,3:4])))
     lines(times, as.numeric(odds_data[,4]), col = "lightpink1")
@@ -1526,6 +1528,7 @@ shinyServer(function(input, output) {
          type="l", 
          main="Draw",
          ylab="Odds", 
+         xlab="",
          col="cornflowerblue", 
          ylim = range(as.numeric(odds_data[,c(5,6)])))
     lines(times, as.numeric(odds_data[,6]), col = "lightpink1")
