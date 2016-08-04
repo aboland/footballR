@@ -120,7 +120,9 @@ shinyUI(fluidPage(#theme="bootstrap.css",
                                                 checkboxInput("custom_boundaries","Fixed aspect", value = FALSE)
                                          )),
                                        plotOutput("plot_stats_custom", click = "custom_plot_click"),# , height="auto", width = "100%"),
-                                       textOutput("info_cus")
+                                       plotOutput("plot_stats_custom"),
+                                       textOutput("info_cus"),
+                                       ggvisOutput("myggplot")
                               ),
                               tabPanel("Head to head",
                                        fluidRow(
@@ -160,81 +162,81 @@ shinyUI(fluidPage(#theme="bootstrap.css",
                             
                    )),
                    
-        tabPanel("Fantasy League",
-                 tabsetPanel(
-                   tabPanel("Summary",
-                            #p("This takes the data straight from the web, once I get it set up properly it should run the monthly leagues automatically."),
-                            
-                            #sidebarLayout(
-                              #sidebarPanel(
-                                #h4("League code: 1693603-401525"),
-                                #p("The current plan is a pay-in of 15 each. The person with most points within each month will get 10 and the overall
-                                # winner will get the left over money. 6 players will give enough money for the monthly prizes. Some gameweeks
-                                # occuring at the beginning/end of a month will span two months. The month a gameweek starts in will be the
-                                #month that the gameweek counts in. A list of the months and repective gameweeks is displayed on the right."),
-                                #p(textOutput("n_managers"))
-                              #),
-                              #mainPanel(
-                                h3("Fantasy Table (Official)"),
-                                tableOutput("personal_table2")
-                              #)
-                            #)
-                   ),
-                   tabPanel("Full standings",
-                            fluidRow(
-                              column(width = 4,
-                                     h3("Monthly Gameweeks"),
-                                     p("The following gameweeks will be used to decide the monthly prizes"),
-                                     tableOutput("MonthGW")),
-                              column(8,
-                                     h3("Fantasy Table"),
-                                     fluidRow(
-                                       column(3,
-                                              uiOutput("table_monthly_choice")),
-                                       column(3,
-                                              uiOutput("table_gameweek_choice"))
-                                     ),
-                                     tableOutput("manager_current_stand_monthly"))
-                            )),
-                 
-                 tabPanel("Graphs",
-                          fluidRow(
-                            column(width = 2, offset = 1,
-                                   uiOutput("plot_data_type")),
-                            column(4,
-                                   uiOutput("plot_gw_range")),
-                            column(2,
-                                 uiOutput("graph_monthly_choice")),
-                            column(2,
-                                   h5("Reactive Boundaries"),
-                                   checkboxInput("reactive_lim","Yes", value = FALSE)
-                                   #checkboxInput("animate","Animate", value = FALSE)
-                                   
-                                   )
-                          ),
-                          plotOutput("points_plot")
-                 ),
-                 tabPanel("Compare Teams",
-                          fluidRow(
-                            column(width = 2, offset = 1,
-                                    uiOutput("manager_choice1"),
-                                    tableOutput("manager_team1")
-                            ),
-                            column(2,
-                                  uiOutput("manager_choice2"),
-                                  tableOutput("manager_team2")
-                                  ),
-                            column(2,
-                                   uiOutput("manager_choice3"),
-                                   tableOutput("manager_team3")
-                            ),
-                            column(2,
-                                   uiOutput("manager_choice4"),
-                                   tableOutput("manager_team4")
-                            )
-                          )
-                 )
-        )),
+        # tabPanel("Fantasy League",
+        #          tabsetPanel(
+        #            tabPanel("Summary",
+        #                     #p("This takes the data straight from the web, once I get it set up properly it should run the monthly leagues automatically."),
+        #                     
+        #                     #sidebarLayout(
+        #                       #sidebarPanel(
+        #                         #h4("League code: 1693603-401525"),
+        #                         #p("The current plan is a pay-in of 15 each. The person with most points within each month will get 10 and the overall
+        #                         # winner will get the left over money. 6 players will give enough money for the monthly prizes. Some gameweeks
+        #                         # occuring at the beginning/end of a month will span two months. The month a gameweek starts in will be the
+        #                         #month that the gameweek counts in. A list of the months and repective gameweeks is displayed on the right."),
+        #                         #p(textOutput("n_managers"))
+        #                       #),
+        #                       #mainPanel(
+        #                         h3("Fantasy Table (Official)"),
+        #                         tableOutput("personal_table2")
+        #                       #)
+        #                     #)
+        #            ),
+        #            tabPanel("Full standings",
+        #                     fluidRow(
+        #                       column(width = 4,
+        #                              h3("Monthly Gameweeks"),
+        #                              p("The following gameweeks will be used to decide the monthly prizes"),
+        #                              tableOutput("MonthGW")),
+        #                       column(8,
+        #                              h3("Fantasy Table"),
+        #                              fluidRow(
+        #                                column(3,
+        #                                       uiOutput("table_monthly_choice")),
+        #                                column(3,
+        #                                       uiOutput("table_gameweek_choice"))
+        #                              ),
+        #                              tableOutput("manager_current_stand_monthly"))
+        #                     )),
+        #          
+        #          tabPanel("Graphs",
+        #                   fluidRow(
+        #                     column(width = 2, offset = 1,
+        #                            uiOutput("plot_data_type")),
+        #                     column(4,
+        #                            uiOutput("plot_gw_range")),
+        #                     column(2,
+        #                          uiOutput("graph_monthly_choice")),
+        #                     column(2,
+        #                            h5("Reactive Boundaries"),
+        #                            checkboxInput("reactive_lim","Yes", value = FALSE)
+        #                            #checkboxInput("animate","Animate", value = FALSE)
+        #                            
+        #                            )
+        #                   ),
+        #                   plotOutput("points_plot")
+        #          ),
+        #          tabPanel("Compare Teams",
+        #                   fluidRow(
+        #                     column(width = 2, offset = 1,
+        #                             uiOutput("manager_choice1"),
+        #                             tableOutput("manager_team1")
+        #                     ),
+        #                     column(2,
+        #                           uiOutput("manager_choice2"),
+        #                           tableOutput("manager_team2")
+        #                           ),
+        #                     column(2,
+        #                            uiOutput("manager_choice3"),
+        #                            tableOutput("manager_team3")
+        #                     ),
+        #                     column(2,
+        #                            uiOutput("manager_choice4"),
+        #                            tableOutput("manager_team4")
+        #                     )
+        #                   )
+        #          )
+        # )),
         
         
         tabPanel("Player Data",
@@ -253,16 +255,16 @@ shinyUI(fluidPage(#theme="bootstrap.css",
                    column(5, uiOutput("cost_choice"))),
                  tableOutput("data_display"))
                  )
-        ),
-          
-        tabPanel("Odds tracker (beta)",
-         tabsetPanel(
-           tabPanel("Man City vs Everton",
-                    plotOutput("odds_plot_home"),
-                    plotOutput("odds_plot_away"),
-                    plotOutput("odds_plot_draw")
-           )
-         )
         )
+          
+#         tabPanel("Odds tracker (beta)",
+#          tabsetPanel(
+#            tabPanel("Man City vs Everton",
+#                     plotOutput("odds_plot_home"),
+#                     plotOutput("odds_plot_away"),
+#                     plotOutput("odds_plot_draw")
+#            )
+#          )
+#         )
       )
 ))

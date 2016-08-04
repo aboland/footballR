@@ -3,6 +3,7 @@
 library(shiny)
 library(plyr)
 library(XML)
+library(ggvis)
 
 #library(shinyapps)
 #shinyapps::deployApp('/Users/aidanboland/Google Drive/Fantasy Football/FF15-16')
@@ -438,7 +439,7 @@ shinyServer(function(input, output) {
       p_ch <- 1
     
     temp_id <- NULL
-    browser()
+    #browser()
     for(i in 65:79){
       managers_selected[i-64,1] <- names(combined_manager_data()[[2]][[p_ch]][[i]])
       ##temp_id[i-64] <- which(player_data[,"Name"]==gsub("^\\s+|\\s+$","",names(combined_manager_data()[[2]][[p_ch]][[i]])))
@@ -655,6 +656,12 @@ shinyServer(function(input, output) {
                     "lightskyblue", "red", "black", "green", "red", "red", "red", "blue", "navy", "goldenrod2", "steelblue4", "maroon4")
   team_colours2 <- c("firebrick", "lightskyblue", "black", "royalblue4", "blue", "mediumblue", "blue3", "red",
                     "lightskyblue", "black", "white", "yellow", "white", "white", "white", "blue", "white", "black", "white", "lightskyblue")
+  
+  team_colours_rgb <- rgb(t(col2rgb(c("firebrick", "maroon4", "red2", "royalblue4", "red3", "mediumblue", "blue3", "red",
+                    "lightskyblue", "red", "black", "green", "red", "red", "red", "blue", "navy", "goldenrod2", "steelblue4", "maroon4"))), maxColorValue = 255)
+  team_colours2_rgb <- rgb(t(col2rgb(c("firebrick", "lightskyblue", "black", "royalblue4", "blue", "mediumblue", "blue3", "red",
+                     "lightskyblue", "black", "white", "yellow", "white", "white", "white", "blue", "white", "black", "white", "lightskyblue"))), maxColorValue = 255)
+  
   
   teams_selected <- current_teams
   plot_data <- plot_data2 <- pd2_jit <- NULL
@@ -1319,9 +1326,7 @@ shinyServer(function(input, output) {
     
   })
   
-  
-  
-  
+
   observe({
     if(!is.null(input$custom_plot_click$x)&&!is.null(input$custom_plot_click$y)&&!is.null(click_xdata)){
       selected <- c(input$custom_plot_click$x,input$custom_plot_click$y)
@@ -1342,14 +1347,321 @@ shinyServer(function(input, output) {
   
   
   
+  mygg_data <- reactive({
+    
+    if((input$season_range_c[1] <= "2015-08-08" &&  input$season_range_c[1] >= "2015-06-08") 
+       && input$season_range_c[2] >= (Sys.Date()-1)){
+      plot_data_teams <- current_season
+      clab2 <- "this season"
+      teams_selected2 <<- current_teams
+    }else if(input$season_range_c[1] == input$season_range_c[2]){
+      plot_data_teams <- current_season
+      clab2 <- "this season"
+      teams_selected2 <<- current_teams
+    }else{
+      sel_range <- which(fulld$Date >= input$season_range_c[1] & fulld$Date <= input$season_range_c[2])
+      plot_data_teams <- fulld[sel_range,]
+      clab2 <- paste("between",format(input$season_range_c[1],"%d %b %y"),"and",format(input$season_range_c[2],"%d %b %y"))
+      teams_selected2 <<- current_teams
+      # Uncomment if you want to add in older teams...
+      # teams_selected <- levels(as.factor(as.character(plot_data_teams$HomeTeam)))
+    }
+    
+    if(input$stat_choice_x == "goals" || is.null(input$stat_choice_x)){
+      cx1 <- "FTHG"
+      cx2 <- "FTAG"
+      cxlab <- "Goals scored"
+    }else if(input$stat_choice_x == "goals_conc"){
+      cx2 <- "FTHG"
+      cx1 <- "FTAG"
+      cxlab <- "Goals conceded"
+    }else if(input$stat_choice_x == "shots"){
+      cx1 <- "HS"
+      cx2 <- "AS"
+      cxlab <- "Shots"
+    }else if(input$stat_choice_x == "starget"){
+      cx1 <- "HST"
+      cx2 <- "AST"
+      cxlab <- "Shots on target"
+    }else if(input$stat_choice_x == "corners"){
+      cx1 <- "HC"
+      cx2 <- "AC"
+      cxlab <- "Corners"
+    }else if(input$stat_choice_x == "fouls"){
+      cx1 <- "HF"
+      cx2 <- "AF"
+      cxlab <- "Fouls"
+    }else if(input$stat_choice_x == "ycard"){
+      cx1 <- "HY"
+      cx2 <- "AY"
+      cxlab <- "Yellows"
+    }else if(input$stat_choice_x == "rcard"){
+      cx1 <- "HR"
+      cx2 <- "AR"
+      cxlab <- "Reds"
+    }
+    
+    if(input$stat_choice_y == "goals" || is.null(input$stat_choice_y)){
+      cy1 <- "FTHG"
+      cy2 <- "FTAG"
+      cylab <- "Goals scored"
+    }else if(input$stat_choice_y == "goals_conc"){
+      cy2 <- "FTHG"
+      cy1 <- "FTAG"
+      cylab <- "Goals conceded"
+    }else if(input$stat_choice_y == "shots"){
+      cy1 <- "HS"
+      cy2 <- "AS"
+      cylab <- "Shots"
+    }else if(input$stat_choice_y == "starget"){
+      cy1 <- "HST"
+      cy2 <- "AST"
+      cylab <- "Shots on target"
+    }else if(input$stat_choice_y == "corners"){
+      cy1 <- "HC"
+      cy2 <- "AC"
+      cylab <- "Corners"
+    }else if(input$stat_choice_y == "fouls"){
+      cy1 <- "HF"
+      cy2 <- "AF"
+      cylab <- "Fouls"
+    }else if(input$stat_choice_y == "ycard"){
+      cy1 <- "HY"
+      cy2 <- "AY"
+      cylab <- "Yellows"
+    }else if(input$stat_choice_y == "rcard"){
+      cy1 <- "HR"
+      cy2 <- "AR"
+      cylab <- "Reds"
+    }
+    
+    plot_data_cx <- plot_data_cy <- NULL
+    for(k in 1:length(teams_selected2)){
+      plot_data_cx[k] <- sum(plot_data_teams[which(plot_data_teams$HomeTeam == teams_selected2[k]), cx1],
+                             plot_data_teams[which(plot_data_teams$AwayTeam == teams_selected2[k]), cx2])
+      
+      plot_data_cy[k] <- sum(plot_data_teams[which(plot_data_teams$HomeTeam == teams_selected2[k]), cy1],
+                             plot_data_teams[which(plot_data_teams$AwayTeam == teams_selected2[k]), cy2])
+    }
+    
+    
+    # Second statistic choice.................
+    
+    
+    if(input$stat_choice_x_per == "no_div" || is.null(input$stat_choice_x_per)){
+      per_cx1 <- "nodiv"
+      per_cx2 <- "nodiv"
+      per_cxlab <- ""
+    }else if(input$stat_choice_x_per == "p_game"){
+      per_cx1 <- "ngames"
+      per_cx2 <- "ngmaes"
+      per_cxlab <- "per game"
+    }else if(input$stat_choice_x_per == "p_goal"){
+      per_cx1 <- "FTHG"
+      per_cx2 <- "FTAG"
+      per_cxlab <- "per goal"
+    }else if(input$stat_choice_x_per == "p_goal_conc"){
+      per_cx2 <- "FTHG"
+      per_cx1 <- "FTAG"
+      per_cxlab <- "per goal"
+    }else if(input$stat_choice_x_per == "p_home"){
+      per_cx1 <- "home"
+      per_cx2 <- "home"
+      per_cxlab <- "at home"
+    }else if(input$stat_choice_x_per == "p_away"){
+      per_cx1 <- "away"
+      per_cx2 <- "away"
+      per_cxlab <- "away"
+    }else if(input$stat_choice_x_per == "p_shot"){
+      per_cx1 <- "HS"
+      per_cx2 <- "AS"
+      per_cxlab <- "per shot"
+    }else if(input$stat_choice_x_per == "p_shot_t"){
+      per_cx1 <- "HST"
+      per_cx2 <- "AST"
+      per_cxlab <- "per shot on target"
+    }else if(input$stat_choice_x_per == "p_shot_f"){
+      per_cx2 <- "HS"
+      per_cx1 <- "AS"
+      per_cxlab <- "per shot faced"
+    }else if(input$stat_choice_x_per == "p_corner"){
+      per_cx1 <- "HC"
+      per_cx2 <- "AC"
+      per_cxlab <- "per corner"
+    }else if(input$stat_choice_x_per == "p_corner_f"){
+      per_cx2 <- "HC"
+      per_cx1 <- "AC"
+      per_cxlab <- "per corner faced"
+    }else if(input$stat_choice_x_per == "p_foul"){
+      per_cx1 <- "HF"
+      per_cx2 <- "AF"
+      per_cxlab <- "per foul"
+    }
+    
+    
+    if(input$stat_choice_y_per == "no_div" || is.null(input$stat_choice_y_per)){
+      per_cy1 <- "nodiv"
+      per_cy2 <- "nodiv"
+      per_cylab <- ""
+    }else if(input$stat_choice_y_per == "p_game"){
+      per_cy1 <- "ngames"
+      per_cy2 <- "ngmaes"
+      per_cylab <- "per game"
+    }else if(input$stat_choice_y_per == "p_goal"){
+      per_cy1 <- "FTHG"
+      per_cy2 <- "FTAG"
+      per_cylab <- "per goal"
+    }else if(input$stat_choice_y_per == "p_goal_conc"){
+      per_cy2 <- "FTHG"
+      per_cy1 <- "FTAG"
+      per_cylab <- "per goal"
+    }else if(input$stat_choice_y_per == "p_home"){
+      per_cy1 <- "home"
+      per_cy2 <- "home"
+      per_cylab <- "at home"
+    }else if(input$stat_choice_y_per == "p_away"){
+      per_cy1 <- "away"
+      per_cy2 <- "away"
+      per_cylab <- "away"
+    }else if(input$stat_choice_y_per == "p_shot"){
+      per_cy1 <- "HS"
+      per_cy2 <- "AS"
+      per_cylab <- "per shot"
+    }else if(input$stat_choice_y_per == "p_shot_t"){
+      per_cy1 <- "HST"
+      per_cy2 <- "AST"
+      per_cylab <- "per shot on target"
+    }else if(input$stat_choice_y_per == "p_shot_f"){
+      per_cy2 <- "HS"
+      per_cy1 <- "AS"
+      per_cylab <- "per shot faced"
+    }else if(input$stat_choice_y_per == "p_corner"){
+      per_cy1 <- "HC"
+      per_cy2 <- "AC"
+      per_cylab <- "per corner"
+    }else if(input$stat_choice_y_per == "p_corner_f"){
+      per_cy2 <- "HC"
+      per_cy1 <- "AC"
+      per_cylab <- "per corner faced"
+    }else if(input$stat_choice_y_per == "p_foul"){
+      per_cy1 <- "HF"
+      per_cy2 <- "AF"
+      per_cylab <- "per foul"
+    }
+    
+    
+    plot_data_cx2 <- plot_data_cy2 <- NULL
+    if(per_cx1!="home" && per_cx1!="away" && 
+       per_cx2!="home" && per_cx2!="away" && 
+       per_cx1!="nodiv" && per_cx2!="nodiv" && 
+       per_cx1!="ngames" && per_cx2!="ngames"){
+      for(k in 1:length(teams_selected2)){
+        plot_data_cx2[k] <- sum(plot_data_teams[which(plot_data_teams$HomeTeam == teams_selected2[k]), per_cx1],
+                                plot_data_teams[which(plot_data_teams$AwayTeam == teams_selected2[k]), per_cx2])
+      }
+    }else if(per_cx1 == "nodiv"){
+      plot_data_cx2 <- 1
+    }else if(per_cx1=="home"){
+      for(k in 1:length(teams_selected2)){
+        plot_data_cx[k] <- sum(plot_data_teams[which(plot_data_teams$HomeTeam == teams_selected2[k]), cx1])
+      }
+      plot_data_cx2 <- 1
+    }else if(per_cx1=="away"){
+      for(k in 1:length(teams_selected2)){
+        plot_data_cx[k] <- sum(plot_data_teams[which(plot_data_teams$AwayTeam == teams_selected2[k]), cx2])
+      }
+      plot_data_cx2 <- 1
+    }else if(per_cx1=="ngames"){
+      for(k in 1:length(teams_selected2)){
+        plot_data_cx2[k] <- length(c(plot_data_teams[which(plot_data_teams$HomeTeam == teams_selected2[k]), cx1],
+                                     plot_data_teams[which(plot_data_teams$AwayTeam == teams_selected2[k]), cx2]))
+      }
+    }
+    
+    
+    if(per_cy1!="home" && per_cy1!="away" && 
+       per_cy2!="home" && per_cy2!="away" && 
+       per_cy1!="nodiv" && per_cy2!="nodiv" && 
+       per_cy1!="ngames" && per_cy2!="ngames"){
+      for(k in 1:length(teams_selected2)){
+        plot_data_cy2[k] <- sum(plot_data_teams[which(plot_data_teams$HomeTeam == teams_selected2[k]), per_cy1],
+                                plot_data_teams[which(plot_data_teams$AwayTeam == teams_selected2[k]), per_cy2])
+      }
+    }else if(per_cy1 == "nodiv"){
+      plot_data_cy2 <- 1
+    }else if(per_cy1=="home"){
+      for(k in 1:length(teams_selected2)){
+        plot_data_cy[k] <- sum(plot_data_teams[which(plot_data_teams$HomeTeam == teams_selected2[k]), cy1])
+      }
+      plot_data_cy2 <- 1
+    }else if(per_cy1=="away"){
+      for(k in 1:length(teams_selected2))
+        plot_data_cy[k] <- sum(plot_data_teams[which(plot_data_teams$AwayTeam == teams_selected2[k]), cy2])
+      plot_data_cy2 <- 1
+    }else if(per_cy1=="ngames"){
+      for(k in 1:length(teams_selected2)){
+        plot_data_cy2[k] <- length(c(plot_data_teams[which(plot_data_teams$HomeTeam == teams_selected2[k]), cy1],
+                                     plot_data_teams[which(plot_data_teams$AwayTeam == teams_selected2[k]), cy2]))
+      }
+    }
+    
+    
+    #labels for click data
+    click_xlab <- paste0(cxlab," ",per_cxlab)
+    click_ylab <- paste0(cylab," ",per_cylab)
+    
+    plot_data_cx <- round(plot_data_cx/plot_data_cx2, digits=4)
+    #click_xdata <<- plot_data_cx
+    plot_data_cy <- round(plot_data_cy/plot_data_cy2, digits=4)
+    #click_ydata <<- plot_data_cy
+    
+    
+    pd2_jit_cy <- plot_data_cy
+    pd2_jit_cy[duplicated(cbind(plot_data_cy,plot_data_cx))] <- jitter(plot_data_cy[duplicated(cbind(plot_data_cy,plot_data_cx))], factor = 1.5)
+    
+    if(input$custom_boundaries == TRUE){
+      mymax <- max(c(plot_data_cx,pd2_jit_cy))
+      mymin <- min(c(plot_data_cx,pd2_jit_cy))
+      my_xlim = c(mymin, mymax + (abs(range(plot_data_cx)[1] - range(plot_data_cx)[2])/10))
+      my_ylim = c(mymin, mymax)
+    }else{
+      my_xlim = c(min(plot_data_cx),max(plot_data_cx) +  (abs(range(plot_data_cx)[1] - range(plot_data_cx)[2])/10))
+      my_ylim = range(pd2_jit_cy)
+    }
+    
+    return(data.frame(x_data = click_xdata, 
+                      y_data = pd2_jit_cy,
+                      teams = current_teams,
+                      my_cols1 = team_colours,
+                      my_cols2 = team_colours2_rgb,
+                      my_xlab = paste(cxlab,per_cxlab),
+                      my_ylab = paste(cylab,per_cylab)))
+    
+    #main = paste(cylab,per_cylab,"vs.",cxlab,per_cxlab,clab2),
+    
+  })
   
+  my_tooltip <- function(x){
+    return(paste0(x$teams,": ",x$x_data,", ", x$y_data))
+  }
   
+ my_ggvis <- reactive({
+   #browser()
+  ggvis(mygg_data(), ~x_data, ~y_data) %>% 
+    layer_points(size := 50, size.hover := 200,
+                 fillOpacity := 0.5, fillOpacity.hover := 0.9,
+                 fill :=  ~my_cols2,
+                 stroke := ~my_cols1,
+                 key := ~teams) %>% 
+     add_axis("x", title = as.character(mygg_data()$my_xlab[1])) %>%
+     add_axis("y", title = as.character(mygg_data()$my_ylab[1])) %>%
+     #add_legend(~my_cols1) %>%
+     #hide_legend(c("fill","stroke")) %>%
+    add_tooltip(my_tooltip, "hover")
+   
+ })
   
-  
-  
-  
-  
-  
+ my_ggvis %>% bind_shiny("myggplot")
   
   
   
@@ -1469,116 +1781,7 @@ shinyServer(function(input, output) {
     return(output_table)
     
   })
-  
-  
-  
-  
-  
-  
-  
-  #### -------------------------------------------------------------------------------------
-  #########
-  ########
-  #  Testing for a match, not automated enough!!!
-  load("ManCity_Everton_27Jan.RData")
-  
-  times <- as.POSIXct(as.numeric(odds_data[,7]) - 3815, origin = "1970-01-01")
-  
-  odds_data[,1:6] <- as.numeric(odds_data[,1:6])
-  
-  #odds_data[is.na(odds_data)] <- 1
-  
-  events <- c(as.POSIXct("2016-01-27 19:45:00", "GMT"),
-              as.POSIXct("2016-01-27 20:03:00", "GMT"),
-              as.POSIXct("2016-01-27 20:09:00", "GMT"),
-              as.POSIXct("2016-01-27 20:32:00", "GMT"),
-              as.POSIXct("2016-01-27 20:47:00", "GMT"),
-              #as.POSIXct("2016-01-27 21:02:00", "GMT"),
-              as.POSIXct("2016-01-27 21:11:00", "GMT"),
-              as.POSIXct("2016-01-27 21:17:00", "GMT"),
-              as.POSIXct("2016-01-27 21:37:00", "GMT"))
-  event_labels <- c("Kick off",
-                    "G E",
-                    "G MC",
-                    "Half time",
-                    "Second half",
-                    #"MC chances",
-                    "G MC",
-                    "G MC",
-                    "FT")
-  
-  odds_xlim <- c(as.POSIXct("2016-01-27 18:45:00", "GMT"),
-                 as.POSIXct("2016-01-27 21:45:00", "GMT"))
-  ################
-  
-  
-  
-  output$odds_plot_home <- renderPlot({
-    #source("plot_ts.R")
-    plot(times, as.numeric(odds_data[,1]), 
-         type="l", 
-         main="Man City", 
-         ylab="Odds",
-         xlab="",
-         col="cornflowerblue", 
-         ylim = range(as.numeric(odds_data[,1:2]),na.rm = T),
-         xlim = odds_xlim)
-    lines(times, as.numeric(odds_data[,2]), col = "lightpink1")
-    legend("topright", c("Back", "Lay"), 
-           col=c("cornflowerblue", "lightpink1"),
-           lty=1)
-    abline(v = events, lty=2)
-    text(x = events, 
-         y = range(as.numeric(odds_data[,1:2]),na.rm = T)[1], 
-         pos = 4,
-         labels=event_labels)
 
-  })
-  
-  output$odds_plot_away <- renderPlot({
-    #source("plot_ts.R")
-    
-    plot(times, as.numeric(odds_data[,3]), 
-         type="l", 
-         main="Everton",
-         ylab="Odds", 
-         xlab="",
-         col="cornflowerblue", 
-         ylim = range(as.numeric(odds_data[,3:4]),na.rm = T),
-         xlim = odds_xlim)
-    lines(times, as.numeric(odds_data[,4]), col = "lightpink1")
-    legend("topright", c("Back", "Lay"), 
-           col=c("cornflowerblue", "lightpink1"),
-           lty=1)
-    abline(v = events, lty=2)
-    text(x = events, 
-         y = range(as.numeric(odds_data[,3:4]),na.rm = T)[1], 
-         pos = 4,
-         labels=event_labels)
-  })
-  
-  output$odds_plot_draw <- renderPlot({
-    #source("plot_ts.R")
-    
-    plot(times, as.numeric(odds_data[,5]), 
-         type="l", 
-         main="Draw",
-         ylab="Odds", 
-         xlab="",
-         col="cornflowerblue", 
-         ylim = range(as.numeric(odds_data[,c(5,6)]),na.rm = T),
-         xlim = odds_xlim)
-    lines(times, as.numeric(odds_data[,6]), col = "lightpink1")
-    legend("topright", c("Back", "Lay"), 
-           col=c("cornflowerblue", "lightpink1"),
-           lty=1)
-    abline(v = events, lty=2)
-    text(x = events, 
-         y = range(as.numeric(odds_data[,5:6]),na.rm = T)[1], 
-         pos = 4,
-         labels=event_labels)
-  })
-  
   
   })
 
