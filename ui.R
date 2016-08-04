@@ -1,4 +1,5 @@
 library(shiny)
+library(ggvis)
 
 
 # Define UI for application to display data
