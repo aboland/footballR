@@ -6,7 +6,7 @@ library(ggvis)
 shinyUI(fluidPage(#theme="bootstrap.css",
   
   # Application title
-  titlePanel("Premier League 15/16"),
+  titlePanel("Premier League 16/17"),
   
   
   # Sidebar ---------------------------------------------------------------------------------------
