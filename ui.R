@@ -14,59 +14,24 @@ shinyUI(fluidPage(#theme="bootstrap.css",
                    
                    tabPanel("Fixtures/Results",
                             tabsetPanel(
-                              tabPanel("Gameweek",
-                                       fluidRow(
-                                         column(width = 6, offset = 0 ,
-                                                uiOutput("gameweek_choice"),
-                                                tableOutput("fix_res")
-                                         ),
-                                         column(6,
-                                                #uiOutput("gameweek_hist_choice"),
-                                                #h3("Historical Data"),
-                                                #fluidRow(
-                                                  #column(8,
-                                                         uiOutput("game_hist_choice"),
-                                                         checkboxInput("return_leg", label = "Return Fixture", value = FALSE),
-                                                  #),
-                                                  #column(4,
-                                                  #       checkboxInput("return_leg", label = "Return Leg", value = FALSE)
-                                                  #)
-                                                #),
-                                                tableOutput("historical_result")
-                                                #h3("League Table"),
-                                                #tableOutput("personal_table")
-                                         )
-                                       )
-                              ),
-#                               tabPanel("Statistics",
-#                                        fluidRow(
-#                                          column(3,
-#                                                 selectInput("stat_choice", label = h4("Choose stat"), 
-#                                                             choices = list("Goals scored" = "goals",
-#                                                                            "Goals conceded" = "goals_conc",
-#                                                                            "Shots on target" = "starget",
-#                                                                            "Shots" = "shots",
-#                                                                            "Goals per shot on target" = "gperst",
-#                                                                            "Goals per shot" = "gpers",
-#                                                                            "Corners" = "corners",
-#                                                                            "Fouls" = "fouls",
-#                                                                            "Halftime Goals" = "halfgoals"), selected = "goals")),
-#                                          column(4,
-#                                                 #h4("Time range"),
-#                                                 #checkboxInput("this_season", label = "All seasons", value = FALSE),
-#                                                 #sliderInput("season_range", label= h4("Season"),
-#                                                 #            min = 2000, max = 2016, value = c(2015, 2016),step=1, sep=""),
-#                                                 dateRangeInput("season_range2", label= h4("Date range"),
-#                                                       format = "dd-mm-yyyy", start = "2015-08-08", end = Sys.Date(), min="2000-08-09")
-#                                          ),
-#                                          column(3,
-#                                                 radioButtons("sum_tot", label = h4("Summary variable"),
-#                                                              choices = list("Average" = "avg", 
-#                                                                             "Total" = "tot"),selected = "avg")
-#                                          )),
-#                                        plotOutput("plot_stats", click = "stat_plot_click"),# , height="auto", width = "100%"),
-#                                        textOutput("info")
-#                               ),
+                              # tabPanel("Gameweek",
+                              #          fluidRow(
+                              #            column(width = 6, offset = 0 ,
+                              #                   #uiOutput("gameweek_choice"),
+                              #                   selectInput("gw_choice", "Gameweek",choices = as.list(1:38),selected = 18),
+                              #                   tableOutput("fix_res")
+                              #            ),
+                              #            column(6,
+                              #                   uiOutput("game_hist_choice"),
+                              #                   checkboxInput("return_leg", label = "Return Fixture", value = FALSE),
+                              #                   
+                              #                   tableOutput("historical_result")
+                              #                   #h3("League Table"),
+                              #                   #tableOutput("personal_table")
+                              #            )
+                              #          )
+                              # ),
+                              
                               tabPanel("Statistics",
                                        fluidRow(
                                          column(3,
@@ -117,13 +82,17 @@ shinyUI(fluidPage(#theme="bootstrap.css",
                                                 #sliderInput("season_range", label= h4("Season"),
                                                 #            min = 2000, max = 2016, value = c(2015, 2016),step=1, sep=""),
                                                 dateRangeInput("season_range_c", label= h4("Date range"),
-                                                               format = "dd-mm-yyyy", start = "2015-08-08", end = Sys.Date(), min="2000-08-09"),
+                                                               format = "dd-mm-yyyy", 
+                                                               start = "2016-08-13", 
+                                                               #end = "2016-03-08",
+                                                               end = Sys.Date()-1, 
+                                                               min="2000-08-09"),
                                                 checkboxInput("custom_boundaries","Fixed aspect", value = FALSE)
                                          )),
                                        plotOutput("plot_stats_custom", click = "custom_plot_click"),# , height="auto", width = "100%"),
-                                       plotOutput("plot_stats_custom"),
-                                       textOutput("info_cus"),
-                                       ggvisOutput("myggplot")
+                                       #plotOutput("plot_stats"),
+                                       textOutput("info_cus")#,
+                                       #ggvisOutput("myggplot")
                               ),
                               tabPanel("Head to head",
                                        fluidRow(
@@ -153,7 +122,7 @@ shinyUI(fluidPage(#theme="bootstrap.css",
                                                 #sliderInput("season_range", label= h4("Season"),
                                                 #            min = 2000, max = 2016, value = c(2015, 2016),step=1, sep=""),
                                                 dateRangeInput("hh_season_range", label= h4("Date range"),
-                                                               format = "dd-mm-yyyy", start = "2015-08-08", end = Sys.Date(), min="2000-08-09"),
+                                                               format = "dd-mm-yyyy", start = "2016-08-13", end = Sys.Date()-1, min="2000-08-09"),
                                                 checkboxInput("cumul_sum","Cumulative sum", value = TRUE)
                                          )
                                          ),
@@ -162,82 +131,6 @@ shinyUI(fluidPage(#theme="bootstrap.css",
                               )
                             
                    )),
-                   
-        # tabPanel("Fantasy League",
-        #          tabsetPanel(
-        #            tabPanel("Summary",
-        #                     #p("This takes the data straight from the web, once I get it set up properly it should run the monthly leagues automatically."),
-        #                     
-        #                     #sidebarLayout(
-        #                       #sidebarPanel(
-        #                         #h4("League code: 1693603-401525"),
-        #                         #p("The current plan is a pay-in of 15 each. The person with most points within each month will get 10 and the overall
-        #                         # winner will get the left over money. 6 players will give enough money for the monthly prizes. Some gameweeks
-        #                         # occuring at the beginning/end of a month will span two months. The month a gameweek starts in will be the
-        #                         #month that the gameweek counts in. A list of the months and repective gameweeks is displayed on the right."),
-        #                         #p(textOutput("n_managers"))
-        #                       #),
-        #                       #mainPanel(
-        #                         h3("Fantasy Table (Official)"),
-        #                         tableOutput("personal_table2")
-        #                       #)
-        #                     #)
-        #            ),
-        #            tabPanel("Full standings",
-        #                     fluidRow(
-        #                       column(width = 4,
-        #                              h3("Monthly Gameweeks"),
-        #                              p("The following gameweeks will be used to decide the monthly prizes"),
-        #                              tableOutput("MonthGW")),
-        #                       column(8,
-        #                              h3("Fantasy Table"),
-        #                              fluidRow(
-        #                                column(3,
-        #                                       uiOutput("table_monthly_choice")),
-        #                                column(3,
-        #                                       uiOutput("table_gameweek_choice"))
-        #                              ),
-        #                              tableOutput("manager_current_stand_monthly"))
-        #                     )),
-        #          
-        #          tabPanel("Graphs",
-        #                   fluidRow(
-        #                     column(width = 2, offset = 1,
-        #                            uiOutput("plot_data_type")),
-        #                     column(4,
-        #                            uiOutput("plot_gw_range")),
-        #                     column(2,
-        #                          uiOutput("graph_monthly_choice")),
-        #                     column(2,
-        #                            h5("Reactive Boundaries"),
-        #                            checkboxInput("reactive_lim","Yes", value = FALSE)
-        #                            #checkboxInput("animate","Animate", value = FALSE)
-        #                            
-        #                            )
-        #                   ),
-        #                   plotOutput("points_plot")
-        #          ),
-        #          tabPanel("Compare Teams",
-        #                   fluidRow(
-        #                     column(width = 2, offset = 1,
-        #                             uiOutput("manager_choice1"),
-        #                             tableOutput("manager_team1")
-        #                     ),
-        #                     column(2,
-        #                           uiOutput("manager_choice2"),
-        #                           tableOutput("manager_team2")
-        #                           ),
-        #                     column(2,
-        #                            uiOutput("manager_choice3"),
-        #                            tableOutput("manager_team3")
-        #                     ),
-        #                     column(2,
-        #                            uiOutput("manager_choice4"),
-        #                            tableOutput("manager_team4")
-        #                     )
-        #                   )
-        #          )
-        # )),
         
         
         tabPanel("Player Data",
