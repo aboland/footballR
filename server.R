@@ -381,7 +381,7 @@ shinyServer(function(input, output) {
     }else{
       sel_range <- which(fulld$Date >= input$season_range_c[1] & fulld$Date <= input$season_range_c[2])
       plot_data_teams <- fulld[sel_range,]
-      clab2 <- paste("between",format(input$season_range_c[1],"%d %b %y"),"and",format(input$season_range_c[2],"%d %b %y"))
+      clab2 <- paste("between",format(input$season_range_c[1],"%d %b '%y"),"and",format(input$season_range_c[2],"%d %b '%y"))
       teams_selected2 <<- current_teams
       # Uncomment if you want to add in older teams...
       # teams_selected <- levels(as.factor(as.character(plot_data_teams$HomeTeam)))
