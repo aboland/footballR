@@ -132,24 +132,28 @@ shinyUI(fluidPage(#theme="bootstrap.css",
                             
                    )),
         
-        
-        tabPanel("Player Data",
-                 sidebarLayout(
-                   sidebarPanel(h3("Player Data Controls"),
-                          h4("Choose fields to display"),
-                          uiOutput("field1"),
-                          uiOutput("field2"),
-                          uiOutput("field3"),
-                          uiOutput("field4"),
-                          uiOutput("sort_field")),
-                   mainPanel(
-                 fluidRow(
-                   column(3, uiOutput("team_choice")),
-                   column(3, uiOutput("position_choice")),
-                   column(5, uiOutput("cost_choice"))),
-                 tableOutput("data_display"))
-                 )
-        )
+                   tabPanel("Player Data",
+                            uiOutput("dt_field_choices"),
+                            DT::dataTableOutput("dt_data_display")
+                            
+                   )#,
+        # tabPanel("Player Data_old",
+        #          sidebarLayout(
+        #            sidebarPanel(h3("Player Data Controls"),
+        #                   h4("Choose fields to display"),
+        #                   uiOutput("field1"),
+        #                   uiOutput("field2"),
+        #                   uiOutput("field3"),
+        #                   uiOutput("field4"),
+        #                   uiOutput("sort_field")),
+        #            mainPanel(
+        #          fluidRow(
+        #            column(3, uiOutput("team_choice")),
+        #            column(3, uiOutput("position_choice")),
+        #            column(5, uiOutput("cost_choice"))),
+        #          tableOutput("data_display"))
+        #          )
+        # )
           
 #         tabPanel("Odds tracker (beta)",
 #          tabsetPanel(

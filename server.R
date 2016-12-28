@@ -7,7 +7,31 @@ library(ggvis)
 
 
 #load("current_web_data.RData")
-load("current_web_data_tidy.RData")
+#load("current_web_data_tidy.RData")
+
+json_ff2 = fromJSON(getURL("https://fantasy.premierleague.com/drf/elements/"))
+full_names <- gsub("_"," ",names(json_ff2))
+full_names <- gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", full_names, perl=TRUE)
+full_names[which(full_names=="Now Cost")] <- "Cost"
+full_names[which(full_names=="Web Name")] <- "Name"
+player_data <- json_ff2
+names(player_data) <- full_names
+player_data$Status<-as.character(player_data$Status)
+player_data$Status[which(player_data$Status=="u")]<-"Unavailable"
+player_data$Status[which(player_data$Status=="a")]<-"Available"
+player_data$Status[which(player_data$Status=="n")]<-"(see news)"
+player_data$Status[which(player_data$Status=="d")]<-"Doubtful"
+player_data$Status[which(player_data$Status=="i")]<-"Injured"
+player_data$Status[which(player_data$Status=="s")]<-"Suspended"
+
+#https://platform-static-files.s3.amazonaws.com/premierleague/photos/players/110x140/p41328.png
+#106611.jpg
+player_data$Photo <- paste0('<img src="https://platform-static-files.s3.amazonaws.com/premierleague/photos/players/110x140/p', gsub("[.]|[[:alpha:]]","",player_data$Photo),'.png" height="150"></img>')
+#player_data$Photo[1]
+#https://platform-static-files.s3.amazonaws.com/premierleague/photos/players/110x140/p48844.png
+
+
+available_fields <- full_names
 
 #gameweek=18
 
@@ -1010,6 +1034,36 @@ shinyServer(function(input, output) {
   
   # ----------------- Fantasy players table --------------------------------------
   
+  output$dt_field_choices <- renderUI({
+    isolate({
+    choices <- available_fields
+    if(!is.null(input$dt_fields)){
+      selected <- input$dt_fields
+    }else{
+      selected = c("Name","Cost","Form")
+    }
+    selectizeInput("dt_fields", label="Choose Columns", choices= choices, selected=selected, multiple=T, options=list(plugins=list('remove_button', 'drag_drop')))
+  })
+  })
+  
+  
+  output$dt_data_display <- DT::renderDataTable(DT::datatable({
+    if(!is.null(input$dt_fields)&&length(input$dt_fields)>1){
+      #browser()
+      player_data[,input$dt_fields]
+    }
+  },rownames = FALSE, escape=1, options=list(dom='lrtip', filter='top')))
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
   
   # Sidebar options
@@ -1019,21 +1073,21 @@ shinyServer(function(input, output) {
     selectInput("field_choice_1", 
                 label = h5("Field 1"),
                 choices = as.list(available_fields),
-                selected = "% selected by")
+                selected = "Photo")
   })
   output$field2<-renderUI({
     # Reactive input displaying possible fields
     selectInput("field_choice_2", 
                 label = h5("Field 2"),
                 choices = as.list(available_fields),
-                selected = "Total points")
+                selected = "Total Points")
   })
   output$field3<-renderUI({
     # Reactive input displaying possible fields
     selectInput("field_choice_3", 
                 label = h5("Field 3"),
                 choices = as.list(available_fields),
-                selected = "Next fixture")
+                selected = "Value Form")
   })
   output$field4<-renderUI({
     # Reactive input displaying possible fields
@@ -1094,7 +1148,7 @@ shinyServer(function(input, output) {
   output$data_display <- renderTable({
     
     if(is.null(input$team_ch) && is.null(input$pos_ch))
-      return(player_data[,c("Name", "Team", "Position" ,"Cost")])
+      return(player_data[,c("Name", "Team", "Status" ,"Cost")])
     
     rows_display <- rows_display_tm <- rows_display_pos <- 1:nrow(player_data)
     if(!input$team_ch=="All")
@@ -1110,7 +1164,7 @@ shinyServer(function(input, output) {
     
     #browser()
     output_table <- player_data[rows_display,
-                                c("Name", "Team", "Position" ,"Cost",
+                                c("Name", "Team" ,"Cost",
                                   input$field_choice_1, 
                                   input$field_choice_2, 
                                   input$field_choice_3, 
