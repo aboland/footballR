@@ -5,6 +5,8 @@ library(plyr)
 library(XML)
 library(ggvis)
 library(jsonlite)
+library(RCurl)
+library(XML)
 
 #load("current_web_data.RData")
 #load("current_web_data_tidy.RData")
