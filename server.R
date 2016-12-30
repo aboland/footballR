@@ -4,7 +4,7 @@ library(shiny)
 library(plyr)
 library(XML)
 library(ggvis)
-
+library(jsonlite)
 
 #load("current_web_data.RData")
 #load("current_web_data_tidy.RData")
