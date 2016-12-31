@@ -36,10 +36,13 @@ player_data$Photo <- paste0('<img src="https://platform-static-files.s3.amazonaw
 player_data <- player_data[, c("Name","Photo", names(player_data)[-(1:3)])]
 available_fields <- names(player_data)
 
-# teams <- c("Arsenal")
-# for(i in 1:20){
-#   player_data$Team[which(player_data$Team==i)]<- teams[i]
-# }
+teams <- c("Arsenal", "Bournemouth", "Burnley",
+           "Chelsea","Crystal Palace", "Everton", "Hull", 
+           "Leicester","Liverpool", "Man City", "Man Utd", "Middlesbrough",
+           "Southampton", "Stoke", "Sunderland", "Swansea", "Spurs", "Watford", "West Brom", "West Ham")
+for(i in 1:20){
+  player_data$Team[which(player_data$Team==i)]<- teams[i]
+}
 
 #gameweek=18
 
