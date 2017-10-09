@@ -91,7 +91,7 @@ shinyServer(function(input, output) {
     load(file="FullHist.RData")
   
   
-  current_season <-read.csv(paste0("http://www.football-data.co.uk/mmz4281/1617/E0.csv"))
+  current_season <-read.csv(paste0("http://www.football-data.co.uk/mmz4281/1718/E0.csv"))
   
   incProgress(0.3, detail = "Downloading this season")
   
