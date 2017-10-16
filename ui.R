@@ -3,10 +3,10 @@ library(ggvis)
 
 
 # Define UI for application to display data
-shinyUI(fluidPage(#theme="bootstrap.css",
+shinyUI(fluidPage(theme="slate.min.css",
   
   # Application title
-  titlePanel("Premier League 16/17"),
+  titlePanel("Premier League 17/18"),
   
   
   # Sidebar ---------------------------------------------------------------------------------------
@@ -122,7 +122,7 @@ shinyUI(fluidPage(#theme="bootstrap.css",
                                                 #sliderInput("season_range", label= h4("Season"),
                                                 #            min = 2000, max = 2016, value = c(2015, 2016),step=1, sep=""),
                                                 dateRangeInput("hh_season_range", label= h4("Date range"),
-                                                               format = "dd-mm-yyyy", start = "2016-08-13", end = Sys.Date()-1, min="2000-08-09"),
+                                                               format = "dd-mm-yyyy", start = "2017-08-11", end = Sys.Date()-1, min="2000-08-09"),
                                                 checkboxInput("cumul_sum","Cumulative sum", value = TRUE)
                                          )
                                          ),
