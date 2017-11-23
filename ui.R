@@ -1,5 +1,6 @@
 library(shiny)
 library(ggvis)
+library(plotly)
 
 
 # Define UI for application to display data
