@@ -89,10 +89,11 @@ shinyUI(fluidPage(theme="united.min.css",
                                                                min="2000-08-09"),
                                                 checkboxInput("custom_boundaries","Fixed aspect", value = FALSE)
                                          )),
-                                       plotOutput("plot_stats_custom", click = "custom_plot_click"),# , height="auto", width = "100%"),
-                                       #plotOutput("plot_stats"),
-                                       textOutput("info_cus")#,
+                                       # plotOutput("plot_stats_custom", click = "custom_plot_click"),# , height="auto", width = "100%"),
+                                       # ###plotOutput("plot_stats"),
+                                       # textOutput("info_cus"),
                                        #ggvisOutput("myggplot")
+                                       plotlyOutput("plot_stats_custom2")
                               ),
                               tabPanel("Head to head",
                                        fluidRow(
