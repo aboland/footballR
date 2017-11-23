@@ -94,7 +94,7 @@ shinyUI(fluidPage(theme="united.min.css",
                                        # ###plotOutput("plot_stats"),
                                        # textOutput("info_cus"),
                                        #ggvisOutput("myggplot")
-                                       plotlyOutput("plot_stats_custom2")
+                                       plotlyOutput("plot_stats_custom2")#, height = 'auto', width = 'auto')
                               ),
                               tabPanel("Head to head",
                                        fluidRow(

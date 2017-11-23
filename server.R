@@ -703,15 +703,19 @@ shinyServer(function(input, output) {
             )  %>%  # text = ~paste0("(",this_plot_data$xlabels,", ",this_plot_data$ylabels,")"))
       layout(title = main_title,
              xaxis = list(
-               domain = this_plot_data$xlim,
+               range = c(this_plot_data$xlim[1]-(0.05*abs(this_plot_data$xlim[1]-this_plot_data$xlim[2])),
+                         this_plot_data$xlim[2]+(0.05*abs(this_plot_data$xlim[1]-this_plot_data$xlim[2]))),
                title = paste(this_plot_data$xlabels,this_plot_data$xlabels_per)
              ),
              yaxis = list(
-               domain = this_plot_data$ylim,
+               range = c(this_plot_data$ylim[1]-(0.05*abs(this_plot_data$ylim[1]-this_plot_data$ylim[2])),
+                         this_plot_data$ylim[2]+(0.05*abs(this_plot_data$ylim[1]-this_plot_data$ylim[2]))),
                title = paste(this_plot_data$ylabels,this_plot_data$ylabels_per)
-             )) %>%
+             )
+             ) %>%
       #add_text(textposition = "top right")
-      add_annotations(showarrow=F, xanchor = 'left', yanchor="top")
+      add_annotations(showarrow=F, xanchor = 'left', yanchor="top") %>%
+      config(displayModeBar = F)
     
     
   })
