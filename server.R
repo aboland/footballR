@@ -477,10 +477,10 @@ shinyServer(function(input, output) {
     
     home_temp <- plot_data_teams %>% group_by(HomeTeam) %>% 
       summarise(stat = sum(rlang::UQ(rlang::sym(cx[1])))) %>% 
-      rename(Team = HomeTeam)
+      rename(Team = HomeTeam) %>% filter(Team %in% teams_selected)
     away_temp <- plot_data_teams %>% group_by(AwayTeam) %>% 
       summarise(stat = sum(rlang::UQ(rlang::sym(cx[2])))) %>% 
-      rename(Team = AwayTeam)
+      rename(Team = AwayTeam )%>% filter(Team %in% teams_selected)
     plot_data_cx <- bind_rows(home_temp,away_temp) %>% 
       group_by(Team) %>% 
       summarise_all(sum) %>% 
@@ -489,10 +489,10 @@ shinyServer(function(input, output) {
     
     home_temp_y <- plot_data_teams %>% group_by(HomeTeam) %>%
       summarise(stat = sum(rlang::UQ(rlang::sym(cy[1])))) %>%
-      rename(Team = HomeTeam)
+      rename(Team = HomeTeam) %>% filter(Team %in% teams_selected)
     away_temp_y <- plot_data_teams %>% group_by(AwayTeam) %>%
       summarise(stat = sum(rlang::UQ(rlang::sym(cy[2])))) %>%
-      rename(Team = AwayTeam)
+      rename(Team = AwayTeam)%>% filter(Team %in% teams_selected)
     plot_data_cy <- bind_rows(home_temp_y,away_temp_y) %>% 
       group_by(Team) %>% 
       summarise_all(sum) %>% 
