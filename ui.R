@@ -3,7 +3,7 @@ library(ggvis)
 
 
 # Define UI for application to display data
-shinyUI(fluidPage(theme="slate.min.css",
+shinyUI(fluidPage(theme="united.min.css",
   
   # Application title
   titlePanel("Premier League 17/18"),
