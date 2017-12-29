@@ -1,13 +1,14 @@
 # Fantasy Football server script
 
 library(shiny)
-library(plyr)
+#library(plyr)
 library(XML)
 library(ggvis)
 library(jsonlite)
 library(RCurl)
 library(dplyr)
 library(plotly)
+library(PremieRLeague)
 
 #load("current_web_data.RData")
 #load("current_web_data_tidy.RData")
@@ -37,50 +38,15 @@ player_data$Photo <- paste0('<img src="https://platform-static-files.s3.amazonaw
 player_data <- player_data[, c("Name","Photo", names(player_data)[-(1:3)])]
 available_fields <- names(player_data)
 
-teams <- c("Arsenal", "Bournemouth", "Brighton", "Burnley",
-           "Chelsea","Crystal Palace", "Everton", "Huddersfield", 
-           "Leicester","Liverpool", "Man City", "Man Utd", "Newcastle",
-           "Southampton", "Stoke", "Swansea", "Spurs", "Watford", "West Brom", "West Ham")
 
-
-team_colours <- c("firebrick", "black", "white", "maroon4", 
-                  "royalblue4", "red3", "mediumblue", "white", 
-                  "blue3", "red","lightskyblue", "red", "white", 
-                  "white", "white", "white", "white", "goldenrod2", "white", "maroon4")
-
-team_colours2 <- c("firebrick", "red", "blue", "lightskyblue", 
-                   "royalblue4", "lightskyblue", "mediumblue", "lightskyblue", 
-                   "blue3", "red", "lightskyblue", "black", "black", 
-                   "red", "black", "red", "navy", "black", "steelblue4", "lightskyblue")
-
-# team_colours <- c("firebrick", "black", "white", "maroon4", 
-#                   "royalblue4", "red3", "mediumblue", "lightskyblue", 
-#                   "blue3", "red","lightskyblue", "red", "black", 
-#                   "red", "black", "red", "navy", "goldenrod2", "steelblue4", "maroon4")
-# 
-# team_colours2 <- c("firebrick", "red", "blue", "lightskyblue", 
-#                    "royalblue4", "lightskyblue", "mediumblue", "white", 
-#                    "blue3", "red", "lightskyblue", "black", "white", 
-#                    "white", "white", "white", "white", "black", "white", "lightskyblue")
-
-team_colours_rgb <- rgb(t(col2rgb(c("firebrick", "black", "white", "maroon4", 
-                                    "royalblue4", "red3", "mediumblue", "white", 
-                                    "blue3", "red","lightskyblue", "red", "white", 
-                                    "white", "white", "white", "white", "goldenrod2", "white", "maroon4"))), maxColorValue = 255)
-team_colours2_rgb <- rgb(t(col2rgb(c("firebrick", "red", "blue", "lightskyblue", 
-                                     "royalblue4", "lightskyblue", "mediumblue", "lightskyblue", 
-                                     "blue3", "red", "lightskyblue", "black", "black", 
-                                     "red", "black", "red", "navy", "black", "steelblue4", "lightskyblue"))), maxColorValue = 255)
-
-
-for(i in 1:20){
-  player_data$Team[which(player_data$Team==i)]<- teams[i]
-}
+# for(i in 1:20){
+#   player_data$Team[which(player_data$Team==i)] <- teams[i]
+# }
 
 #gameweek=18
 
 shinyServer(function(input, output) {
-
+  
   
   # ------------------ Fixture and results tables -------------------------------------------
   
@@ -107,63 +73,70 @@ shinyServer(function(input, output) {
   
   
   
-  
-  
-  
-  
-  
-  
-  
-  
   #  ------------------------ Historical Data!!!!!
   
   
   withProgress(message = "Loading team data", value = 0, {
-  
+    
     incProgress(0.1, detail = "Loading historical data")
-    load(file="FullHist.RData")
-  
-  
-  current_season <-read.csv(paste0("http://www.football-data.co.uk/mmz4281/1718/E0.csv"), stringsAsFactors = F)
-  
-  incProgress(0.3, detail = "Downloading this season")
-  
-  current_season$Date <- as.Date(current_season$Date,"%d/%m/%y")
-  vars<-c("Div", "Date", "HomeTeam", "AwayTeam", "FTHG", "FTAG", "FTR", "HTHG", "HTAG", "HTR", "Referee",
-          "HS", "AS", "HST", "AST", "HC", "AC", "HF", "AF", "HY", "AY", "HR", "AR")
-  current_season <- current_season[,vars]
-  incProgress(0.5, detail = "Cleaning this seasons data")
-  current_season$Div<-as.character(current_season$Div)
-  current_season$HomeTeam<-as.character(current_season$HomeTeam)
-  current_season$AwayTeam<-as.character(current_season$AwayTeam)
-  current_season$HomeTeam<-as.factor(current_season$HomeTeam)
-  current_season$AwayTeam<-as.factor(current_season$AwayTeam)
-  current_season$FTR<-as.character(current_season$FTR)
-  current_season$HTR<-as.character(current_season$HTR)
-  current_season$Referee<-as.character(current_season$Referee)
-  incProgress(0.7, detail = "Cleaning data")
-  
-  fulld <- rbind(histPL,current_season)
-  current_teams <- levels(current_season$HomeTeam)
-  
-  incProgress(0.8, detail = "Cleaning data")
-  # possible_games <- reactive({
-  #   gw2 <- readHTMLTable(paste0("http://fantasy.premierleague.com/fixtures/",input$gw_choice,"/"))$ismFixtureTable
-  #   
-  #   gw2 <- readHTMLTable(paste0("https://fantasy.premierleague.com/a/fixtures/18"))
-  #   
-  #   gw2 <- gw2[!is.na(gw2[,2]),]
-  #   gw2[,4]<-apply(gw2[,3:5],1,function(x)paste(x[1],x[2],x[3]))
-  #   dimnames(gw2)[[2]] <- c("Date", "Home", " ", " ", " ", "Away") 
-  #   output <- list()
-  #   for(i in 1:nrow(gw2))
-  #     output[[i]] <- paste(as.character(gw2[i,2]),"vs",as.character(gw2[i,6]))
-  #   output
-  # })
-  incProgress(1, detail = "Cleaning data")
-  
+    load(file="FullHist_17.RData")
+    
+    
+    # current_season <-read.csv(paste0("http://www.football-data.co.uk/mmz4281/1718/E0.csv"), stringsAsFactors = F)
+    
+    incProgress(0.3, detail = "Downloading this season")
+    
+    # current_season$Date <- as.Date(current_season$Date,"%d/%m/%y")
+    # vars<-c("Div", "Date", "HomeTeam", "AwayTeam", "FTHG", "FTAG", "FTR", "HTHG", "HTAG", "HTR", "Referee",
+    #         "HS", "AS", "HST", "AST", "HC", "AC", "HF", "AF", "HY", "AY", "HR", "AR")
+    # current_season <- current_season[,vars]
+    
+    incProgress(0.5, detail = "Cleaning this seasons data")
+    
+    # current_season$Div<-as.character(current_season$Div)
+    # current_season$HomeTeam<-as.character(current_season$HomeTeam)
+    # current_season$AwayTeam<-as.character(current_season$AwayTeam)
+    # current_season$HomeTeam<-as.factor(current_season$HomeTeam)
+    # current_season$AwayTeam<-as.factor(current_season$AwayTeam)
+    # current_season$FTR<-as.character(current_season$FTR)
+    # current_season$HTR<-as.character(current_season$HTR)
+    # current_season$Referee<-as.character(current_season$Referee)
+    
+    
+    incProgress(0.7, detail = "Cleaning data")
+    
+    
+    current_season <- PL_read_data("2017-06-01",Sys.Date())
+    
+    missing_columns <- names(histPL)[which(!names(histPL) %in% names(current_season))]
+    
+    if(length(missing_columns)>0)
+      for(j in 1:length(missing_columns))
+        current_season[missing_columns[j]] <- NA
+    current_season <- current_season[,names(histPL)]
+    
+    fulld <- rbind(histPL, current_season)
+    
+    current_teams <- unique(current_season$HomeTeam)
+    
+    incProgress(0.8, detail = "Cleaning data")
+    # possible_games <- reactive({
+    #   gw2 <- readHTMLTable(paste0("http://fantasy.premierleague.com/fixtures/",input$gw_choice,"/"))$ismFixtureTable
+    #   
+    #   gw2 <- readHTMLTable(paste0("https://fantasy.premierleague.com/a/fixtures/18"))
+    #   
+    #   gw2 <- gw2[!is.na(gw2[,2]),]
+    #   gw2[,4]<-apply(gw2[,3:5],1,function(x)paste(x[1],x[2],x[3]))
+    #   dimnames(gw2)[[2]] <- c("Date", "Home", " ", " ", " ", "Away") 
+    #   output <- list()
+    #   for(i in 1:nrow(gw2))
+    #     output[[i]] <- paste(as.character(gw2[i,2]),"vs",as.character(gw2[i,6]))
+    #   output
+    # })
+    incProgress(1, detail = "Cleaning data")
+    
   })  # end progress bar
-
+  
   # output$game_hist_choice<-renderUI({
   #   selectInput("game_hist", 
   #               label = h3("Historical Data"),# h3("Historical Data"),
@@ -219,13 +192,13 @@ shinyServer(function(input, output) {
   
   
   # -------------- Stat plots!!
-
+  
   
   
   teams_selected <- current_teams
   plot_data <- plot_data2 <- pd2_jit <- NULL
   
-
+  
   
   # ---------- Head to Head
   
@@ -277,15 +250,15 @@ shinyServer(function(input, output) {
                   "halfgoals" = "HTAG")
     
     hhlab <- switch(input$hh_stat_choice,
-                  "goals" = "Goals scored",
-                  "goals_conc" = "Goals conceded",
-                  "starget" = "Shots on target",
-                  "shots" = "Shots",
-                  "corners" = "Corners",
-                  "fouls" = "Fouls",
-                  "ycard" = "Yellows",
-                  "rcard" = "Reds",
-                  "halfgoals" = "Halftime goals")
+                    "goals" = "Goals scored",
+                    "goals_conc" = "Goals conceded",
+                    "starget" = "Shots on target",
+                    "shots" = "Shots",
+                    "corners" = "Corners",
+                    "fouls" = "Fouls",
+                    "ycard" = "Yellows",
+                    "rcard" = "Reds",
+                    "halfgoals" = "Halftime goals")
     
     
     if(input$hh_season_range[1] == "2015-08-08" && input$hh_season_range[2] == Sys.Date()){
@@ -327,12 +300,12 @@ shinyServer(function(input, output) {
       
       hh_ylim <- c(min(hh_team_dataA[,1],
                        hh_team_dataB[,1]),
-                max(hh_team_dataA[,1],
-                    hh_team_dataB[,1]))
+                   max(hh_team_dataA[,1],
+                       hh_team_dataB[,1]))
       hh_xlim <- c(min(hh_team_dataA[,"Date"],
                        hh_team_dataB[,"Date"]),
-                max(hh_team_dataA[,"Date"],
-                    hh_team_dataB[,"Date"]))
+                   max(hh_team_dataA[,"Date"],
+                       hh_team_dataB[,"Date"]))
       
       col_A <- NULL
       for(c in 1:nrow(hh_team_dataA)){
@@ -365,39 +338,39 @@ shinyServer(function(input, output) {
       
       
       
-    plot(hh_team_dataA[,"Date"],
-         hh_team_dataA[,1],type = "b",
-         xlim = hh_xlim, ylim = hh_ylim, col = "Black",
-         xlab = "Date", ylab = hhlab, pch = 19, lty=2, xaxt="n")
-    
-    tdiff <- abs(as.numeric(difftime(hh_xlim[1], hh_xlim[2], units="days")))
-    axis.Date(1, at=seq(hh_xlim[1], hh_xlim[2], by=tdiff/7) ,format="%d %b %y")
-    
-    lines(hh_team_dataA[,"Date"],
-         hh_team_dataA[,1],type = "p",
-         xlim = hh_xlim, ylim = hh_ylim, col = col_A,
-         xlab = "Date", ylab = "Stat", pch = 19)
-    
-    if(input$hh_tA_in!=input$hh_tB_in){
-      team_b_jit <- jitter(hh_team_dataB[,1],
-                         factor=0.3)
-      lines(hh_team_dataB[,"Date"],
-          team_b_jit, type = "b",
-          col = "Black", lty = 3)
-      lines(hh_team_dataB[,"Date"],
-          team_b_jit, type = "p",
-         col = col_B, pch=19)
-      legend("topleft",c("Win","Draw","Loss",input$hh_tA_in,input$hh_tB_in),col=c("Green","Black","Red","Black","Black"),pch=c(19,19,19,NA,NA),lty=c(NA,NA,NA,2,3))
-    }else{
-      lines(hh_team_dataB[,"Date"],
-            hh_team_dataB[,1], type = "b",
-            col = "Black", lty = 2)
-      lines(hh_team_dataB[,"Date"],
-            hh_team_dataB[,1], type = "p",
-            col = col_B, pch=19)
-      legend("topleft",c("Win","Draw","Loss",input$hh_tA_in),col=c("Green","Black","Red","Black"),pch=c(19,19,19,NA),lty=c(NA,NA,NA,2))
+      plot(hh_team_dataA[,"Date"],
+           hh_team_dataA[,1],type = "b",
+           xlim = hh_xlim, ylim = hh_ylim, col = "Black",
+           xlab = "Date", ylab = hhlab, pch = 19, lty=2, xaxt="n")
       
-    }
+      tdiff <- abs(as.numeric(difftime(hh_xlim[1], hh_xlim[2], units="days")))
+      axis.Date(1, at=seq(hh_xlim[1], hh_xlim[2], by=tdiff/7) ,format="%d %b %y")
+      
+      lines(hh_team_dataA[,"Date"],
+            hh_team_dataA[,1],type = "p",
+            xlim = hh_xlim, ylim = hh_ylim, col = col_A,
+            xlab = "Date", ylab = "Stat", pch = 19)
+      
+      if(input$hh_tA_in!=input$hh_tB_in){
+        team_b_jit <- jitter(hh_team_dataB[,1],
+                             factor=0.3)
+        lines(hh_team_dataB[,"Date"],
+              team_b_jit, type = "b",
+              col = "Black", lty = 3)
+        lines(hh_team_dataB[,"Date"],
+              team_b_jit, type = "p",
+              col = col_B, pch=19)
+        legend("topleft",c("Win","Draw","Loss",input$hh_tA_in,input$hh_tB_in),col=c("Green","Black","Red","Black","Black"),pch=c(19,19,19,NA,NA),lty=c(NA,NA,NA,2,3))
+      }else{
+        lines(hh_team_dataB[,"Date"],
+              hh_team_dataB[,1], type = "b",
+              col = "Black", lty = 2)
+        lines(hh_team_dataB[,"Date"],
+              hh_team_dataB[,1], type = "p",
+              col = col_B, pch=19)
+        legend("topleft",c("Win","Draw","Loss",input$hh_tA_in),col=c("Green","Black","Red","Black"),pch=c(19,19,19,NA),lty=c(NA,NA,NA,2))
+        
+      }
     }else{
       plot(hh_plot_data_teams[which(hh_plot_data_teams$HomeTeam=="Tottenham"|hh_plot_data_teams$AwayTeam=="Tottenham"),"Date"],
            hh_plot_data_teams[which(hh_plot_data_teams$HomeTeam=="Tottenham"|hh_plot_data_teams$AwayTeam=="Tottenham"),"FTHG"], type = "b",
@@ -405,13 +378,7 @@ shinyServer(function(input, output) {
     }
   })
   
-  
-  
-  
-  
-  
-  
-  
+
   
   
   
@@ -419,254 +386,45 @@ shinyServer(function(input, output) {
   
   # ------------ Cutom plot, this gon be big!!!
   
-  
-  plot_data <- reactive({
-    
-    start_date <- input$season_range_c[1]
-    end_date <- input$season_range_c[2]
-    if(input$season_range_c[1]>input$season_range_c[2]){
-        end_date <- input$season_range_c[1]
-      start_date <- input$season_range_c[2]
-    }
-    
-    if((start_date <= "2017-08-12" &&  start_date >= "2017-06-08") 
-       && input$season_range_c[2] >= (Sys.Date()-1)){
-      plot_data_teams <- current_season
-      clab2 <- "this season"
-      teams_selected2 <<- current_teams
-    }else if(start_date == end_date){
-      plot_data_teams <- current_season
-      clab2 <- paste0("on ", format(start_date,"%d %b '%y"))
-      teams_selected2 <<- current_teams
-    }else{
-      sel_range <- which(fulld$Date >= start_date & fulld$Date <= end_date)
-      plot_data_teams <- fulld[sel_range,]
-      clab2 <- paste("between",format(start_date,"%d %b '%y"),"and",format(end_date,"%d %b '%y"))
-      teams_selected2 <<- current_teams
-      # Uncomment if you want to add in older teams...
-      # teams_selected <- levels(as.factor(as.character(plot_data_teams$HomeTeam)))
-    }
-    
-    cx1 <- "FTHG"
-    cx2 <- "FTAG"
-    cxlab <- "Goals scored"
-    
-    cx <- switch(input$stat_choice_x,
-                  "goals" = c("FTHG","FTAG","Goals scored"),
-                  "goals_conc" = c("FTAG","FTHG","Goals conceded"),
-                  "starget" = c("HST","AST","Shots on target"),
-                  "shots" = c("HS","AS","Shots"),
-                  "corners" = c("HC","AC","Corners"),
-                  "fouls" = c("HF","AF","Fouls"),
-                  "ycard" = c("HY","AY", "Yellows"),
-                  "rcard" = c("HR","AR", "Reds"),
-                  "halfgoals" = c("HTHG","HTAG", "Halftime Goalds"))
-    
-    cy <- switch(input$stat_choice_y,
-                  "goals" = c("FTHG","FTAG","Goals scored"),
-                  "goals_conc" = c("FTAG","FTHG","Goals conceded"),
-                  "starget" = c("HST","AST","Shots on target"),
-                  "shots" = c("HS","AS","Shots"),
-                  "corners" = c("HC","AC","Corners"),
-                  "fouls" = c("HF","AF","Fouls"),
-                  "ycard" = c("HY","AY","Yellows"),
-                  "rcard" = c("HR","AR","Red"),
-                  "halfgoals" = c("HTHG","HTAG","Halftime Goalds"))
-    
-    plot_data_cx <- plot_data_cy <- NULL
-    
-    home_temp <- plot_data_teams %>% group_by(HomeTeam) %>% 
-      summarise(stat = sum(rlang::UQ(rlang::sym(cx[1])))) %>% 
-      rename(Team = HomeTeam) %>% filter(Team %in% teams_selected)
-    away_temp <- plot_data_teams %>% group_by(AwayTeam) %>% 
-      summarise(stat = sum(rlang::UQ(rlang::sym(cx[2])))) %>% 
-      rename(Team = AwayTeam )%>% filter(Team %in% teams_selected)
-    plot_data_cx <- bind_rows(home_temp,away_temp) %>% 
-      group_by(Team) %>% 
-      summarise_all(sum) %>% 
-      arrange(Team)
-    plot_data_cx <- plot_data_cx$stat
-    
-    home_temp_y <- plot_data_teams %>% group_by(HomeTeam) %>%
-      summarise(stat = sum(rlang::UQ(rlang::sym(cy[1])))) %>%
-      rename(Team = HomeTeam) %>% filter(Team %in% teams_selected)
-    away_temp_y <- plot_data_teams %>% group_by(AwayTeam) %>%
-      summarise(stat = sum(rlang::UQ(rlang::sym(cy[2])))) %>%
-      rename(Team = AwayTeam)%>% filter(Team %in% teams_selected)
-    plot_data_cy <- bind_rows(home_temp_y,away_temp_y) %>% 
-      group_by(Team) %>% 
-      summarise_all(sum) %>% 
-      arrange(Team)
-    plot_data_cy <- plot_data_cy$stat
-
-    
-    # Second statistic choice.................
-    
-    per_cx <- switch(input$stat_choice_x_per,
-                     "no_div" = c("nodiv", "nodiv", ""),
-                     "p_game" = c("ngames", "ngames", "per game"),
-                     "p_goal" = c("FTHG", "FTAG", "per goal"),
-                     "p_goal_conc" = c("FTAG", "FTHG", "per goal"),
-                     "p_home" = c("home", "home", "at home"),
-                     "p_away"=c("away", "away", "away"),
-                     "p_shot" = c("HS", "AS", "per shot"),
-                     "p_shot_t" = c("HST", "AST", "per shot on target"),
-                     "p_shot_f" = c("AS", "HS", "per shot faced"),
-                     "p_corner" = c("HC", "AC", "per corner"),
-                     "p_corner_f" = c("AC", "HC", "per corner faced"),
-                     "p_foul" = c("HF", "AF","per foul"))
-    per_cy <- switch(input$stat_choice_y_per,
-                     "no_div" = c("nodiv", "nodiv", ""),
-                     "p_game" = c("ngames", "ngames", "per game"),
-                     "p_goal" = c("FTHG", "FTAG", "per goal"),
-                     "p_goal_conc" = c("FTAG", "FTHG", "per goal"),
-                     "p_home" = c("home", "home", "at home"),
-                     "p_away"=c("away", "away", "away"),
-                     "p_shot" = c("HS", "AS", "per shot"),
-                     "p_shot_t" = c("HST", "AST", "per shot on target"),
-                     "p_shot_f" = c("AS", "HS", "per shot faced"),
-                     "p_corner" = c("HC", "AC", "per corner"),
-                     "p_corner_f" = c("AC", "HC", "per corner faced"),
-                     "p_foul" = c("HF", "AF","per foul"))
-    
-    
-    plot_data_cx2 <- plot_data_cy2 <- NULL
-    if(per_cx[1]!="home" && per_cx[1]!="away" && 
-       per_cx[2]!="home" && per_cx[2]!="away" && 
-       per_cx[1]!="nodiv" && per_cx[2]!="nodiv" && 
-       per_cx[1]!="ngames" && per_cx[2]!="ngames"){
-      for(k in 1:length(teams_selected2)){
-        plot_data_cx2[k] <- sum(plot_data_teams[which(plot_data_teams$HomeTeam == teams_selected2[k]), per_cx[1]],
-                                plot_data_teams[which(plot_data_teams$AwayTeam == teams_selected2[k]), per_cx[2]])
-      }
-    }else if(per_cx[1] == "nodiv"){
-      plot_data_cx2 <- 1
-    }else if(per_cx[1]=="home"){
-      for(k in 1:length(teams_selected2)){
-        plot_data_cx[k] <- sum(plot_data_teams[which(plot_data_teams$HomeTeam == teams_selected2[k]), cx[1]])
-      }
-      plot_data_cx2 <- 1
-    }else if(per_cx[1]=="away"){
-      for(k in 1:length(teams_selected2)){
-        plot_data_cx[k] <- sum(plot_data_teams[which(plot_data_teams$AwayTeam == teams_selected2[k]), cx[2]])
-      }
-      plot_data_cx2 <- 1
-    }else if(per_cx[1]=="ngames"){
-      for(k in 1:length(teams_selected2)){
-        plot_data_cx2[k] <- length(c(plot_data_teams[which(plot_data_teams$HomeTeam == teams_selected2[k]), cx[1]],
-                                   plot_data_teams[which(plot_data_teams$AwayTeam == teams_selected2[k]), cx[2]]))
-      }
-    }
-    
-    
-    if(per_cy[1]!="home" && per_cy[1]!="away" && 
-       per_cy[2]!="home" && per_cy[2]!="away" && 
-       per_cy[1]!="nodiv" && per_cy[2]!="nodiv" && 
-       per_cy[1]!="ngames" && per_cy[2]!="ngames"){
-      for(k in 1:length(teams_selected2)){
-        plot_data_cy2[k] <- sum(plot_data_teams[which(plot_data_teams$HomeTeam == teams_selected2[k]), per_cy[1]],
-                                plot_data_teams[which(plot_data_teams$AwayTeam == teams_selected2[k]), per_cy[2]])
-        }
-      }else if(per_cy[1] == "nodiv"){
-        plot_data_cy2 <- 1
-      }else if(per_cy[1]=="home"){
-        for(k in 1:length(teams_selected2)){
-          plot_data_cy[k] <- sum(plot_data_teams[which(plot_data_teams$HomeTeam == teams_selected2[k]), cy[1]])
-        }
-        plot_data_cy2 <- 1
-      }else if(per_cy[1]=="away"){
-        for(k in 1:length(teams_selected2))
-          plot_data_cy[k] <- sum(plot_data_teams[which(plot_data_teams$AwayTeam == teams_selected2[k]), cy[2]])
-        plot_data_cy2 <- 1
-      }else if(per_cy[1]=="ngames"){
-        for(k in 1:length(teams_selected2)){
-          plot_data_cy2[k] <- length(c(plot_data_teams[which(plot_data_teams$HomeTeam == teams_selected2[k]), cy[1]],
-                                  plot_data_teams[which(plot_data_teams$AwayTeam == teams_selected2[k]), cy[2]]))
-        }
-      }
-    
-    
-    #labels for click data
-    click_xlab <<- paste0(cx[3]," ",per_cx[3])
-    click_ylab <<- paste0(cy[3]," ",per_cy[3])
-    
-    plot_data_cx <- round(plot_data_cx/plot_data_cx2, digits=4)
-    click_xdata <<- plot_data_cx
-    plot_data_cy <- round(plot_data_cy/plot_data_cy2, digits=4)
-    click_ydata <<- plot_data_cy
-    
-
-    pd2_jit_cy <<- plot_data_cy
-    pd2_jit_cy[duplicated(cbind(plot_data_cy,plot_data_cx))] <<- jitter(plot_data_cy[duplicated(cbind(plot_data_cy,plot_data_cx))], factor = 0.8)
-    
-    if(input$custom_boundaries == TRUE){
-      mymax <- max(c(plot_data_cx,pd2_jit_cy))
-      mymin <- min(c(plot_data_cx,pd2_jit_cy))
-      my_xlim = c(mymin, mymax + (abs(range(plot_data_cx)[1] - range(plot_data_cx)[2])/10))
-      my_ylim = c(mymin, mymax)
-    }else{
-      my_xlim = c(min(plot_data_cx),max(plot_data_cx) +  (abs(range(plot_data_cx)[1] - range(plot_data_cx)[2])/10))
-      my_ylim = range(pd2_jit_cy)
-    }
-    
-    # ## Actual plot
-    # plot(plot_data_cx, pd2_jit_cy, xlab = paste(cx[3],per_cx[3]) , ylab = paste(cy[3],per_cy[3]), 
-    #      main = paste(cy[3],per_cy[3],"vs.",cx[3],per_cx[3],clab2),
-    #      pch = 19, 
-    #      col = team_colours,cex=1.4, 
-    #      xlim = my_xlim,
-    #      ylim = my_ylim
-    # )
-    # 
-    # points(plot_data_cx, pd2_jit_cy,
-    #      pch = 4, col = team_colours2, lwd=1.2
-    # )
-    # 
-    # text(plot_data_cx, pd2_jit_cy, current_teams, pos=4)
-    
-    output_data <- list(x=plot_data_cx,
-               y=plot_data_cy,
-               y_jit=pd2_jit_cy,
-               xlim=my_xlim,
-               ylim=my_ylim,
-               xlabels=cx[3],
-               ylabels=cy[3],
-               xlabels_per=per_cx[3],
-               ylabels_per=per_cy[3],
-               main_label=clab2)
-    
-    output_data
-    
+  plot_data2 <- reactive({
+  PL_plot_data(team_data = fulld, 
+               date_from = input$season_range_c[1], 
+               date_to = input$season_range_c[2], 
+               x_stat = input$stat_choice_x, 
+               y_stat = input$stat_choice_y, 
+               teams= NA, 
+               x_stat_by=input$stat_choice_x_per, 
+               y_stat_by=input$stat_choice_y_per, 
+               custom_boundary=FALSE)
     
   })
   
   
-  output$plot_stats_custom <- renderPlot({
-    
-    this_plot_data <- plot_data()
-    
-    
-    ## Actual plot
-    plot(this_plot_data$x, this_plot_data$y, 
-         xlab = paste(this_plot_data$xlabels,this_plot_data$xlabels_per), 
-         ylab = paste(this_plot_data$ylabels,this_plot_data$ylabels_per),
-         main = paste(this_plot_data$ylabels,this_plot_data$ylabels_per,"vs.",
-                      this_plot_data$xlabels,this_plot_data$xlabels_per,
-                      this_plot_data$ylabels_per,this_plot_data$main_label),
-         pch = 19,
-         col = team_colours,cex=1.4,
-         xlim = this_plot_data$xlim,
-         ylim = this_plot_data$ylim
-    )
-
-    points(this_plot_data$x, this_plot_data$y,
-         pch = 4, col = team_colours2, lwd=1.2)
-
-    text(this_plot_data$x, this_plot_data$y, current_teams, pos=4)
-    
-    
-  })
-
+  # output$plot_stats_custom <- renderPlot({
+  #   
+  #   this_plot_data <- plot_data()
+  #   
+  #   
+  #   ## Actual plot
+  #   plot(this_plot_data$x, this_plot_data$y, 
+  #        xlab = paste(this_plot_data$xlabels,this_plot_data$xlabels_per), 
+  #        ylab = paste(this_plot_data$ylabels,this_plot_data$ylabels_per),
+  #        main = paste(this_plot_data$ylabels,this_plot_data$ylabels_per,"vs.",
+  #                     this_plot_data$xlabels,this_plot_data$xlabels_per,
+  #                     this_plot_data$ylabels_per,this_plot_data$main_label),
+  #        pch = 19,
+  #        col = team_colours,cex=1.4,
+  #        xlim = this_plot_data$xlim,
+  #        ylim = this_plot_data$ylim
+  #   )
+  #   
+  #   points(this_plot_data$x, this_plot_data$y,
+  #          pch = 4, col = team_colours2, lwd=1.2)
+  #   
+  #   text(this_plot_data$x, this_plot_data$y, current_teams, pos=4)
+  #   
+  # })
+  
   # observe({
   #   if(!is.null(input$custom_plot_click$x)&&!is.null(input$custom_plot_click$y)&&!is.null(click_xdata)){
   #     selected <- c(input$custom_plot_click$x,input$custom_plot_click$y)
@@ -687,20 +445,22 @@ shinyServer(function(input, output) {
   
   output$plot_stats_custom2 <- renderPlotly({
     
-    this_plot_data <- plot_data()
+    this_plot_data <- plot_data2()
     temp_plot_data <- data.frame(x=this_plot_data$x,
                                  y=this_plot_data$y,
-                                 teams=current_teams)
+                                 teams=this_plot_data$teams)
+    
     main_title <- paste(this_plot_data$ylabels,this_plot_data$ylabels_per,"vs.",
-          this_plot_data$xlabels,this_plot_data$xlabels_per,
-          this_plot_data$ylabels_per,this_plot_data$main_label)
+                        this_plot_data$xlabels,this_plot_data$xlabels_per,
+                        this_plot_data$ylabels_per,this_plot_data$main_label)
     
     plot_ly(data=temp_plot_data, x = ~x, y = ~y, #color = teams, colors=team_colours,
             text = ~teams,
-            hooverinfo="text",
+            hooverinfo = "text",
             type = 'scatter', mode = 'markers',
-            marker=list(color=team_colours_rgb, line=list(color=team_colours2_rgb, width=2))
-            )  %>%  # text = ~paste0("(",this_plot_data$xlabels,", ",this_plot_data$ylabels,")"))
+            marker = list(color = team_cols[this_plot_data$teams,c("col1_rgb")], 
+                        line = list(color=team_cols[this_plot_data$teams,c("col2_rgb")], width=2))
+    )  %>%  # text = ~paste0("(",this_plot_data$xlabels,", ",this_plot_data$ylabels,")"))
       layout(title = main_title,
              xaxis = list(
                range = c(this_plot_data$xlim[1]-(0.05*abs(this_plot_data$xlim[1]-this_plot_data$xlim[2])),
@@ -712,7 +472,7 @@ shinyServer(function(input, output) {
                          this_plot_data$ylim[2]+(0.05*abs(this_plot_data$ylim[1]-this_plot_data$ylim[2]))),
                title = paste(this_plot_data$ylabels,this_plot_data$ylabels_per)
              )
-             ) %>%
+      ) %>%
       #add_text(textposition = "top right")
       add_annotations(showarrow=F, xanchor = 'left', yanchor="top") %>%
       config(displayModeBar = F)
@@ -724,109 +484,109 @@ shinyServer(function(input, output) {
   
   
   # ----------------- Fantasy players table --------------------------------------
-  
+
   output$dt_field_choices <- renderUI({
     isolate({
-    choices <- available_fields
-    if(!is.null(input$dt_fields)){
-      selected <- input$dt_fields
-    }else{
-      selected = c("Name","Photo","Team","Cost")
-    }
-    selectizeInput("dt_fields", label="Choose Columns", choices= choices, selected=selected, multiple=T, options=list(plugins=list('remove_button', 'drag_drop')))
+      choices <- available_fields
+      if(!is.null(input$dt_fields)){
+        selected <- input$dt_fields
+      }else{
+        selected = c("Name","Photo","Team","Cost")
+      }
+      selectizeInput("dt_fields", label="Choose Columns", choices= choices, selected=selected, multiple=T, options=list(plugins=list('remove_button', 'drag_drop')))
+    })
   })
-  })
-  
-  
+
+
   output$dt_data_display <- DT::renderDataTable(DT::datatable({
     if(!is.null(input$dt_fields)&&length(input$dt_fields)>1){
       #browser()
       player_data[,input$dt_fields]
     }
   },rownames = FALSE, escape=1, filter='top',options=list(dom='lrtip')))
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+
+
+
+
+
+
+
+
+
+
+
+
+
   # Sidebar options
-  
+
   output$field1<-renderUI({
     # Reactive input displaying possible fields
-    selectInput("field_choice_1", 
+    selectInput("field_choice_1",
                 label = h5("Field 1"),
                 choices = as.list(available_fields),
                 selected = "Photo")
   })
   output$field2<-renderUI({
     # Reactive input displaying possible fields
-    selectInput("field_choice_2", 
+    selectInput("field_choice_2",
                 label = h5("Field 2"),
                 choices = as.list(available_fields),
                 selected = "Total Points")
   })
   output$field3<-renderUI({
     # Reactive input displaying possible fields
-    selectInput("field_choice_3", 
+    selectInput("field_choice_3",
                 label = h5("Field 3"),
                 choices = as.list(available_fields),
                 selected = "Value Form")
   })
   output$field4<-renderUI({
     # Reactive input displaying possible fields
-    selectInput("field_choice_4", 
+    selectInput("field_choice_4",
                 label = h5("Field 4"),
                 choices = as.list(available_fields),
                 selected = "Status")
   })
-  
+
   sort_choice <- reactive({
     if(is.null(input$player_data_sort))
       return("Total points")
     input$player_data_sort
   })
-  
+
   output$sort_field<-renderUI({
     # Very poor if construct!!! Could be improved
     if(is.null(sort_choice())||is.null(input$field_choice_1)||is.null(input$field_choice_2)||is.null(input$field_choice_3)||is.null(input$field_choice_4)){
-      selectInput("player_data_sort", 
+      selectInput("player_data_sort",
                   label = h4("Sort by"),
                   choices = list("id", "Cost", "Total points"),
                   selected = "Total points")
     }else{
       # Reactive input displaying possible fields
-      selectInput("player_data_sort", 
+      selectInput("player_data_sort",
                   label = h4("Sort by"),
                   choices = list("id", "Cost",
-                               input$field_choice_1, 
-                               input$field_choice_2, 
-                               input$field_choice_3, 
-                               input$field_choice_4),
+                                 input$field_choice_1,
+                                 input$field_choice_2,
+                                 input$field_choice_3,
+                                 input$field_choice_4),
                   selected = sort_choice())
     }
   })
-  
-  
+
+
   # Data selections
-  
+
   output$team_choice<-renderUI({
     # Reactive input displaying possible fields
-    selectInput("team_ch", 
+    selectInput("team_ch",
                 label = h5("Team"),
                 choices = as.list(c("All",levels(player_data$Team))),
                 selected = "All")
   })
   output$position_choice<-renderUI({
     # Reactive input displaying possible fields
-    selectInput("pos_ch", 
+    selectInput("pos_ch",
                 label = h5("Position"),
                 choices = as.list(c("All",levels(player_data$Position))),
                 selected = "All")
@@ -835,51 +595,41 @@ shinyServer(function(input, output) {
     # Reactive input displaying possible fields
     sliderInput("cost_ch", label = h5("Cost"), min = 0, max = max(player_data$Cost), value = c(0,max(player_data$Cost)))
   })
-  
+
   output$data_display <- renderTable({
-    
+
     if(is.null(input$team_ch) && is.null(input$pos_ch))
       return(player_data[,c("Name", "Team", "Status" ,"Cost")])
-    
+
     rows_display <- rows_display_tm <- rows_display_pos <- 1:nrow(player_data)
     if(!input$team_ch=="All")
       rows_display_tm <- which(player_data$Team==input$team_ch)
     if(!input$pos_ch=="All")
       rows_display_pos <- which(player_data$Position==input$pos_ch)
-    
+
     rows_display_cost <- which(player_data$Cost > input$cost_ch[1] & player_data$Cost < input$cost_ch[2])
-    
+
     rows_display<-rows_display[which(rows_display %in% rows_display_tm)]
     rows_display<-rows_display[which(rows_display %in% rows_display_pos)]
     rows_display<-rows_display[which(rows_display %in% rows_display_cost)]
-    
+
     #browser()
     output_table <- player_data[rows_display,
                                 c("Name","Photo", "Team" ,"Cost",
-                                  input$field_choice_1, 
-                                  input$field_choice_2, 
-                                  input$field_choice_3, 
+                                  input$field_choice_1,
+                                  input$field_choice_2,
+                                  input$field_choice_3,
                                   input$field_choice_4)]
-    
+
     if(!is.null(input$player_data_sort)&&(input$player_data_sort=="id"||input$player_data_sort=="Cost"||input$player_data_sort==input$field_choice_1||input$player_data_sort==input$field_choice_2||input$player_data_sort==input$field_choice_3||input$player_data_sort==input$field_choice_4))
       if(input$player_data_sort!="id")
         return(output_table[order(output_table[,input$player_data_sort],decreasing = T),])
     return(output_table)
-    
+
   })
-
   
-  })
-
-
+  
+})
 
 
 
-
-  
-  
-  
-  
-  
-  
-  
