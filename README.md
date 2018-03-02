@@ -1,7 +1,7 @@
-# Fantasy football shiny app
+# Premier League Shiny App
  
-Takes data from premier league website and gives up to date standings for the league. The application is hosted on [ff.aboland.ie](http://ff.aboland.ie/).
+Takes premier league match data and visually displays statistics. The application is hosted on [ff.aboland.ie](http://ff.aboland.ie/). The match data is taken from [football-data.co.uk](http://www.football-data.co.uk).
 
 
-The league tables are pulled directly from [fantasy football site](http://fantasy.premierleague.com), the player data is too large to do this on the fly. The data files store the information about the players, this need to be updated periodically.
+The player data is pulled directly from the premier leagues [http://fantasy football site](http://fantasy.premierleague.com), the player data is too large to do this on the fly. The data files store the information about the players, this need to be updated periodically.
 **player data is currently out of date**
