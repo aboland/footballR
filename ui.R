@@ -5,15 +5,15 @@ library(plotly)
 
 # Define UI for application to display data
 shinyUI(fluidPage(theme="united.min.css",
-  
+
   # Application title
-  titlePanel("Premier League 17/18"),
-  
-  
+  #titlePanel("Premier League 17/18"),
+
+
   # Sidebar ---------------------------------------------------------------------------------------
-      navlistPanel(widths =c(2, 10),
-                   
-                   tabPanel("Fixtures/Results",
+      navbarPage("Premier League 17/18", #widths = c(2, 10),
+
+                   tabPanel("Team Data",
                             tabsetPanel(
                               # tabPanel("Gameweek",
                               #          fluidRow(
@@ -25,25 +25,25 @@ shinyUI(fluidPage(theme="united.min.css",
                               #            column(6,
                               #                   uiOutput("game_hist_choice"),
                               #                   checkboxInput("return_leg", label = "Return Fixture", value = FALSE),
-                              #                   
+                              #
                               #                   tableOutput("historical_result")
                               #                   #h3("League Table"),
                               #                   #tableOutput("personal_table")
                               #            )
                               #          )
                               # ),
-                              
+
                               tabPanel("Statistics",
                                        fluidRow(
                                          column(3,
-                                                selectInput("stat_choice_y", label = h4("Stat 1"), 
+                                                selectInput("stat_choice_y", label = h4("Stat 1"),
                                                             choices = list("Goals scored" = "goals",
                                                                            "Goals conceded" = "goals_conc",
                                                                            "Shots on target" = "starget",
                                                                            "Shots" = "shots",
                                                                            "Corners" = "corners",
                                                                            "Fouls" = "fouls"), selected = "goals"),
-                                                selectInput("stat_choice_y_per", label = NULL,# h4("Choose x by"), 
+                                                selectInput("stat_choice_y_per", label = NULL,# h4("Choose x by"),
                                                             choices = list("By" = "no_div",
                                                                            "Per game" = "p_game",
                                                                            "Per goal" = "p_goal",
@@ -57,14 +57,14 @@ shinyUI(fluidPage(theme="united.min.css",
                                                                            "Per corner faced" = "p_corner_f",
                                                                            "Per foul" = "p_foul"), selected = "no_div")),
                                          column(3,
-                                                selectInput("stat_choice_x", label = h4("Stat 2"), 
+                                                selectInput("stat_choice_x", label = h4("Stat 2"),
                                                             choices = list("Goals scored" = "goals",
                                                                            "Goals conceded" = "goals_conc",
                                                                            "Shots on target" = "starget",
                                                                            "Shots" = "shots",
                                                                            "Corners" = "corners",
                                                                            "Fouls" = "fouls"), selected = "goals_conc"),
-                                                selectInput("stat_choice_x_per", label = NULL,#h4("Choose y by"), 
+                                                selectInput("stat_choice_x_per", label = NULL,#h4("Choose y by"),
                                                             choices = list("By" = "no_div",
                                                                            "Per game" = "p_game",
                                                                            "Per goal" = "p_goal",
@@ -83,10 +83,10 @@ shinyUI(fluidPage(theme="united.min.css",
                                                 #sliderInput("season_range", label= h4("Season"),
                                                 #            min = 2000, max = 2016, value = c(2015, 2016),step=1, sep=""),
                                                 dateRangeInput("season_range_c", label= h4("Date range"),
-                                                               format = "dd-mm-yyyy", 
-                                                               start = "2017-08-11", 
+                                                               format = "dd-mm-yyyy",
+                                                               start = "2017-08-11",
                                                                #end = "2016-03-08",
-                                                               end = Sys.Date()-1, 
+                                                               end = Sys.Date()-1,
                                                                min="2000-08-09"),
                                                 checkboxInput("custom_boundaries","Fixed aspect", value = FALSE)
                                          )),
@@ -96,10 +96,10 @@ shinyUI(fluidPage(theme="united.min.css",
                                        #ggvisOutput("myggplot")
                                        plotlyOutput("plot_stats_custom2")#, height = 'auto', width = 'auto')
                               ),
-                              tabPanel("Head to head",
+                              tabPanel("Time Series",
                                        fluidRow(
                                          column(2,
-                                                selectInput("hh_stat_choice", label = h4("Statistic"), 
+                                                selectInput("hh_stat_choice", label = h4("Statistic"),
                                                             choices = list("Goals scored" = "goals",
                                                                            "Goals conceded" = "goals_conc",
                                                                            "Shots on target" = "starget",
@@ -115,9 +115,6 @@ shinyUI(fluidPage(theme="united.min.css",
                                                 uiOutput("hh_teamA"),
                                                 uiOutput("hh_teamB")
                                          ),
-                                         #column(3,
-                                         #       uiOutput("hh_teamB")
-                                         #),
                                          column(4,
                                                 #h4("Time range"),
                                                 #checkboxInput("this_season", label = "All seasons", value = FALSE),
@@ -129,34 +126,18 @@ shinyUI(fluidPage(theme="united.min.css",
                                          )
                                          ),
                                        plotOutput("plot_hh")
-                                       
+
                               )
-                            
+
                    )),
-        
+
                    tabPanel("Player Data",
                             uiOutput("dt_field_choices"),
                             DT::dataTableOutput("dt_data_display")
-                            
-                   )#,
-        # tabPanel("Player Data_old",
-        #          sidebarLayout(
-        #            sidebarPanel(h3("Player Data Controls"),
-        #                   h4("Choose fields to display"),
-        #                   uiOutput("field1"),
-        #                   uiOutput("field2"),
-        #                   uiOutput("field3"),
-        #                   uiOutput("field4"),
-        #                   uiOutput("sort_field")),
-        #            mainPanel(
-        #          fluidRow(
-        #            column(3, uiOutput("team_choice")),
-        #            column(3, uiOutput("position_choice")),
-        #            column(5, uiOutput("cost_choice"))),
-        #          tableOutput("data_display"))
-        #          )
-        # )
-          
+
+                   )
+
+
 #         tabPanel("Odds tracker (beta)",
 #          tabsetPanel(
 #            tabPanel("Man City vs Everton",
