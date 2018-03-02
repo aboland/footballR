@@ -9,8 +9,9 @@ shinyUI(fluidPage(theme="united.min.css",
   # Sidebar ---------------------------------------------------------------------------------------
       navbarPage("Premier League 17/18", #widths = c(2, 10),
 
-                   tabPanel("Team Data",
-                            tabsetPanel(
+                   navbarMenu("Team Data",
+                            #tabsetPanel(
+
                               # tabPanel("Gameweek",
                               #          fluidRow(
                               #            column(width = 6, offset = 0 ,
@@ -31,7 +32,7 @@ shinyUI(fluidPage(theme="united.min.css",
 
                               tabPanel("Statistics",
                                        fluidRow(
-                                         column(3,
+                                         column(3, offset=1,
                                                 selectInput("stat_choice_y", label = h4("Stat 1"),
                                                             choices = list("Goals scored" = "goals",
                                                                            "Goals conceded" = "goals_conc",
@@ -40,7 +41,7 @@ shinyUI(fluidPage(theme="united.min.css",
                                                                            "Corners" = "corners",
                                                                            "Fouls" = "fouls"), selected = "goals"),
                                                 selectInput("stat_choice_y_per", label = NULL,# h4("Choose x by"),
-                                                            choices = list("By" = "no_div",
+                                                            choices = list("Total" = "no_div",
                                                                            "Per game" = "p_game",
                                                                            "Per goal" = "p_goal",
                                                                            "Per goal conceded" = "p_goal_conc",
@@ -61,7 +62,7 @@ shinyUI(fluidPage(theme="united.min.css",
                                                                            "Corners" = "corners",
                                                                            "Fouls" = "fouls"), selected = "goals_conc"),
                                                 selectInput("stat_choice_x_per", label = NULL,#h4("Choose y by"),
-                                                            choices = list("By" = "no_div",
+                                                            choices = list("Total" = "no_div",
                                                                            "Per game" = "p_game",
                                                                            "Per goal" = "p_goal",
                                                                            "Per goal conceded" = "p_goal_conc",
@@ -86,6 +87,7 @@ shinyUI(fluidPage(theme="united.min.css",
                                                                min="2000-08-09")#,
                                                 #checkboxInput("custom_boundaries","Fixed aspect", value = FALSE)
                                          )),
+                                       br(),
                                        # plotOutput("plot_stats_custom", click = "custom_plot_click"),# , height="auto", width = "100%"),
                                        # ###plotOutput("plot_stats"),
                                        # textOutput("info_cus"),
@@ -125,7 +127,8 @@ shinyUI(fluidPage(theme="united.min.css",
 
                               )
 
-                   )),
+                   #)  # end of tabsetPanel
+                   ),
 
                    tabPanel("Player Data",
                             h3("Player data may be out of date.", style="text-align:center"),
