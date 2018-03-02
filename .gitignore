@@ -4,3 +4,4 @@
 .rsconnect/
 .Rapp.history
 .httr-oauth
+ignore/*

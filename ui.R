@@ -6,10 +6,6 @@ library(plotly)
 # Define UI for application to display data
 shinyUI(fluidPage(theme="united.min.css",
 
-  # Application title
-  #titlePanel("Premier League 17/18"),
-
-
   # Sidebar ---------------------------------------------------------------------------------------
       navbarPage("Premier League 17/18", #widths = c(2, 10),
 
@@ -87,8 +83,8 @@ shinyUI(fluidPage(theme="united.min.css",
                                                                start = "2017-08-11",
                                                                #end = "2016-03-08",
                                                                end = Sys.Date()-1,
-                                                               min="2000-08-09"),
-                                                checkboxInput("custom_boundaries","Fixed aspect", value = FALSE)
+                                                               min="2000-08-09")#,
+                                                #checkboxInput("custom_boundaries","Fixed aspect", value = FALSE)
                                          )),
                                        # plotOutput("plot_stats_custom", click = "custom_plot_click"),# , height="auto", width = "100%"),
                                        # ###plotOutput("plot_stats"),
@@ -132,6 +128,8 @@ shinyUI(fluidPage(theme="united.min.css",
                    )),
 
                    tabPanel("Player Data",
+                            h3("Player data may be out of date.", style="text-align:center"),
+                            br(),
                             uiOutput("dt_field_choices"),
                             DT::dataTableOutput("dt_data_display")
 

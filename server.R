@@ -394,6 +394,8 @@ shinyServer(function(input, output) {
                title = paste(this_plot_data$ylabels,this_plot_data$ylabels_per)
              )
       ) %>%
+      layout(plot_bgcolor='rgba(0,0,0,0)') %>%
+      layout(paper_bgcolor='rgba(0,0,0,0)') %>%
       #add_text(textposition = "top right")
       add_annotations(showarrow=F, xanchor = 'left', yanchor="top") %>%
       config(displayModeBar = F)
