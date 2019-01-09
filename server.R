@@ -8,6 +8,9 @@ library(jsonlite)
 library(RCurl)
 library(dplyr)
 library(plotly)
+
+library(devtools)
+devtools::install_github("aboland/PremierLeagueStats/PremieRLeague")
 library(PremieRLeague)
 
 #load("current_web_data.RData")

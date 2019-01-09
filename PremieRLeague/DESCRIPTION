@@ -1,7 +1,7 @@
 Package: PremieRLeague
-Title: Functions for Preimier League Data
+Title: Functions for Premier League Data
 Version: 0.1
-Authors@R: person("Aidan", "Boland", email = "aidansboland@gmail.com", role = c("aut", "cre"))
+Authors: person("Aidan", "Boland", email = "aidansboland@gmail.com", role = c("aut", "cre"))
 Description: This package contains functions which can download Premier League data and calculate various statistics from the data.
 Depends: R (>= 3.4.2)
 License: GPL-2

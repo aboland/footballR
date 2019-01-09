@@ -53,10 +53,10 @@ PL_stats_data <-
     stat1_data <- stat2_data <- NULL
 
     home_temp <- plot_data_full %>% group_by(HomeTeam) %>%
-      summarise(stat = sum(rlang::UQ(rlang::sym(stat1[1])))) %>%
+      summarise(stat = sum(get(stat1[1]))) %>%
       rename(Team = HomeTeam) %>% filter(Team %in% active_teams)
     away_temp <- plot_data_full %>% group_by(AwayTeam) %>%
-      summarise(stat = sum(rlang::UQ(rlang::sym(stat1[2])))) %>%
+      summarise(stat = sum(get(stat1[2]))) %>%
       rename(Team = AwayTeam )%>% filter(Team %in% active_teams)
     stat1_data <- bind_rows(home_temp,away_temp) %>%
       group_by(Team) %>%
@@ -65,10 +65,10 @@ PL_stats_data <-
     stat1_data <- stat1_data$stat
 
     home_temp_y <- plot_data_full %>% group_by(HomeTeam) %>%
-      summarise(stat = sum(rlang::UQ(rlang::sym(stat2[1])))) %>%
+      summarise(stat = sum(get(stat2[1]))) %>%
       rename(Team = HomeTeam) %>% filter(Team %in% active_teams)
     away_temp_y <- plot_data_full %>% group_by(AwayTeam) %>%
-      summarise(stat = sum(rlang::UQ(rlang::sym(stat2[2])))) %>%
+      summarise(stat = sum(get(stat2[2]))) %>%
       rename(Team = AwayTeam)%>% filter(Team %in% active_teams)
     stat2_data <- bind_rows(home_temp_y,away_temp_y) %>%
       group_by(Team) %>%
@@ -95,6 +95,18 @@ PL_stats_data <-
                      "p_foul" = c("HF", "AF","per foul"))
 
 
+
+    # home_temp_by <- plot_data_full %>% group_by(HomeTeam) %>%
+    #   summarise(stat = sum(rlang::UQ(rlang::sym(stat1[1])))) %>%
+    #   rename(Team = HomeTeam) %>% filter(Team %in% active_teams)
+    # away_temp_by <- plot_data_full %>% group_by(AwayTeam) %>%
+    #   summarise(stat = sum(rlang::UQ(rlang::sym(stat1[2])))) %>%
+    #   rename(Team = AwayTeam )%>% filter(Team %in% active_teams)
+    # stat1_data_by <- bind_rows(home_temp,away_temp) %>%
+    #   group_by(Team) %>%
+    #   summarise_all(sum) %>%
+    #   arrange(Team)
+    # stat1_data_by <- stat1_data_by$stat
 
     stat1_by_data <- stat2_by_data <- NULL
 

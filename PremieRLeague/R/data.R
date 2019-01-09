@@ -26,3 +26,18 @@
 #'   }
 #'
 "team_cols"
+
+#' Match data for 2000/2001 to 2017/2018
+#'
+#' A dataset containing information on all matches from
+#' the seasons from 2000 until 2018, and their team colours
+#'
+#' @format A data frame with 6840 rows and 103 variables:
+#' \describe{
+#'   \item{Div}{Division, this is unnecessary for this data}
+#'   \item{Date}{Date of match}
+#'   \item{HomeTeam}{Home Team}
+#'   \item{AwayTeam}{Away Team}
+#'   }
+#'
+"pl_data"
