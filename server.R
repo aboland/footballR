@@ -9,37 +9,37 @@ library(RCurl)
 library(dplyr)
 library(plotly)
 
-library(devtools)
-devtools::install_github("aboland/PremierLeagueStats/PremieRLeague")
+# library(devtools)
+# devtools::install_github("aboland/PremierLeagueStats/PremieRLeague")
 library(PremieRLeague)
 
 #load("current_web_data.RData")
 #load("current_web_data_tidy.RData")
 
-json_ff2 = fromJSON(getURL("https://fantasy.premierleague.com/drf/elements/"))
-full_names <- gsub("_"," ",names(json_ff2))
-full_names <- gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", full_names, perl=TRUE)
-full_names[which(full_names=="Now Cost")] <- "Cost"
-full_names[which(full_names=="Web Name")] <- "Name"
-
-player_data <- json_ff2
-names(player_data) <- full_names
-player_data$Status<-as.character(player_data$Status)
-player_data$Status[which(player_data$Status=="u")]<-"Unavailable"
-player_data$Status[which(player_data$Status=="a")]<-"Available"
-player_data$Status[which(player_data$Status=="n")]<-"(see news)"
-player_data$Status[which(player_data$Status=="d")]<-"Doubtful"
-player_data$Status[which(player_data$Status=="i")]<-"Injured"
-player_data$Status[which(player_data$Status=="s")]<-"Suspended"
-
-#https://platform-static-files.s3.amazonaws.com/premierleague/photos/players/110x140/p41328.png
-#106611.jpg
-player_data$Photo <- paste0('<img src="https://platform-static-files.s3.amazonaws.com/premierleague/photos/players/110x140/p', gsub("[.]|[[:alpha:]]","",player_data$Photo),'.png" height="150"></img>')
-#player_data$Photo[1]
-#https://platform-static-files.s3.amazonaws.com/premierleague/photos/players/110x140/p48844.png
-
-player_data <- player_data[, c("Name","Photo", names(player_data)[-(1:3)])]
-available_fields <- names(player_data)
+# json_ff2 = fromJSON(getURL("https://fantasy.premierleague.com/drf/elements/"))
+# full_names <- gsub("_"," ",names(json_ff2))
+# full_names <- gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", full_names, perl=TRUE)
+# full_names[which(full_names=="Now Cost")] <- "Cost"
+# full_names[which(full_names=="Web Name")] <- "Name"
+#
+# player_data <- json_ff2
+# names(player_data) <- full_names
+# player_data$Status<-as.character(player_data$Status)
+# player_data$Status[which(player_data$Status=="u")]<-"Unavailable"
+# player_data$Status[which(player_data$Status=="a")]<-"Available"
+# player_data$Status[which(player_data$Status=="n")]<-"(see news)"
+# player_data$Status[which(player_data$Status=="d")]<-"Doubtful"
+# player_data$Status[which(player_data$Status=="i")]<-"Injured"
+# player_data$Status[which(player_data$Status=="s")]<-"Suspended"
+#
+# #https://platform-static-files.s3.amazonaws.com/premierleague/photos/players/110x140/p41328.png
+# #106611.jpg
+# player_data$Photo <- paste0('<img src="https://platform-static-files.s3.amazonaws.com/premierleague/photos/players/110x140/p', gsub("[.]|[[:alpha:]]","",player_data$Photo),'.png" height="150"></img>')
+# #player_data$Photo[1]
+# #https://platform-static-files.s3.amazonaws.com/premierleague/photos/players/110x140/p48844.png
+#
+# player_data <- player_data[, c("Name","Photo", names(player_data)[-(1:3)])]
+# available_fields <- names(player_data)
 
 
 # for(i in 1:20){
@@ -82,16 +82,18 @@ shinyServer(function(input, output) {
   withProgress(message = "Loading team data", value = 0, {
 
     incProgress(0.1, detail = "Loading historical data")
-    load(file="FullHist_17.RData")
+    # load(file = "FullHist_17.RData")
+    # histPL <- read.csv("PL_Hist_00-19.csv", stringsAsFactors = F)
+    histPL <- pl_data
 
     incProgress(0.3, detail = "Downloading this season")
-    current_season <- PL_read_data("2017-06-01",Sys.Date())
+    current_season <- PL_read_data("2019-06-01", Sys.Date())
 
 
     missing_columns <- names(histPL)[which(!names(histPL) %in% names(current_season))]
 
-    if(length(missing_columns)>0)
-      for(j in 1:length(missing_columns))
+    if (length(missing_columns) > 0)
+      for (j in 1:length(missing_columns))
         current_season[missing_columns[j]] <- NA
     current_season <- current_season[,names(histPL)]
 
@@ -114,7 +116,7 @@ shinyServer(function(input, output) {
 
 
   output$historical_result <- renderTable({
-    if(is.null(input$game_hist)){
+    if (is.null(input$game_hist)) {
       ht <- "Tottenham"
       at <- "Stoke"
     }else{
@@ -134,11 +136,11 @@ shinyServer(function(input, output) {
       # Man Utd Man United
     }
 
-    if(sum(fulld$HomeTeam==ht & fulld$AwayTeam==at)!=0){
-      if(input$return_leg==FALSE){
-        current_data <- fulld[which(fulld$HomeTeam==ht & fulld$AwayTeam==at),]
+    if(sum(fulld$HomeTeam == ht & fulld$AwayTeam == at) != 0){
+      if(input$return_leg == FALSE){
+        current_data <- fulld[which(fulld$HomeTeam == ht & fulld$AwayTeam == at),]
       }else{
-        current_data <- fulld[which((fulld$HomeTeam==ht & fulld$AwayTeam==at)|(fulld$HomeTeam==at & fulld$AwayTeam==ht)),]
+        current_data <- fulld[which((fulld$HomeTeam == ht & fulld$AwayTeam == at)|(fulld$HomeTeam==at & fulld$AwayTeam==ht)),]
       }
 
       current_data[,"Date"] <-  format(current_data[,"Date"], "%d %b %y")
@@ -227,11 +229,11 @@ shinyServer(function(input, output) {
                     "halfgoals" = "Halftime goals")
 
 
-    if(input$hh_season_range[1] == "2015-08-08" && input$hh_season_range[2] == Sys.Date()){
+    if (input$hh_season_range[1] == "2015-08-08" && input$hh_season_range[2] == Sys.Date()) {
       hh_plot_data_teams <- current_season
       hh_lab2 <- "this season"
       hh_teams_selected <<- current_teams
-    }else if(input$hh_season_range[1] == input$hh_season_range[2]){
+    }else if (input$hh_season_range[1] == input$hh_season_range[2]) {
       hh_plot_data_teams <- current_season
       hh_lab2 <- "this season"
       hh_teams_selected <<- current_teams
@@ -244,22 +246,22 @@ shinyServer(function(input, output) {
       # teams_selected <- levels(as.factor(as.character(plot_data_teams$HomeTeam)))
     }
 
-    if(!is.null(input$hh_tA_in)&&!is.null(input$hh_tB_in)){
+    if (!is.null(input$hh_tA_in)&&!is.null(input$hh_tB_in)) {
       #browser()
-      hh_team_dataA <- hh_plot_data_teams[which(hh_plot_data_teams$HomeTeam==input$hh_tA_in|hh_plot_data_teams$AwayTeam==input$hh_tA_in),]
-      hh_team_dataA1 <- hh_plot_data_teams[which(hh_plot_data_teams$HomeTeam==input$hh_tA_in),c(hh1,"FTR","Date","HomeTeam","AwayTeam")]
-      hh_team_dataA2 <- hh_plot_data_teams[which(hh_plot_data_teams$AwayTeam==input$hh_tA_in),c(hh2,"FTR","Date","HomeTeam","AwayTeam")]
+      hh_team_dataA <- hh_plot_data_teams[which(hh_plot_data_teams$HomeTeam == input$hh_tA_in|hh_plot_data_teams$AwayTeam==input$hh_tA_in),]
+      hh_team_dataA1 <- hh_plot_data_teams[which(hh_plot_data_teams$HomeTeam == input$hh_tA_in),c(hh1,"FTR","Date","HomeTeam","AwayTeam")]
+      hh_team_dataA2 <- hh_plot_data_teams[which(hh_plot_data_teams$AwayTeam == input$hh_tA_in),c(hh2,"FTR","Date","HomeTeam","AwayTeam")]
       dimnames(hh_team_dataA1)[[2]] <- dimnames(hh_team_dataA2)[[2]] <- c("V1","FTR","Date","HomeTeam","AwayTeam")
       hh_team_dataA <- rbind(hh_team_dataA1,hh_team_dataA2)
       hh_team_dataA <- hh_team_dataA[order(hh_team_dataA$Date),]
-      hh_team_dataB <- hh_plot_data_teams[which(hh_plot_data_teams$HomeTeam==input$hh_tB_in|hh_plot_data_teams$AwayTeam==input$hh_tB_in),]
-      hh_team_dataB1 <- hh_plot_data_teams[which(hh_plot_data_teams$HomeTeam==input$hh_tB_in),c(hh1,"FTR","Date","HomeTeam","AwayTeam")]
-      hh_team_dataB2 <- hh_plot_data_teams[which(hh_plot_data_teams$AwayTeam==input$hh_tB_in),c(hh2,"FTR","Date","HomeTeam","AwayTeam")]
+      hh_team_dataB <- hh_plot_data_teams[which(hh_plot_data_teams$HomeTeam == input$hh_tB_in|hh_plot_data_teams$AwayTeam==input$hh_tB_in),]
+      hh_team_dataB1 <- hh_plot_data_teams[which(hh_plot_data_teams$HomeTeam == input$hh_tB_in),c(hh1,"FTR","Date","HomeTeam","AwayTeam")]
+      hh_team_dataB2 <- hh_plot_data_teams[which(hh_plot_data_teams$AwayTeam == input$hh_tB_in),c(hh2,"FTR","Date","HomeTeam","AwayTeam")]
       dimnames(hh_team_dataB1)[[2]] <- dimnames(hh_team_dataB2)[[2]] <- c("V1","FTR","Date","HomeTeam","AwayTeam")
       hh_team_dataB <- rbind(hh_team_dataB1, hh_team_dataB2)
       hh_team_dataB <- hh_team_dataB[order(hh_team_dataB$Date),]
 
-      if(input$cumul_sum==TRUE){
+      if (input$cumul_sum == TRUE) {
         hh_team_dataA[,1] <- cumsum(hh_team_dataA[,1])
         hh_team_dataB[,1] <- cumsum(hh_team_dataB[,1])
       }
@@ -353,15 +355,15 @@ shinyServer(function(input, output) {
   # ------------ Cutom plot, this gon be big!!!
 
   plot_data2 <- reactive({
-  PL_plot_data(team_data = fulld,
-               date_from = input$season_range_c[1],
-               date_to = input$season_range_c[2],
-               x_stat = input$stat_choice_x,
-               y_stat = input$stat_choice_y,
-               teams = NA,
-               x_stat_by = input$stat_choice_x_per,
-               y_stat_by = input$stat_choice_y_per,
-               custom_boundary = FALSE)
+    PL_plot_data(team_data = fulld,
+                 date_from = input$season_range_c[1],
+                 date_to = input$season_range_c[2],
+                 x_stat = input$stat_choice_x,
+                 y_stat = input$stat_choice_y,
+                 teams = NA,
+                 x_stat_by = input$stat_choice_x_per,
+                 y_stat_by = input$stat_choice_y_per,
+                 custom_boundary = FALSE)
 
   })
 
@@ -370,15 +372,15 @@ shinyServer(function(input, output) {
   output$plot_stats_custom2 <- renderPlotly({
 
     this_plot_data <- plot_data2()
-    temp_plot_data <- data.frame(x=this_plot_data$x,
-                                 y=this_plot_data$y,
-                                 teams=this_plot_data$teams)
+    temp_plot_data <- data.frame(x = this_plot_data$x,
+                                 y = this_plot_data$y,
+                                 teams = this_plot_data$teams)
 
-    main_title <- paste(this_plot_data$ylabels,this_plot_data$ylabels_per,"vs.",
+    main_title <- paste(this_plot_data$ylabels,this_plot_data$ylabels_per, "vs.",
                         this_plot_data$xlabels,this_plot_data$xlabels_per,
                         this_plot_data$ylabels_per,this_plot_data$main_label)
 
-    plot_ly(data=temp_plot_data, x = ~x, y = ~y, #color = teams, colors=team_colours,
+    plot_ly(data = temp_plot_data, x = ~x, y = ~y, #color = teams, colors=team_colours,
             text = ~teams,
             hooverinfo = "text",
             type = 'scatter', mode = 'markers',
@@ -387,13 +389,13 @@ shinyServer(function(input, output) {
     )  %>%  # text = ~paste0("(",this_plot_data$xlabels,", ",this_plot_data$ylabels,")"))
       layout(title = main_title,
              xaxis = list(
-               range = c(this_plot_data$xlim[1]-(0.05*abs(this_plot_data$xlim[1]-this_plot_data$xlim[2])),
-                         this_plot_data$xlim[2]+(0.05*abs(this_plot_data$xlim[1]-this_plot_data$xlim[2]))),
+               range = c(this_plot_data$xlim[1] - (0.05*abs(this_plot_data$xlim[1]-this_plot_data$xlim[2])),
+                         this_plot_data$xlim[2] + (0.05*abs(this_plot_data$xlim[1]-this_plot_data$xlim[2]))),
                title = paste(this_plot_data$xlabels,this_plot_data$xlabels_per)
              ),
              yaxis = list(
-               range = c(this_plot_data$ylim[1]-(0.05*abs(this_plot_data$ylim[1]-this_plot_data$ylim[2])),
-                         this_plot_data$ylim[2]+(0.05*abs(this_plot_data$ylim[1]-this_plot_data$ylim[2]))),
+               range = c(this_plot_data$ylim[1] - (0.05*abs(this_plot_data$ylim[1]-this_plot_data$ylim[2])),
+                         this_plot_data$ylim[2] + (0.05*abs(this_plot_data$ylim[1]-this_plot_data$ylim[2]))),
                title = paste(this_plot_data$ylabels,this_plot_data$ylabels_per)
              )
       ) %>%

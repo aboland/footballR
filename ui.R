@@ -7,7 +7,7 @@ library(plotly)
 shinyUI(fluidPage(theme="united.min.css",
 
   # Sidebar ---------------------------------------------------------------------------------------
-      navbarPage("Premier League 17/18", #widths = c(2, 10),
+      navbarPage("Premier League 19/20", #widths = c(2, 10),
 
                    navbarMenu("Team Data",
                             #tabsetPanel(
@@ -32,7 +32,7 @@ shinyUI(fluidPage(theme="united.min.css",
 
                               tabPanel("Statistics",
                                        fluidRow(
-                                         column(3, offset=1,
+                                         column(3, offset = 1,
                                                 selectInput("stat_choice_y", label = h4("Stat 1"),
                                                             choices = list("Goals scored" = "goals",
                                                                            "Goals conceded" = "goals_conc",
@@ -79,12 +79,12 @@ shinyUI(fluidPage(theme="united.min.css",
                                                 #checkboxInput("this_season", label = "All seasons", value = FALSE),
                                                 #sliderInput("season_range", label= h4("Season"),
                                                 #            min = 2000, max = 2016, value = c(2015, 2016),step=1, sep=""),
-                                                dateRangeInput("season_range_c", label= h4("Date range"),
+                                                dateRangeInput("season_range_c", label = h4("Date range"),
                                                                format = "dd-mm-yyyy",
-                                                               start = "2017-08-11",
+                                                               start = "2019-08-09",
                                                                #end = "2016-03-08",
-                                                               end = Sys.Date()-1,
-                                                               min="2000-08-09")#,
+                                                               end = Sys.Date() - 1,
+                                                               min = "2000-08-09")#,
                                                 #checkboxInput("custom_boundaries","Fixed aspect", value = FALSE)
                                          )),
                                        br(),
@@ -128,15 +128,15 @@ shinyUI(fluidPage(theme="united.min.css",
                               )
 
                    #)  # end of tabsetPanel
-                   ),
+                   )#,
 
-                   tabPanel("Player Data",
-                            h3("Player data may be out of date.", style="text-align:center"),
-                            br(),
-                            uiOutput("dt_field_choices"),
-                            DT::dataTableOutput("dt_data_display")
-
-                   )
+                   # tabPanel("Player Data",
+                   #          h3("Player data may be out of date.", style="text-align:center"),
+                   #          br(),
+                   #          uiOutput("dt_field_choices"),
+                   #          DT::dataTableOutput("dt_data_display")
+                   #
+                   # )
 
 
 #         tabPanel("Odds tracker (beta)",

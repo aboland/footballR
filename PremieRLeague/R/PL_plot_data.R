@@ -181,14 +181,13 @@ PL_plot_data <-
   #################################################################
 
 
-
   if(custom_boundary == TRUE){
     mymax <- max(c(plot_data_cx,plot_data_cy))
     mymin <- min(c(plot_data_cx,plot_data_cy))
     my_xlim = c(mymin, mymax + (abs(range(plot_data_cx)[1] - range(plot_data_cx)[2])/10))
     my_ylim = c(mymin, mymax)
   }else{
-    my_xlim = c(min(plot_data_cx),max(plot_data_cx) +  (abs(range(plot_data_cx)[1] - range(plot_data_cx)[2])/10))
+    my_xlim = c(min(plot_data_cx), max(plot_data_cx) +  (abs(range(plot_data_cx)[1] - range(plot_data_cx)[2])/10))
     my_ylim = range(plot_data_cy)
   }
 

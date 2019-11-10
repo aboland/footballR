@@ -1,12 +1,16 @@
 Package: PremieRLeague
 Title: Functions for Premier League Data
-Version: 0.1
-Authors: person("Aidan", "Boland", email = "aidansboland@gmail.com", role = c("aut", "cre"))
+Version: 0.1.1
+Authors@R: person("Aidan", "Boland", email = "aidansboland@gmail.com", role = c("aut", "cre"))
 Description: This package contains functions which can download Premier League data and calculate various statistics from the data.
-Depends: R (>= 3.4.2)
+Depends: R (>= 3.5.0)
 License: GPL-2
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.0.1.9000
+RoxygenNote: 6.1.1
 Imports:
-    dplyr
+    dplyr,
+    lubridate,
+    rlang
+Suggest:
+    testthat
