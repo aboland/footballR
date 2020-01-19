@@ -1,0 +1,13 @@
+language: r
+
+before_install:
+  - cd PremieRLeague
+
+r_github_packages:
+  - aboland/PremierLeagueStats/PremieRLeague
+
+r_packages:
+  - covr
+
+after_success:
+  - Rscript -e 'library(covr); codecov()'
