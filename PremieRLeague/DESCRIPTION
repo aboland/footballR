@@ -13,5 +13,5 @@ Imports:
     lubridate,
     rlang,
     ggplot2
-Suggest:
+Suggests:
     testthat

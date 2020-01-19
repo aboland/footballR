@@ -53,28 +53,49 @@ PL_plot_data <-
 
   plot_data_cx <- plot_data_cy <- NULL
 
-  home_temp <- plot_data_full %>% group_by(HomeTeam) %>%
-    summarise(stat = sum(rlang::UQ(rlang::sym(cx[1])))) %>%
-    rename(Team = HomeTeam) %>% filter(Team %in% active_teams)
-  away_temp <- plot_data_full %>% group_by(AwayTeam) %>%
-    summarise(stat = sum(rlang::UQ(rlang::sym(cx[2])))) %>%
-    rename(Team = AwayTeam )%>% filter(Team %in% active_teams)
-  plot_data_cx <- bind_rows(home_temp,away_temp) %>%
-    group_by(Team) %>%
+  home_temp <-
+    plot_data_full %>%
+    group_by(.data$HomeTeam) %>%
+    summarise(stat = sum(!!sym(cx[1]))) %>%
+    rename(Team = .data$HomeTeam) %>%
+    filter(.data$Team %in% active_teams)
+
+  away_temp <-
+    plot_data_full %>%
+    group_by(.data$AwayTeam) %>%
+    summarise(stat = sum(!!sym(cx[2]))) %>%
+    rename(Team = .data$AwayTeam ) %>%
+    filter(.data$Team %in% active_teams)
+
+  plot_data_cx <-
+    bind_rows(home_temp,away_temp) %>%
+    group_by(.data$Team) %>%
     summarise_all(sum) %>%
-    arrange(Team)
+    arrange(.data$Team)
+
   plot_data_cx <- plot_data_cx$stat
 
-  home_temp_y <- plot_data_full %>% group_by(HomeTeam) %>%
-    summarise(stat = sum(rlang::UQ(rlang::sym(cy[1])))) %>%
-    rename(Team = HomeTeam) %>% filter(Team %in% active_teams)
-  away_temp_y <- plot_data_full %>% group_by(AwayTeam) %>%
-    summarise(stat = sum(rlang::UQ(rlang::sym(cy[2])))) %>%
-    rename(Team = AwayTeam)%>% filter(Team %in% active_teams)
-  plot_data_cy <- bind_rows(home_temp_y,away_temp_y) %>%
-    group_by(Team) %>%
+
+  home_temp_y <-
+    plot_data_full %>%
+    group_by(.data$HomeTeam) %>%
+    summarise(stat = sum(!!sym(cy[1]))) %>%
+    rename(Team = .data$HomeTeam) %>%
+    filter(.data$Team %in% active_teams)
+
+  away_temp_y <-
+    plot_data_full %>%
+    group_by(.data$AwayTeam) %>%
+    summarise(stat = sum(!!sym(cy[2]))) %>%
+    rename(Team = .data$AwayTeam) %>%
+    filter(.data$Team %in% active_teams)
+
+  plot_data_cy <-
+    bind_rows(home_temp_y,away_temp_y) %>%
+    group_by(.data$Team) %>%
     summarise_all(sum) %>%
-    arrange(Team)
+    arrange(.data$Team)
+
   plot_data_cy <- plot_data_cy$stat
 
   ###############################################################
@@ -87,7 +108,7 @@ PL_plot_data <-
                    "p_goal" = c("FTHG", "FTAG", "per goal"),
                    "p_goal_conc" = c("FTAG", "FTHG", "per goal"),
                    "p_home" = c("home", "home", "at home"),
-                   "p_away"=c("away", "away", "away"),
+                   "p_away" = c("away", "away", "away"),
                    "p_shot" = c("HS", "AS", "per shot"),
                    "p_shot_t" = c("HST", "AST", "per shot on target"),
                    "p_shot_f" = c("AS", "HS", "per shot faced"),
@@ -99,36 +120,36 @@ PL_plot_data <-
 
   plot_data_cx2 <- plot_data_cy2 <- NULL
 
-  if(!is.null(per_cx)){
+  if (!is.null(per_cx)) {
 
-    if(per_cx[1]!="home" && per_cx[1]!="away" &&
-       per_cx[2]!="home" && per_cx[2]!="away" &&
-       per_cx[1]!="nodiv" && per_cx[2]!="nodiv" &&
-       per_cx[1]!="ngames" && per_cx[2]!="ngames"){
-      for(k in 1:length(active_teams)){
+    if (per_cx[1] != "home" && per_cx[1] != "away" &&
+       per_cx[2] != "home" && per_cx[2] != "away" &&
+       per_cx[1] != "nodiv" && per_cx[2] != "nodiv" &&
+       per_cx[1] != "ngames" && per_cx[2] != "ngames") {
+      for (k in 1:length(active_teams)) {
         plot_data_cx2[k] <- sum(plot_data_full[which(plot_data_full$HomeTeam == active_teams[k]), per_cx[1]],
                                 plot_data_full[which(plot_data_full$AwayTeam == active_teams[k]), per_cx[2]])
       }
-    }else if(per_cx[1] == "nodiv"){
+    }else if (per_cx[1] == "nodiv") {
       plot_data_cx2 <- 1
-    }else if(per_cx[1]=="home"){
-      for(k in 1:length(active_teams)){
+    }else if (per_cx[1] == "home") {
+      for (k in 1:length(active_teams)) {
         plot_data_cx[k] <- sum(plot_data_full[which(plot_data_full$HomeTeam == active_teams[k]), cx[1]])
       }
       plot_data_cx2 <- 1
-    }else if(per_cx[1]=="away"){
-      for(k in 1:length(active_teams)){
+    }else if (per_cx[1] == "away") {
+      for (k in 1:length(active_teams)) {
         plot_data_cx[k] <- sum(plot_data_full[which(plot_data_full$AwayTeam == active_teams[k]), cx[2]])
       }
       plot_data_cx2 <- 1
-    }else if(per_cx[1]=="ngames"){
-      for(k in 1:length(active_teams)){
+    }else if (per_cx[1] == "ngames") {
+      for (k in 1:length(active_teams)) {
         plot_data_cx2[k] <- length(c(plot_data_full[which(plot_data_full$HomeTeam == active_teams[k]), cx[1]],
                                      plot_data_full[which(plot_data_full$AwayTeam == active_teams[k]), cx[2]]))
       }
     }
 
-    plot_data_cx <- round(plot_data_cx/plot_data_cx2, digits=4)
+    plot_data_cx <- round(plot_data_cx/plot_data_cx2, digits = 4)
 
   }
 
@@ -138,7 +159,7 @@ PL_plot_data <-
                    "p_goal" = c("FTHG", "FTAG", "per goal"),
                    "p_goal_conc" = c("FTAG", "FTHG", "per goal"),
                    "p_home" = c("home", "home", "at home"),
-                   "p_away"=c("away", "away", "away"),
+                   "p_away" = c("away", "away", "away"),
                    "p_shot" = c("HS", "AS", "per shot"),
                    "p_shot_t" = c("HST", "AST", "per shot on target"),
                    "p_shot_f" = c("AS", "HS", "per shot faced"),
@@ -146,42 +167,42 @@ PL_plot_data <-
                    "p_corner_f" = c("AC", "HC", "per corner faced"),
                    "p_foul" = c("HF", "AF","per foul"))
 
-  if(!is.null(per_cy)){
+  if (!is.null(per_cy)) {
 
-    if(per_cy[1]!="home" && per_cy[1]!="away" &&
-       per_cy[2]!="home" && per_cy[2]!="away" &&
-       per_cy[1]!="nodiv" && per_cy[2]!="nodiv" &&
-       per_cy[1]!="ngames" && per_cy[2]!="ngames"){
-      for(k in 1:length(active_teams)){
+    if (per_cy[1] != "home" && per_cy[1] != "away" &&
+       per_cy[2] != "home" && per_cy[2] != "away" &&
+       per_cy[1] != "nodiv" && per_cy[2] != "nodiv" &&
+       per_cy[1] != "ngames" && per_cy[2] != "ngames") {
+      for (k in 1:length(active_teams)) {
         plot_data_cy2[k] <- sum(plot_data_full[which(plot_data_full$HomeTeam == active_teams[k]), per_cy[1]],
                                 plot_data_full[which(plot_data_full$AwayTeam == active_teams[k]), per_cy[2]])
       }
-    }else if(per_cy[1] == "nodiv"){
+    }else if (per_cy[1] == "nodiv") {
       plot_data_cy2 <- 1
-    }else if(per_cy[1]=="home"){
-      for(k in 1:length(active_teams)){
+    }else if (per_cy[1] == "home") {
+      for (k in 1:length(active_teams)) {
         plot_data_cy[k] <- sum(plot_data_full[which(plot_data_full$HomeTeam == active_teams[k]), cy[1]])
       }
       plot_data_cy2 <- 1
-    }else if(per_cy[1]=="away"){
-      for(k in 1:length(active_teams))
+    }else if (per_cy[1] == "away") {
+      for (k in 1:length(active_teams))
         plot_data_cy[k] <- sum(plot_data_full[which(plot_data_full$AwayTeam == active_teams[k]), cy[2]])
       plot_data_cy2 <- 1
-    }else if(per_cy[1]=="ngames"){
-      for(k in 1:length(active_teams)){
+    }else if (per_cy[1] == "ngames") {
+      for (k in 1:length(active_teams)) {
         plot_data_cy2[k] <- length(c(plot_data_full[which(plot_data_full$HomeTeam == active_teams[k]), cy[1]],
                                      plot_data_full[which(plot_data_full$AwayTeam == active_teams[k]), cy[2]]))
       }
     }
 
-    plot_data_cy <- round(plot_data_cy/plot_data_cy2, digits=4)
+    plot_data_cy <- round(plot_data_cy/plot_data_cy2, digits = 4)
 
   }
 
   #################################################################
 
 
-  if(custom_boundary == TRUE){
+  if (custom_boundary == TRUE) {
     mymax <- max(c(plot_data_cx,plot_data_cy))
     mymin <- min(c(plot_data_cx,plot_data_cy))
     my_xlim = c(mymin, mymax + (abs(range(plot_data_cx)[1] - range(plot_data_cx)[2])/10))
@@ -201,6 +222,6 @@ PL_plot_data <-
                       xlabels_per = per_cx[3],
                       ylabels_per = per_cy[3],
                       main_label = clab2,
-                      cols = team_cols[active_teams,])
+                      cols = PremieRLeague::team_cols[active_teams,])
 
 }

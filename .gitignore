@@ -5,3 +5,4 @@ rsconnect/
 .Rapp.history
 .httr-oauth
 ignore/*
+.DS_Store

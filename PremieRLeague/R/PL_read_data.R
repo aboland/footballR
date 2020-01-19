@@ -7,6 +7,7 @@
 #' @importFrom utils read.csv
 #' @importFrom lubridate as_date dmy
 #' @importFrom rlang .data
+#'
 #' @export
 
 PL_read_data <-
@@ -32,20 +33,20 @@ PL_read_data <-
   #########################
 
   # Get the start season
-  if (length(which(year_dates$start_date >= from)) > 0) {
-    first_season <- min(which(year_dates$start_date >= from))
+  if (length(which(PremieRLeague::year_dates$start_date >= from)) > 0) {
+    first_season <- min(which(PremieRLeague::year_dates$start_date >= from))
   }else{
     first_season <- 1
   }
 
   # Get the end season
-  if (length(which(year_dates$end_date >= to)) > 0) {
-    last_season <- min(which(year_dates$end_date >= to))
+  if (length(which(PremieRLeague::year_dates$end_date >= to)) > 0) {
+    last_season <- min(which(PremieRLeague::year_dates$end_date >= to))
   }else{
-    last_season <- nrow(year_dates)
+    last_season <- nrow(PremieRLeague::year_dates)
   }
 
-  years_to_get <- year_dates$years[first_season:last_season]  # Years to read in
+  years_to_get <- PremieRLeague::year_dates$years[first_season:last_season]  # Years to read in
 
   ########################
   #  Read in the seasons
@@ -55,10 +56,14 @@ PL_read_data <-
   #Read in data
   for (i in 1:length(years_to_get)) {
     output_data[[i]] <-  tryCatch({
-      data <- read.csv(paste0("http://www.football-data.co.uk/mmz4281/",years_to_get[i],"/E0.csv"), stringsAsFactors = F)
+      data <-
+        read.csv(
+        paste0("http://www.football-data.co.uk/mmz4281/",years_to_get[i],"/E0.csv"),
+        stringsAsFactors = F)
       print(paste0("Season: ", years_to_get[i], " read ok"))
       data
-    }, error = function(x)print(paste0("Failed to read season: ",years_to_get[i])),  # if error print out which season
+    },
+    error = function(x)print(paste0("Failed to read season: ",years_to_get[i])),  # if error print out which season
     warning = function(x)print(paste0("Failed to read season: ",years_to_get[i]))  # if warning print out which season
     )
   }
@@ -85,8 +90,11 @@ PL_read_data <-
   # if ("1819" %in% years_to_get)
   #   output_data[["1819"]]$Date <- as.Date(output_data[["1819"]]$Date, "%d/%m/%Y")
 
-  for (i in 1:length(output_data))
+
+  for (i in 1:length(output_data)) {
     output_data[[i]]$Date <- dmy(output_data[[i]]$Date)
+    output_data[[i]]$Referee <- gsub(pattern = "\xa0", "", output_data[[i]]$Referee)
+  }
 
   ##########################
   #  Combine

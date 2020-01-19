@@ -108,9 +108,11 @@ pl_data <- PL_read_data(from = "1999-12-01", to = "2019-05-12")
 
 pl_data <- pl_data[,c("Div", "Date", "HomeTeam", "AwayTeam", "FTHG", "FTAG", "FTR", "HTHG", "HTAG", "HTR",
                       "Attendance", "Referee", "HS", "AS", "HST", "AST", "HHW", "AHW", "HC", "AC", "HF", "AF",
-                      "HO", "AO", "HY", "AY", "HR", "AR", "HBP", "ABP")]
-
-
+                      # "HFKC", "AFKC",
+                      "HO", "AO",
+                      "HY", "AY",
+                      "HR", "AR",
+                      "HBP", "ABP")]
 
 usethis::use_data(pl_data, overwrite = TRUE)
 

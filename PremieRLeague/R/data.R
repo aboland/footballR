@@ -27,21 +27,20 @@
 #'
 "team_cols"
 
-#' Match data for 2000/2001 to 2017/2018
+#' Match data for 2000/2001 to 2018/2019
 #'
 #' A dataset containing information on all matches from
-#' the seasons from 2000 until 2018, and their team colours
+#' the seasons from 2000 until 2019, and their team colours
 #'
-#' @format A data frame with 6840 rows and 103 variables:
+#' @format A data frame with 7220 rows and 30 variables:
 #' \describe{
 #'   \item{Div}{Division, this is unnecessary for this data}
 #'   \item{Date}{Match Date (dd/mm/yy)}
-#'   \item{Time}{Time of match kick off}
 #'   \item{HomeTeam}{Home Team}
 #'   \item{AwayTeam}{Away Team}
-#'   \item{FTHG and HG}{Full Time Home Team Goals}
-#'   \item{FTAG and AG}{Full Time Away Team Goals}
-#'   \item{FTR and Res}{Full Time Result (H=Home Win, D=Draw, A=Away Win)}
+#'   \item{FTHG}{Full Time Home Team Goals}
+#'   \item{FTAG}{Full Time Away Team Goals}
+#'   \item{FTR}{Full Time Result (H=Home Win, D=Draw, A=Away Win)}
 #'   \item{HTHG}{Half Time Home Team Goals}
 #'   \item{HTAG}{Half Time Away Team Goals}
 #'   \item{HTR}{Half Time Result (H=Home Win, D=Draw, A=Away Win)}
@@ -57,8 +56,6 @@
 #'   \item{AC}{Away Team Corners}
 #'   \item{HF}{Home Team Fouls Committed}
 #'   \item{AF}{Away Team Fouls Committed}
-#'   \item{HFKC}{Home Team Free Kicks Conceded}
-#'   \item{AFKC}{Away Team Free Kicks Conceded}
 #'   \item{HO}{Home Team Offsides}
 #'   \item{AO}{Away Team Offsides}
 #'   \item{HY}{Home Team Yellow Cards}

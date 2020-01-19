@@ -52,28 +52,46 @@ PL_stats_data <-
 
     stat1_data <- stat2_data <- NULL
 
-    home_temp <- plot_data_full %>% group_by(HomeTeam) %>%
+    home_temp <-
+      plot_data_full %>%
+      group_by(.data$HomeTeam) %>%
       summarise(stat = sum(get(stat1[1]))) %>%
-      rename(Team = HomeTeam) %>% filter(Team %in% active_teams)
-    away_temp <- plot_data_full %>% group_by(AwayTeam) %>%
+      rename(Team = .data$HomeTeam) %>%
+      filter(.data$Team %in% active_teams)
+
+    away_temp <-
+      plot_data_full %>%
+      group_by(.data$AwayTeam) %>%
       summarise(stat = sum(get(stat1[2]))) %>%
-      rename(Team = AwayTeam )%>% filter(Team %in% active_teams)
-    stat1_data <- bind_rows(home_temp,away_temp) %>%
-      group_by(Team) %>%
+      rename(Team = .data$AwayTeam ) %>%
+      filter(.data$Team %in% active_teams)
+
+    stat1_data <-
+      bind_rows(home_temp,away_temp) %>%
+      group_by(.data$Team) %>%
       summarise_all(sum) %>%
-      arrange(Team)
+      arrange(.data$Team)
     stat1_data <- stat1_data$stat
 
-    home_temp_y <- plot_data_full %>% group_by(HomeTeam) %>%
+    home_temp_y <-
+      plot_data_full %>%
+      group_by(.data$HomeTeam) %>%
       summarise(stat = sum(get(stat2[1]))) %>%
-      rename(Team = HomeTeam) %>% filter(Team %in% active_teams)
-    away_temp_y <- plot_data_full %>% group_by(AwayTeam) %>%
+      rename(Team = .data$HomeTeam) %>%
+      filter(.data$Team %in% active_teams)
+
+    away_temp_y <-
+      plot_data_full %>%
+      group_by(.data$AwayTeam) %>%
       summarise(stat = sum(get(stat2[2]))) %>%
-      rename(Team = AwayTeam)%>% filter(Team %in% active_teams)
-    stat2_data <- bind_rows(home_temp_y,away_temp_y) %>%
-      group_by(Team) %>%
+      rename(Team = .data$AwayTeam) %>%
+      filter(.data$Team %in% active_teams)
+
+    stat2_data <-
+      bind_rows(home_temp_y,away_temp_y) %>%
+      group_by(.data$Team) %>%
       summarise_all(sum) %>%
-      arrange(Team)
+      arrange(.data$Team)
     stat2_data <- stat2_data$stat
 
     ###############################################################
