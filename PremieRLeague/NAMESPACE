@@ -3,6 +3,7 @@
 export(PL_plot_data)
 export(PL_read_data)
 export(PL_stats_data)
+export(run_ShinyApp)
 import(dplyr)
 importFrom(lubridate,as_date)
 importFrom(lubridate,dmy)

@@ -1,16 +1,10 @@
 # Fantasy Football server script
 
 library(shiny)
-# library(plyr)
-# library(XML)
-# library(ggvis)
 library(jsonlite)
 library(RCurl)
 library(dplyr)
 library(plotly)
-
-# library(devtools)
-# devtools::install_github("aboland/PremierLeagueStats/PremieRLeague")
 library(PremieRLeague)
 
 
@@ -349,7 +343,7 @@ shinyServer(function(input, output, session) {
 
     plot_ly(data = temp_plot_data, x = ~x, y = ~y, #color = teams, colors=team_colours,
             text = ~teams,
-            hooverinfo = "text",
+            # hooverinfo = "text",
             type = 'scatter', mode = 'markers',
             marker = list(color = team_cols[this_plot_data$teams,c("col1_rgb")],
                         line = list(color=team_cols[this_plot_data$teams,c("col2_rgb")], width = 2))
@@ -414,14 +408,14 @@ shinyServer(function(input, output, session) {
 
   # Sidebar options
 
-  output$field1<-renderUI({
+  output$field1 <- renderUI({
     # Reactive input displaying possible fields
     selectInput("field_choice_1",
                 label = h5("Field 1"),
                 choices = as.list(available_fields),
                 selected = "Photo")
   })
-  output$field2<-renderUI({
+  output$field2 <- renderUI({
     # Reactive input displaying possible fields
     selectInput("field_choice_2",
                 label = h5("Field 2"),
@@ -449,9 +443,13 @@ shinyServer(function(input, output, session) {
     input$player_data_sort
   })
 
-  output$sort_field<-renderUI({
+  output$sort_field <- renderUI({
     # Very poor if construct!!! Could be improved
-    if(is.null(sort_choice())||is.null(input$field_choice_1)||is.null(input$field_choice_2)||is.null(input$field_choice_3)||is.null(input$field_choice_4)){
+    if(is.null(sort_choice()) ||
+       is.null(input$field_choice_1) ||
+       is.null(input$field_choice_2) ||
+       is.null(input$field_choice_3) ||
+       is.null(input$field_choice_4)){
       selectInput("player_data_sort",
                   label = h4("Sort by"),
                   choices = list("id", "Cost", "Total points"),
@@ -497,18 +495,17 @@ shinyServer(function(input, output, session) {
       return(player_data[,c("Name", "Team", "Status" ,"Cost")])
 
     rows_display <- rows_display_tm <- rows_display_pos <- 1:nrow(player_data)
-    if(!input$team_ch=="All")
-      rows_display_tm <- which(player_data$Team==input$team_ch)
-    if(!input$pos_ch=="All")
-      rows_display_pos <- which(player_data$Position==input$pos_ch)
+    if(!input$team_ch == "All")
+      rows_display_tm <- which(player_data$Team == input$team_ch)
+    if(!input$pos_ch == "All")
+      rows_display_pos <- which(player_data$Position == input$pos_ch)
 
     rows_display_cost <- which(player_data$Cost > input$cost_ch[1] & player_data$Cost < input$cost_ch[2])
 
-    rows_display<-rows_display[which(rows_display %in% rows_display_tm)]
-    rows_display<-rows_display[which(rows_display %in% rows_display_pos)]
-    rows_display<-rows_display[which(rows_display %in% rows_display_cost)]
+    rows_display <- rows_display[which(rows_display %in% rows_display_tm)]
+    rows_display <- rows_display[which(rows_display %in% rows_display_pos)]
+    rows_display <- rows_display[which(rows_display %in% rows_display_cost)]
 
-    #browser()
     output_table <- player_data[rows_display,
                                 c("Name","Photo", "Team" ,"Cost",
                                   input$field_choice_1,
@@ -517,7 +514,7 @@ shinyServer(function(input, output, session) {
                                   input$field_choice_4)]
 
     if(!is.null(input$player_data_sort)&&(input$player_data_sort=="id"||input$player_data_sort=="Cost"||input$player_data_sort==input$field_choice_1||input$player_data_sort==input$field_choice_2||input$player_data_sort==input$field_choice_3||input$player_data_sort==input$field_choice_4))
-      if(input$player_data_sort!="id")
+      if(input$player_data_sort != "id")
         return(output_table[order(output_table[,input$player_data_sort],decreasing = T),])
     return(output_table)
 
