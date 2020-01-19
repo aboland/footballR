@@ -4,7 +4,7 @@ before_install:
   - cd PremieRLeague
 
 r_github_packages:
-  - aboland/PremieRLeague
+  - aboland/PremierLeagueStats/PremieRLeague
 
 r_packages:
   - covr
