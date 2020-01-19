@@ -3,6 +3,9 @@ Premier League Stats
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
+[![R Build
+Status](https://travis-ci.org/aboland/PremierLeagueStats.svg?branch=master)](https://travis-ci.org/aboland/PremierLeagueStats)
+
 This repo contains an R Shiny app and an R library. Both of which can be
 used to look at Premier League game stats.
 
