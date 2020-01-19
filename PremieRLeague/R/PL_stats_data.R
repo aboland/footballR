@@ -198,6 +198,7 @@ PL_stats_data <-
                         stat2_name = stat2[3],
                         stat1_by = stat1_by[3],
                         stat2_by = stat2_by[3],
-                        main_label = date_string)
+                        main_label = date_string,
+                        dframe = data.frame(active_teams, stat1_data, stat2_data))
 
   }

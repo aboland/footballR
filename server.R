@@ -3,7 +3,7 @@
 library(shiny)
 #library(plyr)
 library(XML)
-library(ggvis)
+# library(ggvis)
 library(jsonlite)
 library(RCurl)
 library(dplyr)
@@ -13,42 +13,8 @@ library(plotly)
 # devtools::install_github("aboland/PremierLeagueStats/PremieRLeague")
 library(PremieRLeague)
 
-#load("current_web_data.RData")
-#load("current_web_data_tidy.RData")
 
-# json_ff2 = fromJSON(getURL("https://fantasy.premierleague.com/drf/elements/"))
-# full_names <- gsub("_"," ",names(json_ff2))
-# full_names <- gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", full_names, perl=TRUE)
-# full_names[which(full_names=="Now Cost")] <- "Cost"
-# full_names[which(full_names=="Web Name")] <- "Name"
-#
-# player_data <- json_ff2
-# names(player_data) <- full_names
-# player_data$Status<-as.character(player_data$Status)
-# player_data$Status[which(player_data$Status=="u")]<-"Unavailable"
-# player_data$Status[which(player_data$Status=="a")]<-"Available"
-# player_data$Status[which(player_data$Status=="n")]<-"(see news)"
-# player_data$Status[which(player_data$Status=="d")]<-"Doubtful"
-# player_data$Status[which(player_data$Status=="i")]<-"Injured"
-# player_data$Status[which(player_data$Status=="s")]<-"Suspended"
-#
-# #https://platform-static-files.s3.amazonaws.com/premierleague/photos/players/110x140/p41328.png
-# #106611.jpg
-# player_data$Photo <- paste0('<img src="https://platform-static-files.s3.amazonaws.com/premierleague/photos/players/110x140/p', gsub("[.]|[[:alpha:]]","",player_data$Photo),'.png" height="150"></img>')
-# #player_data$Photo[1]
-# #https://platform-static-files.s3.amazonaws.com/premierleague/photos/players/110x140/p48844.png
-#
-# player_data <- player_data[, c("Name","Photo", names(player_data)[-(1:3)])]
-# available_fields <- names(player_data)
-
-
-# for(i in 1:20){
-#   player_data$Team[which(player_data$Team==i)] <- teams[i]
-# }
-
-#gameweek=18
-
-shinyServer(function(input, output) {
+shinyServer(function(input, output, session) {
 
 
   # ------------------ Fixture and results tables -------------------------------------------
@@ -99,6 +65,7 @@ shinyServer(function(input, output) {
 
     fulld <- rbind(histPL, current_season)
 
+    updateDateRangeInput(session, inputId = "season_range_c", end = max(fulld$Date), max = max(fulld$Date))
     #fulld_test <- bind_rows(histPL, current_season)
 
     current_teams <- unique(current_season$HomeTeam)
@@ -352,7 +319,7 @@ shinyServer(function(input, output) {
 
 
 
-  # ------------ Cutom plot, this gon be big!!!
+  # ------------ Custom plot, this gon be big!!!
 
   plot_data2 <- reactive({
     PL_plot_data(team_data = fulld,
@@ -385,24 +352,24 @@ shinyServer(function(input, output) {
             hooverinfo = "text",
             type = 'scatter', mode = 'markers',
             marker = list(color = team_cols[this_plot_data$teams,c("col1_rgb")],
-                        line = list(color=team_cols[this_plot_data$teams,c("col2_rgb")], width=2))
+                        line = list(color=team_cols[this_plot_data$teams,c("col2_rgb")], width = 2))
     )  %>%  # text = ~paste0("(",this_plot_data$xlabels,", ",this_plot_data$ylabels,")"))
       layout(title = main_title,
              xaxis = list(
-               range = c(this_plot_data$xlim[1] - (0.05*abs(this_plot_data$xlim[1]-this_plot_data$xlim[2])),
-                         this_plot_data$xlim[2] + (0.05*abs(this_plot_data$xlim[1]-this_plot_data$xlim[2]))),
+               range = c(this_plot_data$xlim[1] - (0.05*abs(this_plot_data$xlim[1] - this_plot_data$xlim[2])),
+                         this_plot_data$xlim[2] + (0.05*abs(this_plot_data$xlim[1] - this_plot_data$xlim[2]))),
                title = paste(this_plot_data$xlabels,this_plot_data$xlabels_per)
              ),
              yaxis = list(
-               range = c(this_plot_data$ylim[1] - (0.05*abs(this_plot_data$ylim[1]-this_plot_data$ylim[2])),
-                         this_plot_data$ylim[2] + (0.05*abs(this_plot_data$ylim[1]-this_plot_data$ylim[2]))),
+               range = c(this_plot_data$ylim[1] - (0.05*abs(this_plot_data$ylim[1] - this_plot_data$ylim[2])),
+                         this_plot_data$ylim[2] + (0.05*abs(this_plot_data$ylim[1] - this_plot_data$ylim[2]))),
                title = paste(this_plot_data$ylabels,this_plot_data$ylabels_per)
              )
       ) %>%
-      layout(plot_bgcolor='rgba(0,0,0,0)') %>%
-      layout(paper_bgcolor='rgba(0,0,0,0)') %>%
+      layout(plot_bgcolor = 'rgba(0,0,0,0)') %>%
+      layout(paper_bgcolor = 'rgba(0,0,0,0)') %>%
       #add_text(textposition = "top right")
-      add_annotations(showarrow=F, xanchor = 'left', yanchor="top") %>%
+      add_annotations(showarrow = F, xanchor = 'left', yanchor = "top") %>%
       config(displayModeBar = F)
 
 

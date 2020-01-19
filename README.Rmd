@@ -1,0 +1,12 @@
+---
+title: "Premier League Stats"
+output: github_document
+---
+
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+
+# Premier League Shiny App
+ 
+Takes premier league match data and visually displays statistics. The application is hosted on [ff.aboland.ie](http://ff.aboland.ie/). The match data is taken from [football-data.co.uk](http://www.football-data.co.uk).

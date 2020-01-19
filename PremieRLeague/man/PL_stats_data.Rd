@@ -4,8 +4,16 @@
 \alias{PL_stats_data}
 \title{Function to calculate stats for Premier League teams}
 \usage{
-PL_stats_data(team_data, date_from, date_to, x_stat, y_stat, teams,
-  x_stat_by = NA, y_stat_by = NA)
+PL_stats_data(
+  team_data,
+  date_from,
+  date_to,
+  x_stat,
+  y_stat,
+  teams,
+  x_stat_by = NA,
+  y_stat_by = NA
+)
 }
 \arguments{
 \item{team_data}{Data Frame in the form output by read_PL_data}

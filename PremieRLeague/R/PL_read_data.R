@@ -6,6 +6,7 @@
 #' @param to End date
 #' @importFrom utils read.csv
 #' @importFrom lubridate as_date dmy
+#' @importFrom rlang .data
 #' @export
 
 PL_read_data <-
@@ -90,8 +91,8 @@ PL_read_data <-
   ##########################
   #  Combine
   ##########################
-  combined_data <- dplyr::bind_rows(output_data)
-
+  combined_data <-
+    dplyr::bind_rows(output_data)
 
   # combined_data$Date <- as.Date(combined_data$Date, "%d/%m/%y")
 

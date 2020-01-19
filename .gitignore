@@ -1,7 +1,7 @@
 .Rproj.user
 .Rhistory
 .RData
-.rsconnect/
+rsconnect/
 .Rapp.history
 .httr-oauth
 ignore/*
