@@ -23,7 +23,7 @@ The library can be install in R using the `devtools` library.
 
 ```
 install.packages("devtools")
-devtools::install_github("aboland/PremierLeagueStats/premieRleague")
+devtools::install_github("aboland/premieRleague")
 ```
 
 

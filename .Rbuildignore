@@ -1,0 +1,7 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^data-raw$
+^ignore$
+^README\.Rmd$
+^rsconnect$
+^\.travis\.yml$
