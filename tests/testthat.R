@@ -1,4 +1,4 @@
 library(testthat)
-library(PremieRLeague)
+library(premieRleague)
 
-test_check("PremieRLeague")
+test_check("premieRleague")
