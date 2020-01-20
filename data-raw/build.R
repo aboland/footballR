@@ -1,7 +1,7 @@
 
 library(PremieRLeague)
-setwd("PremieRLeague/")
-here::dr_here()
+# setwd("PremieRLeague/")
+# here::dr_here()
 
 year_dates <- data.frame(years = c("0001","0102","0203","0304",
                                    "0405","0506","0607","0708",

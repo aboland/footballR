@@ -6,8 +6,8 @@ output: github_document
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-[![Build Status](https://travis-ci.org/aboland/PremierLeagueStats.svg?branch=master)](https://travis-ci.org/aboland/PremierLeagueStats)
-[![codecov](https://codecov.io/gh/aboland/PremierLeagueStats/branch/master/graph/badge.svg)](https://codecov.io/gh/aboland/PremierLeagueStats)
+[![Build Status](https://travis-ci.org/aboland/premieRleague.svg?branch=master)](https://travis-ci.org/aboland/premieRleague)
+[![codecov](https://codecov.io/gh/aboland/premieRleague/branch/master/graph/badge.svg)](https://codecov.io/gh/aboland/premieRleague)
 
 
 This repo contains an R library and an R Shiny app. Both of which can be used to look at Premier League game stats.
@@ -23,7 +23,7 @@ The library can be install in R using the `devtools` library.
 
 ```
 install.packages("devtools")
-devtools::install_github("aboland/PremierLeagueStats/PremieRLeague")
+devtools::install_github("aboland/premieRleague")
 ```
 
 
@@ -33,5 +33,5 @@ The Shiny app takes the match data and visually displays statistics. The applica
 
 Alternatively the app can be run locally using the above R library.
 ```
-PremieRLeague::run_ShinyApp()
+premieRleague::run_ShinyApp()
 ```
