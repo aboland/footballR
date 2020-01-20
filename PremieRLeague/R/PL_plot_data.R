@@ -222,6 +222,6 @@ PL_plot_data <-
                       xlabels_per = per_cx[3],
                       ylabels_per = per_cy[3],
                       main_label = clab2,
-                      cols = PremieRLeague::team_cols[active_teams,])
+                      cols = premieRleague::team_cols[active_teams,])
 
 }

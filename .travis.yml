@@ -1,10 +1,10 @@
 language: r
 
 before_install:
-  - cd PremieRLeague
+  - cd premieRleague
 
 r_github_packages:
-  - aboland/PremierLeagueStats/PremieRLeague
+  - aboland/PremierLeagueStats/premieRleague
 
 r_packages:
   - covr

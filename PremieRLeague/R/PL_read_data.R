@@ -33,20 +33,20 @@ PL_read_data <-
   #########################
 
   # Get the start season
-  if (length(which(PremieRLeague::year_dates$start_date >= from)) > 0) {
-    first_season <- min(which(PremieRLeague::year_dates$start_date >= from))
+  if (length(which(premieRleague::year_dates$start_date >= from)) > 0) {
+    first_season <- min(which(premieRleague::year_dates$start_date >= from))
   }else{
     first_season <- 1
   }
 
   # Get the end season
-  if (length(which(PremieRLeague::year_dates$end_date >= to)) > 0) {
-    last_season <- min(which(PremieRLeague::year_dates$end_date >= to))
+  if (length(which(premieRleague::year_dates$end_date >= to)) > 0) {
+    last_season <- min(which(premieRleague::year_dates$end_date >= to))
   }else{
-    last_season <- nrow(PremieRLeague::year_dates)
+    last_season <- nrow(premieRleague::year_dates)
   }
 
-  years_to_get <- PremieRLeague::year_dates$years[first_season:last_season]  # Years to read in
+  years_to_get <- premieRleague::year_dates$years[first_season:last_season]  # Years to read in
 
   ########################
   #  Read in the seasons
