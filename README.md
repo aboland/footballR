@@ -1,17 +1,18 @@
-Premier League Stats
-================
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+
+# Football (Soccer) Stats <a href='http://github.aboland.ie/footballR/'><img src='inst/figures/footballR.png' align="right" height="139" /></a>
 
 <!-- badges: start -->
 
 [![Build
-Status](https://travis-ci.org/aboland/premieRleague.svg?branch=master)](https://travis-ci.org/aboland/premieRleague)
+Status](https://travis-ci.org/aboland/footballR.svg?branch=master)](https://travis-ci.org/aboland/footballR)
 [![AppVeyor build
-status](https://ci.appveyor.com/api/projects/status/github/aboland/premieRleague?branch=master&svg=true)](https://ci.appveyor.com/project/aboland/premieRleague)
-[![codecov](https://codecov.io/gh/aboland/premieRleague/branch/master/graph/badge.svg)](https://codecov.io/gh/aboland/premieRleague)
+status](https://ci.appveyor.com/api/projects/status/github/aboland/footballR?branch=master&svg=true)](https://ci.appveyor.com/project/aboland/footballR)
+[![codecov](https://codecov.io/gh/aboland/footballR/branch/master/graph/badge.svg)](https://codecov.io/gh/aboland/footballR)
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+<!-- [![CRAN status](https://www.r-pkg.org/badges/version/footballR)](https://CRAN.R-project.org/package=footballR) -->
 <!-- badges: end -->
 
 This repo contains an R library and an R Shiny app. Both of which can be
@@ -29,7 +30,7 @@ The library can be install in R using the
 
 ``` r
 install.packages("devtools")
-devtools::install_github("aboland/premieRleague")
+devtools::install_github("aboland/footballR")
 ```
 
 ## Shiny App
@@ -40,5 +41,5 @@ application is hosted at [pl.aboland.ie](http://pl.aboland.ie/).
 Alternatively the app can be run locally using the above R library.
 
 ``` r
-premieRleague::run_ShinyApp()
+footballR::run_ShinyApp()
 ```

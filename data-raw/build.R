@@ -1,5 +1,5 @@
 
-library(PremieRLeague)
+library(footballR)
 # setwd("PremieRLeague/")
 # here::dr_here()
 
