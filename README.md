@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# Football (Soccer) Stats <a href='http://github.aboland.ie/footballR/'><img src='inst/figures/footballR.png' align="right" height="139" /></a>
+# Football (Soccer) Stats <a href='http://github.aboland.ie/footballR/'><img src='man/figures/footballR.png' align="right" height="139" /></a>
 
 <!-- badges: start -->
 
@@ -18,7 +18,7 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 This repo contains an R library and an R Shiny app. Both of which can be
 used to look at Premier League game stats.
 
-### Data
+#### Data Source
 
 The match data is sourced from
 [football-data.co.uk](http://www.football-data.co.uk).
