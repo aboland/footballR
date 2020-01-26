@@ -5,3 +5,9 @@
 ^README\.Rmd$
 ^rsconnect$
 ^\.travis\.yml$
+^codecov\.yml$
+^\.covrignore$
+^appveyor\.yml$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
