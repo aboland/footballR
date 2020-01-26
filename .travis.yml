@@ -22,6 +22,7 @@ matrix:
     os: linux
   - r: devel
     os: osx
+    env: _R_CHECK_SYSTEM_CLOCK_=false
   - r: release
     os: osx
   - r: oldrel
