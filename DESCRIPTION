@@ -1,20 +1,26 @@
 Package: premieRleague
 Title: Functions for Premier League Data
-Version: 0.3.0
-Authors@R: person("Aidan", "Boland", email = "aidansboland@gmail.com", role = c("aut", "cre"))
-Description: This package contains functions which can download Premier League data and calculate various statistics from the data.
+Version: 0.3.1
+Authors@R: person("Aidan", "Boland", email = "aidansboland@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0001-7649-5968"))
+Description: This package contains data on Premier League
+     matches, and functions to manipulate and display the
+     data. The most recent data can also be easily 
+     downloaded using this package.
 Depends: R (>= 3.5.0)
 License: GPL-2
+URL: https://github.com/aboland/premieRleague
+BugReports: https://github.com/aboland/premieRleague/issues
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.0.2
 Imports:
     dplyr,
-    lubridate,
-    rlang,
     ggplot2,
-    shiny,
     jsonlite,
-    plotly
+    lubridate,
+    plotly,
+    RCurl,
+    rlang,
+    shiny
 Suggests:
     testthat
