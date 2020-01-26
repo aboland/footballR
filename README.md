@@ -17,21 +17,26 @@ used to look at Premier League game stats.
 
 ### Data
 
-The match data is taken from
+The match data is sourced from
 [football-data.co.uk](http://www.football-data.co.uk).
 
 ## R Library
 
-The library can be install in R using the `devtools` library.
+The library can be install in R using the
+[`devtools`](https://devtools.r-lib.org/) library.
 
-    install.packages("devtools")
-    devtools::install_github("aboland/premieRleague")
+``` r
+install.packages("devtools")
+devtools::install_github("aboland/premieRleague")
+```
 
 ## Shiny App
 
 The Shiny app takes the match data and visually displays statistics. The
-application is hosted at [ff.aboland.ie](http://ff.aboland.ie/).
+application is hosted at [pl.aboland.ie](http://pl.aboland.ie/).
 
 Alternatively the app can be run locally using the above R library.
 
-    premieRleague::run_ShinyApp()
+``` r
+premieRleague::run_ShinyApp()
+```
