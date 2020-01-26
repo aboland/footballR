@@ -1,20 +1,16 @@
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 
-language: R
+language: r
 cache: packages
 
 
 matrix:
   include:
   - r: devel
-    os:
-      - linux
-      - osx
+    os: linux
     env: _R_CHECK_SYSTEM_CLOCK_=false
   - r: release
-    os:
-      - linux
-      - osx
+    os: linux
     after_success:
     - Rscript -e 'covr::codecov()'
     before_cache: Rscript -e 'remotes::install_cran("pkgdown")'
@@ -23,8 +19,12 @@ matrix:
       script: Rscript -e 'pkgdown::deploy_site_github(ssh_id = Sys.getenv("TRAVIS_DEPLOY_KEY", ""), verbose = TRUE)'
       skip_cleanup: true
   - r: oldrel
-    os:
-      - linux
-      - osx
+    os: linux
+  - r: devel
+    os: osx
+  - r: release
+    os: osx
+  - r: oldrel
+    os: osx
   allow_failures:
   - r: devel
