@@ -1,6 +1,6 @@
 Package: premieRleague
 Title: Functions for Premier League Data
-Version: 0.3.1
+Version: 0.3.2
 Authors@R: person("Aidan", "Boland", email = "aidansboland@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0001-7649-5968"))
 Description: This package contains data on Premier League
      matches, and functions to manipulate and display the
