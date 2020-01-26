@@ -23,4 +23,5 @@ Imports:
     rlang,
     shiny
 Suggests:
-    testthat
+    testthat,
+    covr

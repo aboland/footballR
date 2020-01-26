@@ -5,3 +5,6 @@
 ^README\.Rmd$
 ^rsconnect$
 ^\.travis\.yml$
+^codecov\.yml$
+^\.covrignore$
+^appveyor\.yml$
