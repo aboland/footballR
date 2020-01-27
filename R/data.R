@@ -1,4 +1,4 @@
-#' Start and end dates of seasons
+#' Premier League seasons start and end dates
 #'
 #' A dataset containing the start and end dates of all premier league seasons from 2000 until 2018.
 #'
@@ -11,7 +11,7 @@
 #'
 "year_dates"
 
-#' Team names and team colours
+#' Premier League team names and team colours
 #'
 #' A dataset containing the teams active in the premier league
 #' for the seasons from 2000 until 2018, and their team colours
@@ -27,10 +27,10 @@
 #'
 "team_cols"
 
-#' Match data for 2000/2001 to 2018/2019
+#' Premier League match data for seasons 2000/2001 to 2018/2019
 #'
-#' A dataset containing information on all matches from
-#' the seasons from 2000 until 2019, and their team colours
+#' A dataset containing information on all matches in the Premier League for
+#' the seasons from 2000 until 2019.
 #'
 #' @format A data frame with 7220 rows and 30 variables:
 #' \describe{

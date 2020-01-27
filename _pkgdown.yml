@@ -2,3 +2,22 @@ destination: docs
 template:
   params:
     bootswatch: cerulean
+
+development:
+  mode: devel
+
+reference:
+  - title: "Premier League"
+    desc: "Functions Manilpulating Premier League Data."
+    contents:
+      - starts_with("PL_")
+  - title: "Shiny App"
+    desc: "Function to run Shiny App."
+    contents:
+      - run_ShinyApp
+  - title: "Data"
+    desc: "Datasets to help with functions."
+    contents:
+      - pl_data
+      - team_cols
+      - year_dates
