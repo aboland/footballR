@@ -3,13 +3,15 @@
 \docType{data}
 \name{year_dates}
 \alias{year_dates}
-\title{Start and end dates of seasons}
-\format{A data frame with 18 rows and 3 variables:
+\title{Premier League seasons start and end dates}
+\format{
+A data frame with 18 rows and 3 variables:
 \describe{
   \item{years}{Character for name of years}
   \item{start_date}{Dates of the first match in each season}
   \item{end_date}{Dates of the last match in each season}
-  }}
+  }
+}
 \usage{
 year_dates
 }

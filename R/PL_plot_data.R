@@ -21,8 +21,8 @@ PL_plot_data <-
 
   selected_range <- which(team_data$Date >= start_date & team_data$Date <= end_date)
   clab2 <- paste("between",
-                 format(as.Date(start_date),"%d %b '%y"),"and",
-                 format(as.Date(end_date),"%d %b '%y"))
+                 format(as.Date(start_date), "%d %b '%y"), "and",
+                 format(as.Date(end_date), "%d %b '%y"))
 
   plot_data_full <- team_data[selected_range,]
 
@@ -68,13 +68,13 @@ PL_plot_data <-
     filter(.data$Team %in% active_teams)
 
   plot_data_cx <-
-    bind_rows(home_temp,away_temp) %>%
+    bind_rows(home_temp, away_temp) %>%
     group_by(.data$Team) %>%
     summarise_all(sum) %>%
+    mutate(stat = stat/2) %>%
     arrange(.data$Team)
 
   plot_data_cx <- plot_data_cx$stat
-
 
   home_temp_y <-
     plot_data_full %>%
@@ -94,6 +94,7 @@ PL_plot_data <-
     bind_rows(home_temp_y,away_temp_y) %>%
     group_by(.data$Team) %>%
     summarise_all(sum) %>%
+    mutate(stat = stat/2) %>%
     arrange(.data$Team)
 
   plot_data_cy <- plot_data_cy$stat
@@ -174,8 +175,9 @@ PL_plot_data <-
        per_cy[1] != "nodiv" && per_cy[2] != "nodiv" &&
        per_cy[1] != "ngames" && per_cy[2] != "ngames") {
       for (k in 1:length(active_teams)) {
-        plot_data_cy2[k] <- sum(plot_data_full[which(plot_data_full$HomeTeam == active_teams[k]), per_cy[1]],
-                                plot_data_full[which(plot_data_full$AwayTeam == active_teams[k]), per_cy[2]])
+        plot_data_cy2[k] <-
+          sum(plot_data_full[which(plot_data_full$HomeTeam == active_teams[k]), per_cy[1]],
+              plot_data_full[which(plot_data_full$AwayTeam == active_teams[k]), per_cy[2]])
       }
     }else if (per_cy[1] == "nodiv") {
       plot_data_cy2 <- 1
