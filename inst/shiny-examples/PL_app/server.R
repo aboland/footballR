@@ -57,7 +57,9 @@ shinyServer(function(input, output, session) {
         current_season[missing_columns[j]] <- NA
     current_season <- current_season[,names(histPL)]
 
-    fulld <- rbind(histPL, current_season)
+    fulld <-
+      rbind(histPL, current_season) %>%
+      distinct
 
     updateDateRangeInput(session, inputId = "season_range_c", end = max(fulld$Date), max = max(fulld$Date))
     #fulld_test <- bind_rows(histPL, current_season)
