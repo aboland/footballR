@@ -17,11 +17,11 @@ PL_read_data <-
   #  Check the arguments
   ########################
 
-    from <- as_date(from)
+    from <- lubridate::as_date(from)
     if (is.na(from))
       stop("Incorrect date format 'from'")
 
-    to <- as_date(to)
+    to <- lubridate::as_date(to)
     if (is.na(to))
       stop("Incorrect date format 'to'")
 

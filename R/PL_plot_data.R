@@ -71,7 +71,6 @@ PL_plot_data <-
     bind_rows(home_temp, away_temp) %>%
     group_by(.data$Team) %>%
     summarise_all(sum) %>%
-    mutate(stat = stat/2) %>%
     arrange(.data$Team)
 
   plot_data_cx <- plot_data_cx$stat
@@ -94,7 +93,6 @@ PL_plot_data <-
     bind_rows(home_temp_y,away_temp_y) %>%
     group_by(.data$Team) %>%
     summarise_all(sum) %>%
-    mutate(stat = stat/2) %>%
     arrange(.data$Team)
 
   plot_data_cy <- plot_data_cy$stat
