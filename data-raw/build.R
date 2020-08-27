@@ -17,7 +17,7 @@ year_dates <- data.frame(years = c("0001","0102","0203","0304",
                                       "2005-05-15", "2006-05-07","2007-05-13", "2008-05-11",
                                       "2009-05-24", "2010-05-09","2011-05-22", "2012-05-13",
                                       "2013-05-19", "2014-05-11","2015-05-24","2016-05-17",
-                                      "2017-05-21", "2018-05-13", "2019-05-12", "2020-05-17"),
+                                      "2017-05-21", "2018-05-13", "2019-05-12", "2020-07-26"),
                          #start_date=c(seq(as.Date("31-07-00", "%d-%m-%y"),as.Date("31-07-17", "%d-%m-%y"),by="year")),
                          #end_date=c(seq(as.Date("01-05-01", "%d-%m-%y"),as.Date("01-05-18", "%d-%m-%y"),by="year")),
                          stringsAsFactors = F)
@@ -104,7 +104,7 @@ row.names(team_cols) <- c("Arsenal", "Aston Villa", "Birmingham", "Blackburn",
 usethis::use_data(team_cols, overwrite = TRUE)
 
 
-pl_data <- PL_read_data(from = "1999-12-01", to = "2019-05-12")
+pl_data <- PL_read_data(from = "1999-12-01", to = "2020-07-26")
 
 pl_data <- pl_data[,c("Div", "Date", "HomeTeam", "AwayTeam", "FTHG", "FTAG", "FTR", "HTHG", "HTAG", "HTR",
                       "Attendance", "Referee", "HS", "AS", "HST", "AST", "HHW", "AHW", "HC", "AC", "HF", "AF",

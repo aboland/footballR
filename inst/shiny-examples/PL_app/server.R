@@ -5,7 +5,7 @@ library(jsonlite)
 library(RCurl)
 library(dplyr)
 library(plotly)
-library(PremieRLeague)
+library(footballR)
 
 
 shinyServer(function(input, output, session) {
@@ -97,11 +97,11 @@ shinyServer(function(input, output, session) {
       # Man Utd Man United
     }
 
-    if(sum(fulld$HomeTeam == ht & fulld$AwayTeam == at) != 0){
-      if(input$return_leg == FALSE){
+    if (sum(fulld$HomeTeam == ht & fulld$AwayTeam == at) != 0) {
+      if (input$return_leg == FALSE) {
         current_data <- fulld[which(fulld$HomeTeam == ht & fulld$AwayTeam == at),]
       }else{
-        current_data <- fulld[which((fulld$HomeTeam == ht & fulld$AwayTeam == at)|(fulld$HomeTeam==at & fulld$AwayTeam==ht)),]
+        current_data <- fulld[which((fulld$HomeTeam == ht & fulld$AwayTeam == at)|(fulld$HomeTeam == at & fulld$AwayTeam == ht)),]
       }
 
       current_data[,"Date"] <-  format(current_data[,"Date"], "%d %b %y")
@@ -207,17 +207,17 @@ shinyServer(function(input, output, session) {
       # teams_selected <- levels(as.factor(as.character(plot_data_teams$HomeTeam)))
     }
 
-    if (!is.null(input$hh_tA_in)&&!is.null(input$hh_tB_in)) {
+    if (!is.null(input$hh_tA_in) && !is.null(input$hh_tB_in)) {
       #browser()
-      hh_team_dataA <- hh_plot_data_teams[which(hh_plot_data_teams$HomeTeam == input$hh_tA_in|hh_plot_data_teams$AwayTeam==input$hh_tA_in),]
-      hh_team_dataA1 <- hh_plot_data_teams[which(hh_plot_data_teams$HomeTeam == input$hh_tA_in),c(hh1,"FTR","Date","HomeTeam","AwayTeam")]
-      hh_team_dataA2 <- hh_plot_data_teams[which(hh_plot_data_teams$AwayTeam == input$hh_tA_in),c(hh2,"FTR","Date","HomeTeam","AwayTeam")]
+      hh_team_dataA <- hh_plot_data_teams[which(hh_plot_data_teams$HomeTeam == input$hh_tA_in | hh_plot_data_teams$AwayTeam == input$hh_tA_in),]
+      hh_team_dataA1 <- hh_plot_data_teams[which(hh_plot_data_teams$HomeTeam == input$hh_tA_in), c(hh1,"FTR","Date","HomeTeam","AwayTeam")]
+      hh_team_dataA2 <- hh_plot_data_teams[which(hh_plot_data_teams$AwayTeam == input$hh_tA_in), c(hh2,"FTR","Date","HomeTeam","AwayTeam")]
       dimnames(hh_team_dataA1)[[2]] <- dimnames(hh_team_dataA2)[[2]] <- c("V1","FTR","Date","HomeTeam","AwayTeam")
       hh_team_dataA <- rbind(hh_team_dataA1,hh_team_dataA2)
       hh_team_dataA <- hh_team_dataA[order(hh_team_dataA$Date),]
-      hh_team_dataB <- hh_plot_data_teams[which(hh_plot_data_teams$HomeTeam == input$hh_tB_in|hh_plot_data_teams$AwayTeam==input$hh_tB_in),]
-      hh_team_dataB1 <- hh_plot_data_teams[which(hh_plot_data_teams$HomeTeam == input$hh_tB_in),c(hh1,"FTR","Date","HomeTeam","AwayTeam")]
-      hh_team_dataB2 <- hh_plot_data_teams[which(hh_plot_data_teams$AwayTeam == input$hh_tB_in),c(hh2,"FTR","Date","HomeTeam","AwayTeam")]
+      hh_team_dataB <- hh_plot_data_teams[which(hh_plot_data_teams$HomeTeam == input$hh_tB_in | hh_plot_data_teams$AwayTeam == input$hh_tB_in),]
+      hh_team_dataB1 <- hh_plot_data_teams[which(hh_plot_data_teams$HomeTeam == input$hh_tB_in), c(hh1,"FTR","Date","HomeTeam","AwayTeam")]
+      hh_team_dataB2 <- hh_plot_data_teams[which(hh_plot_data_teams$AwayTeam == input$hh_tB_in), c(hh2,"FTR","Date","HomeTeam","AwayTeam")]
       dimnames(hh_team_dataB1)[[2]] <- dimnames(hh_team_dataB2)[[2]] <- c("V1","FTR","Date","HomeTeam","AwayTeam")
       hh_team_dataB <- rbind(hh_team_dataB1, hh_team_dataB2)
       hh_team_dataB <- hh_team_dataB[order(hh_team_dataB$Date),]
@@ -237,31 +237,31 @@ shinyServer(function(input, output, session) {
                        hh_team_dataB[,"Date"]))
 
       col_A <- NULL
-      for(c in 1:nrow(hh_team_dataA)){
-        if(hh_team_dataA[c,"FTR"]=="H" && hh_team_dataA[c,"HomeTeam"]==input$hh_tA_in)
+      for (c in 1:nrow(hh_team_dataA)) {
+        if (hh_team_dataA[c,"FTR"] == "H" && hh_team_dataA[c, "HomeTeam"] == input$hh_tA_in)
           col_A <- c(col_A, "Green")
-        if(hh_team_dataA[c,"FTR"]=="A" && hh_team_dataA[c,"AwayTeam"]==input$hh_tA_in)
+        if (hh_team_dataA[c,"FTR"] == "A" && hh_team_dataA[c, "AwayTeam"] == input$hh_tA_in)
           col_A <- c(col_A, "Green")
-        if(hh_team_dataA[c,"FTR"]=="A" && hh_team_dataA[c,"HomeTeam"]==input$hh_tA_in)
+        if (hh_team_dataA[c,"FTR"] == "A" && hh_team_dataA[c, "HomeTeam"] == input$hh_tA_in)
           col_A <- c(col_A, "Red")
-        if(hh_team_dataA[c,"FTR"]=="H" && hh_team_dataA[c,"AwayTeam"]==input$hh_tA_in)
+        if (hh_team_dataA[c,"FTR"] == "H" && hh_team_dataA[c, "AwayTeam"] == input$hh_tA_in)
           col_A <- c(col_A, "Red")
-        if(hh_team_dataA[c,"FTR"]=="D")
+        if (hh_team_dataA[c,"FTR"] == "D")
           col_A <- c(col_A, "Black")
         #col_A <- c(col_A, "Blue")
       }
 
       col_B <- NULL
-      for(c in 1:nrow(hh_team_dataB)){
-        if(hh_team_dataB[c,"FTR"]=="H" && hh_team_dataB[c,"HomeTeam"]==input$hh_tB_in)
+      for (c in 1:nrow(hh_team_dataB)) {
+        if (hh_team_dataB[c,"FTR"] == "H" && hh_team_dataB[c,"HomeTeam"] == input$hh_tB_in)
           col_B <- c(col_B, "Green")
-        if(hh_team_dataB[c,"FTR"]=="A" && hh_team_dataB[c,"AwayTeam"]==input$hh_tB_in)
+        if (hh_team_dataB[c,"FTR"] == "A" && hh_team_dataB[c,"AwayTeam"] == input$hh_tB_in)
           col_B <- c(col_B, "Green")
-        if(hh_team_dataB[c,"FTR"]=="A" && hh_team_dataB[c,"HomeTeam"]==input$hh_tB_in)
+        if (hh_team_dataB[c,"FTR"] == "A" && hh_team_dataB[c,"HomeTeam"] == input$hh_tB_in)
           col_B <- c(col_B, "Red")
-        if(hh_team_dataB[c,"FTR"]=="H" && hh_team_dataB[c,"AwayTeam"]==input$hh_tB_in)
+        if (hh_team_dataB[c,"FTR"] == "H" && hh_team_dataB[c,"AwayTeam"] == input$hh_tB_in)
           col_B <- c(col_B, "Red")
-        if(hh_team_dataB[c,"FTR"]=="D")
+        if (hh_team_dataB[c,"FTR"] == "D")
           col_B <- c(col_B, "Black")
       }
 
@@ -270,40 +270,40 @@ shinyServer(function(input, output, session) {
       plot(hh_team_dataA[,"Date"],
            hh_team_dataA[,1],type = "b",
            xlim = hh_xlim, ylim = hh_ylim, col = "Black",
-           xlab = "Date", ylab = hhlab, pch = 19, lty=2, xaxt="n")
+           xlab = "Date", ylab = hhlab, pch = 19, lty = 2, xaxt = "n")
 
-      tdiff <- abs(as.numeric(difftime(hh_xlim[1], hh_xlim[2], units="days")))
-      axis.Date(1, at=seq(hh_xlim[1], hh_xlim[2], by=tdiff/7) ,format="%d %b %y")
+      tdiff <- abs(as.numeric(difftime(hh_xlim[1], hh_xlim[2], units = "days")))
+      axis.Date(1, at = seq(hh_xlim[1], hh_xlim[2], by = tdiff/7), format = "%d %b %y")
 
       lines(hh_team_dataA[,"Date"],
             hh_team_dataA[,1],type = "p",
             xlim = hh_xlim, ylim = hh_ylim, col = col_A,
             xlab = "Date", ylab = "Stat", pch = 19)
 
-      if(input$hh_tA_in!=input$hh_tB_in){
+      if (input$hh_tA_in!=input$hh_tB_in) {
         team_b_jit <- jitter(hh_team_dataB[,1],
-                             factor=0.3)
+                             factor = 0.3)
         lines(hh_team_dataB[,"Date"],
               team_b_jit, type = "b",
               col = "Black", lty = 3)
         lines(hh_team_dataB[,"Date"],
               team_b_jit, type = "p",
-              col = col_B, pch=19)
-        legend("topleft",c("Win","Draw","Loss",input$hh_tA_in,input$hh_tB_in),col=c("Green","Black","Red","Black","Black"),pch=c(19,19,19,NA,NA),lty=c(NA,NA,NA,2,3))
+              col = col_B, pch = 19)
+        legend("topleft", c("Win","Draw","Loss",input$hh_tA_in,input$hh_tB_in), col = c("Green","Black","Red","Black","Black"), pch = c(19,19,19,NA,NA), lty = c(NA,NA,NA,2,3))
       }else{
         lines(hh_team_dataB[,"Date"],
               hh_team_dataB[,1], type = "b",
               col = "Black", lty = 2)
         lines(hh_team_dataB[,"Date"],
               hh_team_dataB[,1], type = "p",
-              col = col_B, pch=19)
-        legend("topleft",c("Win","Draw","Loss",input$hh_tA_in),col=c("Green","Black","Red","Black"),pch=c(19,19,19,NA),lty=c(NA,NA,NA,2))
+              col = col_B, pch = 19)
+        legend("topleft", c("Win","Draw","Loss",input$hh_tA_in), col = c("Green","Black","Red","Black"), pch = c(19,19,19,NA), lty = c(NA,NA,NA,2))
 
       }
     }else{
-      plot(hh_plot_data_teams[which(hh_plot_data_teams$HomeTeam=="Tottenham"|hh_plot_data_teams$AwayTeam=="Tottenham"),"Date"],
-           hh_plot_data_teams[which(hh_plot_data_teams$HomeTeam=="Tottenham"|hh_plot_data_teams$AwayTeam=="Tottenham"),"FTHG"], type = "b",
-           ylab="Goals", xlab = "Date")
+      plot(hh_plot_data_teams[which(hh_plot_data_teams$HomeTeam == "Tottenham" | hh_plot_data_teams$AwayTeam == "Tottenham"),"Date"],
+           hh_plot_data_teams[which(hh_plot_data_teams$HomeTeam == "Tottenham" | hh_plot_data_teams$AwayTeam == "Tottenham"),"FTHG"], type = "b",
+           ylab = "Goals", xlab = "Date")
     }
   })
 

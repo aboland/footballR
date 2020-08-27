@@ -3,8 +3,9 @@
 \docType{data}
 \name{pl_data}
 \alias{pl_data}
-\title{Match data for 2000/2001 to 2018/2019}
-\format{A data frame with 7220 rows and 30 variables:
+\title{Premier League match data for seasons 2000/2001 to 2018/2019}
+\format{
+A data frame with 7220 rows and 30 variables:
 \describe{
   \item{Div}{Division, this is unnecessary for this data}
   \item{Date}{Match Date (dd/mm/yy)}
@@ -36,12 +37,13 @@
   \item{AR}{Away Team Red Cards}
   \item{HBP}{Home Team Bookings Points (10 = yellow, 25 = red)}
   \item{ABP}{Away Team Bookings Points (10 = yellow, 25 = red)}
-  }}
+  }
+}
 \usage{
 pl_data
 }
 \description{
-A dataset containing information on all matches from
-the seasons from 2000 until 2019, and their team colours
+A dataset containing information on all matches in the Premier League for
+the seasons from 2000 until 2019.
 }
 \keyword{datasets}

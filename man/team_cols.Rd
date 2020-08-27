@@ -3,15 +3,17 @@
 \docType{data}
 \name{team_cols}
 \alias{team_cols}
-\title{Team names and team colours}
-\format{A data frame with 41 rows and 5 variables:
+\title{Premier League team names and team colours}
+\format{
+A data frame with 41 rows and 5 variables:
 \describe{
   \item{teams}{Character for name of years}
   \item{col1}{Teams first colour}
   \item{col2}{Teams second colour}
   \item{col1_rgb}{RGB version of first colour}
   \item{col2_rgb}{RGB version of second colour}
-  }}
+  }
+}
 \usage{
 team_cols
 }
