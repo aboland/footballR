@@ -27,6 +27,7 @@ test_that("Check test_plot_data function",{
 
 
 
+
   test_plot_data2 <-
     PL_plot_data(team_data = pl_data,
                  date_from = "2018-08-09",
@@ -46,5 +47,6 @@ test_that("Check test_plot_data function",{
   expect_equal(test_plot_data2$y,
                c(0.4630, 0.3077, 0.3158, 0.3636, 0.1957, 0.4219, 0.1455, 0.2754, 0.2500, 0.1136,
                  0.2982, 0.3559, 0.3793, 0.2923, 0.1207, 0.1228, 0.3800, 0.2540, 0.2500, 0.1642)
+
   )
 })
