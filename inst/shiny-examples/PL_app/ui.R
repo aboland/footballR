@@ -6,7 +6,7 @@ library(plotly)
 shinyUI(fluidPage(theme = "united.min.css",
 
   # Sidebar ---------------------------------------------------------------------------------------
-      navbarPage("Premier League 19/20", #widths = c(2, 10),
+      navbarPage("Premier League Stats", #widths = c(2, 10),
 
                    navbarMenu("Team Data",
                             #tabsetPanel(
@@ -80,7 +80,7 @@ shinyUI(fluidPage(theme = "united.min.css",
                                                 #            min = 2000, max = 2016, value = c(2015, 2016),step=1, sep=""),
                                                 dateRangeInput("season_range_c", label = h4("Date range"),
                                                                format = "dd-mm-yyyy",
-                                                               start = "2019-08-09",
+                                                               start = "2020-09-12",
                                                                #end = "2016-03-08",
                                                                end = Sys.Date() - 1,
                                                                min = "2000-08-09")#,
