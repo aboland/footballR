@@ -47,7 +47,7 @@ shinyServer(function(input, output, session) {
     histPL <- pl_data
 
     incProgress(0.3, detail = "Downloading this season")
-    current_season <- PL_read_data("2019-06-01", Sys.Date())
+    current_season <- PL_read_data("2020-09-01", Sys.Date())
 
 
     missing_columns <- names(histPL)[which(!names(histPL) %in% names(current_season))]
@@ -60,7 +60,6 @@ shinyServer(function(input, output, session) {
     fulld <-
       rbind(histPL, current_season) %>%
       distinct
-
     updateDateRangeInput(session, inputId = "season_range_c", end = max(fulld$Date), max = max(fulld$Date))
     #fulld_test <- bind_rows(histPL, current_season)
 
